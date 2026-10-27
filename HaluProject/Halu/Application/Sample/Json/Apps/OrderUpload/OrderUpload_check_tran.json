@@ -1,0 +1,51 @@
+{
+  "request": {
+    "comment": "受注データ アップロード 取込チェック処理 リクエストデータ（C-041）",
+    "html": "Sample/Json/Apps/OrderUpload",
+    "mode": "check",
+    "prog": "no",
+    "model": "yes",
+    "message": {
+      "status": "OK",
+      "msg": ""
+    },
+    "records": [{
+      "id": "header",
+      "before": "",
+      "after": "",
+      "multiline": "no",
+      "record": {
+        "ファイル名": {
+          "value": [""]
+        }
+      }
+    }
+  ]
+  },
+  "response": {
+    "comment": "受注データ アップロード 取込チェック処理 レスポンスデータ（エラー件数が0件のときだけクライアントがexecuteを要求する）",
+    "html": "Sample/Json/Apps/OrderUpload",
+    "mode": "check",
+    "prog": "no",
+    "message": {
+      "status": "OK",
+      "msg": ""
+    },
+    "records": [{
+      "comment": "取込チェック結果",
+      "id": "header",
+      "before": "",
+      "after": "",
+      "multiline": "no",
+      "record": {
+        "エラー件数": {
+          "value": [""],
+          "fromtype": "sqls",
+          "fromid": "countエラー",
+          "fromio": "output",
+          "fromname": "エラー件数"
+        }
+      }
+    }]
+  }
+}

@@ -3,14 +3,14 @@
   "html": "Sample/Json/Apps/UserDetailMainte",
   "dbname": "sample",
   "mode": "insert",
-  "prog": "no",
+  "prog": "yes",
   "message": {
     "status": "OK",
     "msg": "登録処理は正常に終了しました。"
   },
   "sqls": [
     {
-      "comment": "ユーザコード チェック処理",
+      "comment": "ユーザコード チェック処理（C-024: 有効ユーザ（削除フラグ='0'）限定。論理削除済みコードの再登録を許容する）",
       "id": "insert_check",
       "before": "",
       "after": "",
@@ -22,7 +22,7 @@
         "genesql": {
           "dist": "",
           "from": "ユーザ",
-          "where": "ユーザコード = ?",
+          "where": "ユーザコード = ? AND 削除フラグ = '0'",
           "order": ""
         }
       },
@@ -49,9 +49,9 @@
       }
     },
     {
-      "comment": "ユーザマスタ 登録処理",
+      "comment": "ユーザマスタ 登録処理（パスワードはＳＨＡ２５６ハッシュ化して登録する）",
       "id": "insert",
-      "before": "",
+      "before": "hashPasswordOfInsert('insert')",
       "after":  "",
       "sql": {
         "type": "insert",
@@ -152,6 +152,7 @@
       "sql" : {
         "type" : "select",
         "freesql" : "SELECT currval('ユーザ_ユーザＩＤ_seq') AS ユーザＩＤ",
+        "crud": { "ユーザ": "R" },
         "genesql" : ""
       },
       "output" : {
@@ -164,7 +165,7 @@
       }
     },
     {
-      "comment": "ユーザマスタ 照会処理",
+      "comment": "ユーザマスタ 照会処理（パスワードはハッシュ値のため画面へ返さない）",
       "id": "header",
       "before": "",
       "after":  "",
@@ -201,9 +202,6 @@
             "value": [""]
           },
           "ユーザ名": {
-            "value": [""]
-          },
-          "パスワード": {
             "value": [""]
           },
           "メニュー名": {

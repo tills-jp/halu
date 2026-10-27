@@ -1,0 +1,16 @@
+{
+  "comment": "取込エラー一覧 validation",
+  "html": "Sample/Json/Apps/OrderUploadErrorList",
+  "records": [{
+    "id": "header",
+    "multiline": "no",
+    "record": {
+      "ページライン数": {
+        "validation": ["required"]
+      },
+      "カレントページ": {
+        "validation": ["required"]
+      }
+    }
+  }]
+}

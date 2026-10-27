@@ -77,6 +77,9 @@ class BatchClientModel():
             self.mlog.error(self.mlogname, f'BatchClientModel fromRequestToSql exception message type    : {str(type(e))}')
             self.mlog.error(self.mlogname, f'BatchClientModel fromRequestToSql exception message arg     : {str(e.args)}')
             self.mlog.error(self.mlogname, f'BatchClientModel fromRequestToSql exception message         : {e}')
+            # 2026-08-02 B-007 SQL実行例外時にERRORを設定し既存のrollback分岐・エラー応答へ合流
+            sqldict['message']['status'] = 'ERROR'
+            sqldict['message']['msg'] = 'SQL実行エラーが発生しました。サーバーログを確認してください。'
 
 
     def editSqlInputData(self, sql_info, sqldict):

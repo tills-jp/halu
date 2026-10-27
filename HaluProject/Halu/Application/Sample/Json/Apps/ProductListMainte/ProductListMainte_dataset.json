@@ -1,0 +1,48 @@
+{
+  "comment": "商品一覧登録 dataset",
+  "html": "Sample/Json/Apps/ProductListMainte",
+  "message": {
+    "status": "OK",
+    "msg": "データを入力して、登録ボタンを押下して下さい。"
+  },
+  "records": [
+  {
+    "id": "login",
+    "multiline": "no",
+    "defaultline": "0",
+    "record": {
+      "ユーザＩＤ": {
+        "value": [""]
+      },
+      "ユーザ名称": {
+        "value": [""]
+      }
+    }
+  },
+  {
+    "id": "detail",
+    "multiline": "yes",
+    "defaultline": "1",
+    "record": {
+      "商品ＩＤ": {
+        "value": [""]
+      },
+      "商品コード": {
+        "value": [""]
+      },
+      "商品名称": {
+        "value": [""]
+      },
+      "標準単価": {
+        "value": [""]
+      },
+      "備考": {
+        "value": [""]
+      },
+      "削除": {
+        "value": [""]
+      }
+    }
+  }
+  ]
+}

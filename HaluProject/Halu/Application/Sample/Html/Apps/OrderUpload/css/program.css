@@ -1,0 +1,110 @@
+@charset "UTF-8";
+
+/* ===================================================================
+ * OrderUpload フェーズ2 UIデザイン適用（D-018）
+ * 指示書: なし（モックアップ無し。正典画面 UserDetailMainte/CustomerListMainte
+ *         への追従適用。台帳: HaluProject/Halu/Application/Sample/docs/90_UI適用/UIデザイン適用台帳.md）
+ * 注意: dm-uploaderプラグインが参照する #drag-and-drop-zone / #files / #debug /
+ *       #files-template / #debug-template の構造・id・class・英語ラベルは
+ *       一切変更しない。見た目調整は既存クラス（.card等）へのCSSのみで行う。
+ * =================================================================== */
+
+/* ヘッダー中央タイトルの非表示（本文側の大見出し .halu-page-title で代替） */
+#ヘッダータイトル {
+  display: none;
+}
+
+/* File List・Debug MessagesカードをSample正典の白カード（角丸12px・薄影）へ寄せる。
+   dm-uploaderのD&Dゾーン（.dm-uploader）はプラグイン既定の見た目を維持し対象外 */
+.card {
+  border-radius: 12px;
+  box-shadow: 0 1px 4px var(--halu-shadow-color);   /* .halu-card と同じ影（テーマ側で定義） */
+}
+
+/* ===================================================================
+ * 以下、旧 dmuploader.css（D-026で本ファイルへ統合し当該ファイルは削除）
+ *
+ * 旧ファイルはdm-uploader配布物の「デモページ用」スタイルをアプリ配下へ
+ * 複製したもので、当該1画面からしか参照されていなかった。プラグイン本体の
+ * CSSは HaluServer/.../uploader-master/dist/css/jquery.dm-uploader.min.css
+ * （フレームワーク側・引き続きindex.htmlから読み込む）で、本セクションとは
+ * プロパティが重複しない（本体は cursor / user-select / .btn 内 input のみ）。
+ *
+ * project.cssへ移さなかった理由: 下の .row / [class*="col-"] / hr は素の
+ * Bootstrapセレクタの上書きであり、アプリ共通へ出すと全画面へ波及するため。
+ * 実測でも該当要素はすべて本画面の main[role="main"] 内に限られる。
+ * =================================================================== */
+
+/* デモ由来のグリッド余白（本画面のD&Dゾーン・File List・Debug Messagesの
+   行間／列内余白。撤去すると詰まるため値は従来どおり維持） */
+.row {
+  margin-bottom: 1rem;
+}
+
+[class*="col-"] {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/* アップロード項目テンプレート（#files-template）内の区切り線 */
+hr {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* File List・Debug Messagesのスクロール領域（!importantは従来どおり維持） */
+#files {
+  overflow-y: scroll !important;
+  min-height: 320px;
+}
+
+@media (min-width: 768px) {
+  #files {
+    min-height: 0;
+  }
+}
+
+#debug {
+  overflow-y: scroll !important;
+  height: 180px;
+}
+
+/* ログの文字色（FileListのStatus・Debug Messagesの各行）。
+   dm-uploaderのテンプレート（#files-template / #debug-template）は
+   ui_add_log(message, color) の第2引数から `text-{color}` を付与する。
+   実際に使われるのは info / success / danger と、引数省略時の既定 muted の4種。
+   このうち **info と success をテーマ側トークンで個別に指定**する
+   （2026-08-31 UAT指摘・C-057／C-059）。BS5既定では
+     ・.text-info    … --bs-info を参照。Haluは同変数をテーマのボタン色へ
+                       上書きしているため、darkでは緑・navyではオレンジになる
+     ・.text-success … --bs-success（#198754 の濃緑）
+   となり、暗色カード上で読めなかった。
+   ★C-057では .text-success だけを対象にしたため、実際に画面へ出ていた
+     .text-info の初期処理ログが直っていなかった。C-059で .text-info を追加し、
+     さらに依頼者指示により info / success を別トークンへ分離している
+     （1トークン共通化だと明色テーマで info と success が同色に揃ってしまうため）。
+   .text-danger（赤＝エラー表示）と .text-muted（薄グレー）は対象外・変更なし。
+   BS5の .text-* は同一詳細度(0,1,0)だが、本ファイルは bootstrap.min.css より
+   後に読み込まれるため後勝ちで上書きできる。id を前置してさらに詳細度を上げ、
+   当画面のログ表示のみに限定している */
+#files .text-info,
+#debug .text-info {
+  color: var(--halu-upload-log-info-color) !important;
+}
+
+#files .text-success,
+#debug .text-success {
+  color: var(--halu-upload-log-success-color) !important;
+}
+
+/* D&Dゾーンの破線枠（色はテーマ側の --halu-dnd-border / --halu-dnd-active-border。
+   defaultでは従来の #A5A5C7 / red と同値） */
+.dm-uploader {
+  border: 0.25rem dashed var(--halu-dnd-border);
+  text-align: center;
+}
+
+.dm-uploader.active {
+  border-color: var(--halu-dnd-active-border);
+  border-style: solid;
+}

@@ -1,74 +1,62 @@
 @charset "UTF-8";
 
 /* CSS Document */
-/*テーマのcssを一部キャンセル
+
+/* 【責務】本ファイルは「色以外」のすべて（レイアウト・サイズ・折り返し・appearance復帰等、
+ * テーマ切替で変わってはいけないもの）を持つ。色が必要な場合はテーマ変数 var(--bs-*) を
+ * 参照し、色リテラルは書かない（本ファイルは動的テーマCSSより前に読み込まれるため、
+ * 同セレクタ・同プロパティで値を持つとテーマ側に負ける）。
+ * 色そのものの定義は halu-custom_*.css 側の責務。
+ * 判定基準は「テーマを切り替えたときに変わるべきか」の一点。 */
+
+/* フォント設定
+   2026-08-19 依頼者決定（D-029）: 既定フォントをシステムフォントスタックへ変更。
+   D-027の「全画面Noto Sans統一」を上書きする。
+
+   理由: 'Noto Sans' / 'Noto Sans JP' はWebフォント（Google Fonts）であり、Windows・macOSには
+   プリインストールされていない。本リポジトリには @font-face もWebフォントの読み込みも無いため、
+   指定は全て空振りし、実際には最後の sans-serif ＝ ブラウザ既定（利用者設定で変わる＝未制御）で
+   描画されていた。実測でも開発PC上で Noto Sans / Noto Sans JP はいずれも未インストールだった。
+   システムフォントスタックにすれば、ダウンロード0バイト・FOUTなし・閉域網でも確実に日本語が出る。
+
+   差し替え口は下の --halu-font-body の1箇所に集約している。顧客要望でフォント指定が来た場合、
+   ①OS標準フォント指定なら本変数を書き換えるだけ、②Webフォント指定なら @font-face を足して
+   本変数を差し替える、で対応できる。
+   ※本変数はテーマ（halu-custom_*.css）には置かない。テーマはユーザーが画面上で切り替えるもので、
+     切り替えのたびにフォント取得・レイアウト変動が起きるうえ、フォントは顧客ごとに固定する設定で
+     あってユーザーが選ぶものではないため（CSS責務分離の「テーマ＝色のみ」とも整合）。
+
+   font-size はあえて指定せず、Bootstrap5の既定（--bs-body-font-size: 1rem＝16px）に委ねる。
+   経緯（D-028）: 旧来この行は `font-size: 11x;` という不正値で、CSSとして宣言ごと破棄され
+   実際には16pxで表示され続けていた。D-027でこれを `11px` へ是正した結果、一覧テーブル等の
+   font-size未指定要素（bodyから継承）が16px→11pxへ約31%縮小するUAT指摘となった。
+   11pxは一度も実適用されたことがなく業務上の妥当性が未検証であるのに対し、16pxは長年UATを
+   通ってきた見た目であるため、2026-08-19の依頼者判断により宣言を削除して16pxを正とする。
+   本文サイズを変えたい場合は、この既定を復活させるのではなく明示値で指定すること。
 ---------------------------------------------------- */
-.rmenuTable {
-    border: 0px;
+:root {
+    /* 既定フォント（差し替え口）。
+       2026-08-19 依頼者決定: Windows環境の既定を "Meiryo UI" とする（フェーズ2以前から
+       長年運用してきた見た目。游ゴシックはRegular(400)が細く、業務一覧の可読性で劣るため）。
+
+       ★並び順の注意: Windows日本語環境では system-ui が「Yu Gothic UI」に解決され、
+         かつ和文もカバーするため、system-ui より後ろに置いたフォントには到達しない
+         （実測: system-ui 単独と "Yu Gothic UI" 単独の字幅が欧文/和文とも完全一致）。
+         Meiryo UI を効かせるには system-ui より前に置く必要がある。
+       Windowsでは欧文・和文とも Meiryo UI、Meiryo UI を持たないmacOS等では
+       system-ui（SF Pro等）→ Hiragino Sans と、その環境のUIフォントへ落ちる。
+       欧文だけ Segoe UI にしたい場合は "Segoe UI" を先頭に足す。 */
+    --halu-font-body: "Meiryo UI", Meiryo, system-ui, -apple-system,
+                      "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
 }
 
-/*“アース標準”フォントを指定する
-MSゴシックが無い時のために、標準的な日本語ゴシックもいれておく
----------------------------------------------------- */
 body {
-    font-family: "ＭＳ ゴシック","hiragino kaku gothic pro", meiryo,"Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 11px;
+    font-family: var(--halu-font-body);
 }
 
-
-/*主だったクラスにフォントサイズを指定する
-「!important」のついているのは本ファイルのCSSの下の行で
-指定されているオーバーライドをキャンセルするため。
----------------------------------------------------- */
-.form-horizontal {
-    font-size: 11px;
-}
-.table-condensed > thead > tr > th, .table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > th {
-    font-size: 11px;
-}
-.btn {
-    font-size: 11px;
-}
-.form-control {
-    font-size: 11px;
-}
-
-.input-group-addon, .btn-sm, .btn-group-sm > .btn {
-    font-size: 11px !important;
-}
-
-.table-condensed > thead > tr > th,
-.table-condensed > tbody > tr > th,
-.table-condensed > tfoot > tr > th {
-  font-size: 11px !important;
-}
-.input-sm {
-    font-size: 11px !important;
-}
-
-/*--------------------------------------------------
-* .navbar #rmenu-pagefooter のマージン
----------------------------------------------------- */
-.navbar {
-  margin-bottom: 12px;
-}
-
-#rmenu-pagefooter {
-  margin-top: 12px !important;
-}
-
-/*--------------------------------------------------
-* #mainForm高さを可変に
----------------------------------------------------- */
-#mainForm {
-/*    height: calc(100vh - 130px);*/
-}
-
-/*container幅を大きく　1170px→1234px+16px(scrollbar分)
-tableの可変幅を解除
+/* container幅設定（scrollbar分を考慮）
 ---------------------------------------------------- */
 .container {
-/*    width: 100vw; */
     width: calc(100vw - 20px);
 }
 
@@ -76,233 +64,518 @@ tableの可変幅を解除
     width: auto;
 }
 
-/*-----------------------------------------------
- *  DRM 画面用css
- *----------------------------------------------- */
-.input-sm {
-  height: 25px;
-  padding: 1px 4px;
-  font-size: 14px;
-  line-height: 1.2;
-  border-radius: 4px;
-}
-
-select.input-sm {
-  height: 25px;
-}
-
-.form-control
-,.input-group .form-control {
-  height: 25px;
-  line-height: 1.2;
-  margin: 4px 0;
-  width: 100%;
-}
-
-.table-condensed > thead > tr > th,
-.table-condensed > tbody > tr > th,
-.table-condensed > tfoot > tr > th,
-.table-condensed > thead > tr > td,
-.table-condensed > tbody > tr > td,
-.table-condensed > tfoot > tr > td {
-  padding: 1px 4px;
-  vertical-align: middle;
-  line-height: 1.2;
-}
-
-.table-condensed > thead > tr > th,
-.table-condensed > tbody > tr > th,
-.table-condensed > tfoot > tr > th {
-  font-size: 15px;
-}
-
-.input-group-addon,
-.btn-sm,
-.btn-group-sm > .btn {
-  padding: 6px 12px;
-  font-size: 14px;
-  line-height: 1;
-  border-radius: 4px;
-}
-
-.glyphicon.glyphicon-th {
-  font-size: 12px;
-}
-.nav-stacked > li + li {
-    margin-top: 0px;
-}
-
-.rmenuTable {
-    margin-bottom: 4px;
-}
-
-.panel {
-  margin-bottom: 5px;
-  background-color: #ffffff;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-}
-.panel-body {
-  padding: 5px;
-}
-.panel-heading {
-  padding: 3px 3px;
-  border-bottom: 1px solid transparent;
-  border-top-right-radius: 5px;
-  border-top-left-radius: 5px;
-  font-size: 15px;
-}
-.panel-heading > .dropdown .dropdown-toggle {
-  color: inherit;
-}
-
-
-/*jquery-scrolltable/jquery.tbodyscroll.js 改修までの繋ぎ指定
-tableのheadの高さが正しく指定されてないのを手動補正。
-[.tbodyScroll-head-bg]に指定されている高さと
-tableのthの高さとの差分「6px固定」をmarginで[.tbodyScroll-inner]に指定する
-※jsによって付加されるdivのクラス。thにもどこかのjsによって高さが付加されてる。
-th,tdのpaddingと関係して調整値変わる
-----------------------------------*/
-
-.tbodyScroll-inner{
-    margin: 6px 0px 0px 0px;
-}
-/*----------------------------------*/
-
-
-.rmenuTable .rmenuTableS {
-  background: #7F8EC1;
-}
-
-input[type="checkbox"]
-,input[type="radio"] {
+/* チェックボックス・ラジオボタン
+   テーマ非依存の機能的対処のため、halu-custom_*.css ではなく本ファイルに集約する
+   （色はテーマ変数 var(--bs-*) 参照のみとし、色リテラルは持たない）。
+   ・サイズ18px・中央寄せ … BS4時代の見た目（小さな部品・セル内中央寄せ）を維持
+   ・ON色 … 操作ボタンの深緑（テーマ .btn-info 系）に合わせる。既定はブラウザ/BS標準の青
+     （D-023 フェーズ2 UAT指摘）。var参照のためテーマ切替に追従する
+---------------------------------------------------- */
+input[type="checkbox"],
+input[type="radio"] {
   width: 18px;
   height: 18px;
   margin: auto;
+  accent-color: var(--bs-info);
 }
 
-.rmenuTable tr:nth-child(2n+1) {
-  background: #f4ffff !important;
-}
-
-/* ヘッダー部のコントロールボタン群の設定 */
-.header-btn-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.header-btn-block {
-  margin: 3px 20px;
-}
-
-.btn-group > .btn:first-child {
-  margin-top: 3px;
-}
-
-/* ページネーションのコントロールボタン群の設定 */
-.page-btn-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.page-btn-block {
-  margin: 0 5px;
+/* BS5の.form-controlはappearance:noneを設定するため、チェックボックス・
+ * ラジオボタンに.form-controlを併用するHalu定型マークアップ（一覧の
+ * チェック欄・使用欄等）でネイティブ描画が消える。appearance:autoで
+ * 描画を戻し、BS4時代の見た目（小さな部品・セル内中央寄せ）に合わせる */
+input[type="checkbox"].form-control,
+input[type="radio"].form-control {
+  appearance: auto;
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .table {
   margin-bottom: 0;
 }
 
-
-
-textarea {
-    font-family: "Osaka−等幅",SimHei,"ＭＳ ゴシック",'Courier New', Courier,"monospace";
-    font-size: 12px;
-    line-height: 1.0;
-    -o-tab-size: 2 ;	/* Opera Miniをサポート (Operaは不要) */
-    -moz-tab-size: 2 ;	/* Firefoxをサポート (2016年3月現在も必要) */
-    tab-size: 1 ;
+/* テーブルヘッダーの文字折り返し禁止（.thead-darkはBS4、.table-darkはBS5） */
+.thead-dark th,
+.table-dark th {
+  white-space: nowrap;
 }
 
-
-/* color ------------------- */
-
-textarea {
-    color:#e6e6e6;
-    background-color:#4d4d4d;
+/* ボタンの文字折り返し禁止 */
+.btn {
+  white-space: nowrap;
 }
 
-.rmenu-soure-select {
-  height: 24px;
-  color:#e6e6e6;
-  background-color:#4d4d4d;
+#halu-page-footer {
+  margin-top: 12px !important;
 }
 
-/* 黒白
-textarea {
-    color:#e6e6e6;
-    background-color:#1a1a1a;
+/* D-003: ヘッダーロゴのサイズ調整（CSS値ファイル「logo」ブロック width85px/height29px準拠。widthのみ指定し、heightは画像アスペクト比に追従） */
+.halu-page-header-icon {
+  width: 85px;
 }
- */
 
-/* 灰白
-textarea {
-    color:#e6e6e6;
-    background-color:#4d4d4d;
+/* D-011: ヘッダーの「ログインユーザ」表記＋氏名（右揃え2段。Figma「ログインユーザ Nagi Kato」
+   ブロック準拠: 13px/500/letter-spacing 0.4px/uppercase。ログイン日時表示はD-011で廃止）
+   文字色は --halu-header-color（2026-08-30追加。dark_1のみ本文色 #E2E2E2、
+   default/Navyは従来どおり白。定義元は各halu-custom_*.css） */
+.header-login-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
- */
 
-/* 黒緑
-textarea {
-    color:#00cc00;
-    background-color:#1a1a1a;
+.header-login-info-label,
+.header-login-info-name {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 15px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--halu-header-color);
 }
- */
 
-/* 黒橙
-textarea {
-    color:#FF8000;
-    background-color:#1a1a1a;
+/* C-001: ヘッダーのログアウト（D-011でモックアップ準拠の白地・赤枠ボタン型へ変更。
+   Figma「ログアウト」ブロック準拠: 白背景・枠1px・角丸8px・高さ40px・Noto Sans 14px/500。
+   色は--bs-danger、地色は--halu-surfaceに追従（いずれもテーマ側で定義） */
+.logout-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 10px 12px;
+  background-color: var(--halu-btn-base-bg);
+  border: 1px solid var(--bs-danger);
+  border-radius: 8px;
+  color: var(--bs-danger);
+  cursor: pointer;
+  font-family: var(--halu-font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
 }
- */
 
-/* 黒黄
-textarea {
-    color:#FFFF40;
-    background-color:#1a1a1a;
+.logout-link-icon {
+  flex-shrink: 0;
 }
- */
 
-/* 白紺
-textarea {
-    color:#000080;
-    background-color:#e6e6e6;
+/* D-004: メニュー画面（StartMenu/AdminMenu）タブスタイル（CSS値ファイル「tab_選択」「tab2」「tab3」ブロック準拠） */
+.halu-menu-tabs.nav-tabs {
+  border-bottom: none;
+  align-items: flex-end;
+  flex-wrap: nowrap;
+  gap: 4px;
 }
- */
 
-/* 黒板(深緑緑)
-textarea {
-    color:#00e600;
-    background-color:#003300;
+.halu-menu-tabs.nav-tabs .nav-link {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--halu-tab-inactive-bg);
+  border: none;
+  border-radius: 8px 8px 0 0;
+  color: var(--bs-body-color);
+  font-family: var(--halu-font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  padding: 10px 12px;
 }
- */
 
-/* 琥珀(茶黄)
-textarea {
-    color:#BC774E;
-    background-color:#1E0000;
+.halu-menu-tabs.nav-tabs .nav-link.active {
+  height: 55px;
+  background-color: var(--halu-tab-active-bg);
+  font-family: var(--halu-font-body);
+  font-size: 16px;
 }
- */
 
-/* 
-textarea {
-    color: ;
-    background-color: ;
+/* D-009: メニュー画面（StartMenu/AdminMenu）の白カラムカード＋緑ボタン様式
+   （2026-07-27 新モックアップ mockups/StartMenu.png・css/StartMenu_css.txt 準拠で
+   旧D-004のミントカードグリッドから作り直し。「menu-name Rectangle 8」＝白カード
+   枠（--halu-border-strong。default=#454545）角丸10px、「menu」＝緑ボタン角丸10px
+   高さ57px、「Label」＝Noto Sans 20px。
+   ボタンの緑はテーマの.btn-infoに追従（デフォルトテーマで#69887E=Figma値） */
+.halu-menu-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 412px));
+  column-gap: 55px;
+  justify-content: center;
+  padding: 24px 0;
 }
- */
 
+.halu-menu-col {
+  background-color: var(--halu-surface);
+  border: 1px solid var(--halu-border-strong);
+  border-radius: 10px;
+  padding: 46px 40px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 34px;
+}
+
+.btn.btn-info.halu-menu-card {
+  min-height: 57px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  white-space: normal;
+}
+
+.halu-menu-card-icon {
+  width: 24.7px;   /* UAT指摘（2026-07-27）: 26pxから5%減 */
+  height: 24.7px;
+  flex-shrink: 0;
+}
+
+.halu-menu-card-label {
+  font-family: var(--halu-font-body);
+  font-size: 15px;  /* UAT指摘（2026-07-27）: タブ同等14px→バランス調整で+1 */
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* 空スロット（機能なしのプレースホルダー）。UAT指摘（2026-07-27）により
+   モックアップの「…」表示はやめて非表示に戻す（HTML構造・name属性は維持）。
+   ボタン様式 .btn.btn-info.halu-menu-card の display:flex より詳細度を上げる */
+.btn.btn-info.halu-menu-card.halu-menu-item-blank {
+  display: none;
+}
+
+/* =====================================================================
+ * モダンUI共通ルール（D-006〜: design_apply_common.md 2026-07-27）
+ * 配置方針: 配色トークン＝テーマ（halu-custom_*.css）／アプリ共通様式＝
+ * 本ファイル／画面固有＝各画面program.css（依頼者指示 2026-07-27）
+ * ===================================================================== */
+
+/* 共通No.2: ページタイトル大見出し（Figma: Noto Sans 40px/500。D-001 UserList
+   program.cssから昇格。タイトルdiv（.halu-page-title）を置いた画面にのみ効く） */
+.halu-page-title {
+  font-family: var(--halu-font-body);
+  font-size: 40px;
+  font-weight: 500;
+  margin: 16px 0 0 4px;
+  color: var(--bs-body-color);
+}
+
+/* 共通No.3: 白カード（検索・一覧・フォーム共用。Figma「ベース(検索欄)」角丸12px） */
+.halu-card {
+  background: var(--halu-surface);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px var(--halu-shadow-color);
+}
+
+/* 共通No.4: ボタン角丸8px（D-001 UserList program.cssから昇格） */
+.btn.btn-info {
+  border-radius: 8px;
+}
+
+/* 共通No.5: 白抜きボタン（クリア・全選択・戻る系。白地・枠色はボタン色）
+   CSS値ではクリア=#69887E／戻る・全選択=#AEE1D0の2種だが、2026-07-27
+   依頼者決定により#69887E（＝テーマのボタン色 --bs-info）へ統一。
+   枠・hover/activeの暗色は .btn-info と同じトークンを参照する。
+   文字色は --halu-btn-outline-color（2026-08-30追加。darkのみ枠色と同色の
+   Primary、default/navyは従来どおり本文色。定義元は各halu-custom_*.css）
+
+   ★2026-08-31 依頼者指示「ページングの色を戻るボタンと同じにして」により、
+     ページング（最初/前へ/次へ/最後）を本ルールへ統合した。従来は下の共通No.9に
+     --halu-text-muted（文字）／--halu-border-muted（枠）を使う専用ルールがあったが、
+     値を書き写す方式では将来どちらかだけ変わって食い違うため、セレクタを束ねて
+     「同じ」を構造的に保証している。ページングのHTMLは .halu-btn-outline を
+     持たない（フレームワークが吐く定型マークアップ側は変更しない方針）ため、
+     id指定のセレクタを併記する形にしている */
+.btn.halu-btn-outline,
+.halu-footer #最初のページ,
+.halu-footer #前のページ,
+.halu-footer #次のページ,
+.halu-footer #最後のページ {
+  --bs-btn-color: var(--halu-btn-outline-color);
+  --bs-btn-bg: var(--halu-btn-base-bg);
+  --bs-btn-border-color: var(--bs-info);
+  --bs-btn-hover-color: var(--halu-btn-outline-color);
+  --bs-btn-hover-bg: var(--halu-btn-base-hover-bg);
+  --bs-btn-hover-border-color: var(--halu-info-hover);
+  --bs-btn-active-color: var(--halu-btn-outline-color);
+  --bs-btn-active-bg: var(--halu-btn-base-active-bg);
+  --bs-btn-active-border-color: var(--halu-info-active);
+  border-radius: 8px;
+}
+
+/* 共通No.6: 危険ボタン（削除・ログアウト系。白地＋テーマdanger色の枠・文字） */
+.btn.halu-btn-danger {
+  --bs-btn-color: var(--bs-danger);
+  --bs-btn-bg: var(--halu-btn-base-bg);
+  --bs-btn-border-color: var(--bs-danger);
+  --bs-btn-hover-color: var(--bs-danger);
+  --bs-btn-hover-bg: rgba(var(--bs-danger-rgb), 0.08);
+  --bs-btn-hover-border-color: var(--bs-danger);
+  --bs-btn-active-color: var(--halu-on-accent);
+  --bs-btn-active-bg: var(--bs-danger);
+  --bs-btn-active-border-color: var(--bs-danger);
+  border-radius: 8px;
+}
+
+/* ボタン内アイコン（インラインSVG）。高さ基準で文字と揃え、幅はアスペクト比に追従。
+   色はcurrentColor＝ボタンの文字色に追従（テーマ切替・danger色にも自動追従） */
+.btn .halu-btn-icon {
+  height: 16px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* 共通No.7: 入力欄（枠1px --halu-border-input（default=#757575）・角丸4px。
+   Figma「Rectangle 4」。フォーム項目（.halu-form-item）と検索カード項目
+   （.searchkey-item）で共用） */
+.halu-form-item .form-control,
+.searchkey-item .form-control {
+  border: 1px solid var(--halu-border-input);
+  border-radius: 4px;
+}
+
+/* 入力欄のフォーカス表示（2026-08-30 ダークテーマ追加時にモックアップの
+   「Focus(枠)／Focus(背景)」を実装。テーマ側の --halu-focus-* を参照する）。
+   BS5既定の .form-control:focus は青系の枠＋box-shadowでテーマ配色と合わないため
+   打ち消す。本ファイルはbootstrap.min.cssより後に読み込まれるため、同一詳細度
+   （0,2,0）でも後勝ちで上書きできる。
+   文字色に --bs-body-color ではなく --halu-focus-color を使う理由はテーマ側の
+   コメント参照（フォーカス背景が全テーマ共通の明色のため）。 */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--halu-focus-border);
+  background-color: var(--halu-focus-bg);
+  color: var(--halu-focus-color);
+  box-shadow: none;
+}
+
+/* フォーカス中のプレースホルダ。BS5既定は --bs-secondary-color（テーマの本文色系）
+   のため、明色のフォーカス背景では沈む。opacityで濃度を落として使い回す
+   （project.cssは色リテラルを持たない規約のため var() 参照＋opacityで表現する） */
+.form-control:focus::placeholder {
+  color: var(--halu-focus-color);
+  opacity: 0.6;
+}
+
+/* 共通No.11: フォームラベル（Figma: Inter 14px/500/右揃え/letter-spacing -0.02em。
+   2026-08-07 依頼者決定によりInterからNoto Sansへ変更。差分No.13参照） */
+.halu-form-label,
+.searchkey-label {
+  font-family: var(--halu-font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--bs-body-color);
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* 共通No.10: 検索カード・2カラムグリッド（D-001 UserList program.cssから昇格。
+   検索/クリアボタンはカード右下） */
+.searchkey-card {
+  width: 100%;
+  max-width: 900px;
+  background: var(--halu-surface);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px var(--halu-shadow-color);
+  padding: 20px 24px;
+}
+
+.searchkey-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 24px;
+}
+
+.searchkey-item {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.searchkey-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.searchkey-actions .btn {
+  min-width: 90px;
+}
+
+/* 共通No.8: 一覧テーブル（ヘッダ中央揃え・縞なし白行・データ行罫線）
+   D-001 UserList program.cssから昇格。配色はテーマ追従。データ行罫線は
+   D-001時点では「テーマ非依存アクセント#AEE1D0」としてproject.cssに直書き
+   していたが、2026-08-01の依頼者指示（今後テーマを追加する）により
+   --halu-table-row-border としてテーマ側へ移した（default=#AEE1D0で従来同値） */
+#mainTableH thead.table-dark th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* 縞なし（全データ行を表背景色 --bs-light で統一する）。
+   2026-08-30 修正: 従来は奇数行だけを対象にしていたため、暗色テーマで縞が
+   二重に残っていた（UAT指摘）。原因は2つ。
+   ①BS5.3の .table は --bs-table-bg に var(--bs-body-bg) を使う。default では
+     --bs-body-bg(#FFFFFF) と --bs-light(#FFFFFF) が同値のため差が出なかったが、
+     暗色テーマでは #696969 と #545454 で偶数行だけ明るくなっていた。
+   ②BS5.3の縞は background-color ではなく box-shadow の inset で重ねるため、
+     background-color を上書きしても奇数行に 5% 黒が残っていた
+     （--bs-table-accent-bg はBS5.2以前の変数名で5.3では効かない）。
+   全行を対象にし、5.3の変数名 --bs-table-bg-type も透明にして打ち消す。 */
+#mainTable.table-striped > tbody > tr > * {
+  --bs-table-accent-bg: transparent;
+  --bs-table-bg-type: transparent;
+  background-color: var(--bs-light);
+}
+
+#mainTable > tbody > tr > td {
+  border-color: var(--halu-table-row-border);
+}
+
+/* 選択行ハイライト（2026-08-30 ダークテーマ追加時にモックアップの
+   「選択行ハイライト」を実装。テーマ側の --halu-row-selected-bg を参照する）。
+   実装方式: フレームワークは選択行の各 <td> に Bootstrap の .table-success を
+   付け外しする（multiTableListForm.view.mixin は #mainTable、
+   dataSelectionDialog.view.mixin は #dialogTable が対象）。BS5既定の
+   .table-success は緑系固定色（#d1e7dd）でテーマ配色に追従しないため、
+   同クラスのテーブル変数一式をテーマトークンへ差し替える。
+   文字色は --bs-body-color でよい（ライト=黒地に明色背景／ダーク=明色文字に
+   暗色背景となり、どちらもコントラストが確保される）。 */
+.table-success {
+  --bs-table-color: var(--bs-body-color);
+  --bs-table-bg: var(--halu-row-selected-bg);
+  --bs-table-border-color: var(--halu-table-row-border);
+  --bs-table-striped-bg: var(--halu-row-selected-bg);
+  --bs-table-striped-color: var(--bs-body-color);
+  --bs-table-active-bg: var(--halu-row-selected-bg);
+  --bs-table-active-color: var(--bs-body-color);
+  --bs-table-hover-bg: var(--halu-row-selected-bg);
+  --bs-table-hover-color: var(--bs-body-color);
+}
+
+/* 上の変数差し替えだけでは縞ルール（#mainTable.table-striped ... 詳細度1,2,2）が
+   background-color を直接指定して勝つため、選択セルに詳細度1,2,3で明示上書きする。
+   #dialogTable（選択ダイアログ）は縞指定が無いが、同じ見え方に揃えるため併記する */
+#mainTable.table-striped > tbody > tr > td.table-success,
+#mainTable > tbody > tr > td.table-success,
+#dialogTable > tbody > tr > td.table-success {
+  background-color: var(--halu-row-selected-bg);
+  color: var(--bs-body-color);
+}
+
+/* 共通No.9: ページング（右寄せ・角丸8px。D-001 UserList program.cssから昇格。
+   #mainFormスコープで選択ダイアログ（#dialogForm）の中央寄せフッターには影響させない）
+   ★配色は2026-08-31の依頼者指示により共通No.5（白抜きボタン＝戻る系）へ統合済み。
+     ここに残すのは配置（右寄せ・余白）だけで、色は持たない */
+#mainForm .halu-footer > .d-flex {
+  justify-content: flex-end !important;
+  padding-right: 12px;
+}
+
+/* ページ情報（「1/1ページ(13件)」の表示欄）。実体は readonly の
+   <input class="form-control"> だが、ページングの一部として左右のボタンと
+   並ぶため、2026-08-31 依頼者指示により**戻るボタン（共通No.5の白抜きボタン）と
+   同じ配色**にしている（従来は --halu-border-muted / --halu-text-muted の
+   グレー系で、テーマのアクセント色と無関係だった）。
+   ★background-color を明示する理由: .form-control は地色に --bs-body-bg を使い、
+     暗色テーマでは #696969 になるため、指定しないと白抜きボタンと地色が揃わない。
+     この指定は .form-control:focus（詳細度0,2,0）より詳細度が高い（0,1,1,0）ので、
+     クリックしてもフォーカス背景に変わらず地色を保つ（表示専用欄のため意図どおり） */
+.halu-footer #ページ情報 {
+  background-color: var(--halu-btn-base-bg);
+  border: 1px solid var(--bs-info);
+  color: var(--halu-btn-outline-color);
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Sample C-013: 処理中ローディングの中央オーバーレイ表示（HaluDocGen C-009確立パターンの横展開）
+   フレームワークはAjax実行中のみ #loading にスピン画像を挿入し完了時に.empty()するため、
+   :not(:empty) で「実行中のみ」全画面オーバーレイになる（JS変更不要。入力抑止はlockScreenが担う） */
+#loading:not(:empty) {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--halu-overlay-bg);
+}
+
+/* D-025 UAT指摘の格上げ（2026-07-30 依頼者指示）: 一覧テーブルの項目文字の折り返しを
+   アプリ共通化。パス等の連続文字列は折り返し位置を持たず、table-layout:fixedのセル幅を
+   超えると隣列に被るため、全一覧画面で強制折り返しする（一覧テーブルidは全画面共通） */
+#mainTableH,
+#mainTable {
+  word-break: break-all;
+  white-space: normal;
+}
+
+/* D-031（2026-08-30）: 一覧・登録画面の詳細エリア高さ可変化を格上げ。
+   UserList/OrderList/CustomerListMainte/ProductListMainte/ThemeListMainte/
+   ThemePersonalListMainte/BatchList/BatchDivisionList/OrderUploadErrorListの
+   9画面で完全一致していた記述をproject.cssへ統合（値の相違なし）。
+   `#mainForm`配下に限定（`#dialogForm`は対象外）: CustomerSelectionDialog・
+   ProductSelectionDialogは`.halu-detail-readonly`に固定高さ340pxをインライン
+   指定しており、無条件昇格すると!importantがインラインstyleを上書きして
+   ダイアログの固定レイアウトを壊すため */
+#mainForm .halu-detail-readonly,
+#mainForm .halu-detail-input {
+  height: auto !important;
+}
+
+/* D-032（2026-08-30）: 単票フォーム画面（singleRecordForm型）の共通様式を格上げ。
+   UserDetailMainte（D-007）・OrderDetailListMainte（D-021）のprogram.cssで
+   完全一致していたセクション見出し・2カラムグリッド・項目レイアウトを統合
+   （値の相違なし）。`.halu-form-card`のmax-width・`.halu-form-item-biko`等の
+   画面固有分は各画面program.cssに残す。`#mainForm`の高さ調整は他14画面にも
+   波及するため今回は対象外とし、両画面のprogram.cssに残置している */
+.halu-form-section-title {
+  font-family: var(--halu-font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.halu-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 24px;
+}
+
+.halu-form-item {
+  display: grid;
+  grid-template-columns: 125px minmax(0, 350px);
+  align-items: center;
+  column-gap: 8px;
+}
+
+/* D-033（2026-08-30）: 横スクロールラッパー対処（D-022）を格上げ。
+   BatchList/BatchDivisionList/OrderDetailListMainte/OrderUploadErrorListの
+   4画面で完全一致していた記述をproject.cssへ統合（値の相違なし）。
+   `#scrollable-DTable`の可変高さ（height/min-height）は明細行の想定件数に
+   応じて画面ごとに異なるため各画面program.cssに残す。`#mainForm`配下に限定
+   （`#dialogForm`のCustomerSelectionDialog・ProductSelectionDialogは固定
+   幅のダイアログ表であり対象外。A-1と同じ理由でスコープを揃える） */
+#mainForm #scrollable-Table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+#mainForm #scrollable-DTable {
+  overflow-x: hidden;
+}

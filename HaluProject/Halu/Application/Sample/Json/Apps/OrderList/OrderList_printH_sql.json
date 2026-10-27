@@ -19,29 +19,10 @@
       "type": "select",
       "freesql":
       [
-        "WITH param AS (SELECT 20 AS defaultline)"
-        ,", total AS ( "
-        ,"    SELECT"
-        ,"        CEIL(hdr.max_cnt ::DECIMAL / param.defaultline) AS total_page"
-        ,"        , param.defaultline "
-        ,"    FROM"
-        ,"        (SELECT COUNT(*) AS max_cnt FROM 受注ヘッダ) AS hdr"
-        ,"        , param"
-        ,") "
-        ,", calc_page AS ( "
-        ,"    SELECT"
-        ,"        GENERATE_SERIES(1, total.total_page) ::INT AS page_number"
-        ,"        , defaultline "
-        ,"    FROM"
-        ,"        total"
-        ,") "
-        ,"SELECT"
-        ,"    (calc_page.page_number - 1) * defaultline AS オフセット現在位置"
-        ,"    , defaultline AS オフセットライン数"
-        ,"    , TO_CHAR(NOW(), 'YYYY/MM/DD HH24:MI:SS') AS 処理日時 "
-        ,"FROM"
-        ,"    calc_page"
+        "SELECT"
+       ,"  TO_CHAR(NOW()  , 'YYYY/MM/DD HH24:MI:SS') AS 処理日時"
       ],
+      "crud": {},
       "genesql": {
         "dist": "",
         "from": "",
@@ -49,23 +30,9 @@
         "order": ""
       }
     },
-    "input": {
-      "multiline": "no",
-      "record": {
-        "ページ内表示件数": {
-          "value": ["20"]
-        }
-      }
-    },
     "output": {
       "multiline": "no",
       "record": {
-        "オフセット現在位置": {
-          "value": [""]
-        },
-        "オフセットライン数": {
-          "value": [""]
-        },
         "処理日時": {
           "value": [""]
         }

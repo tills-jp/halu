@@ -41,6 +41,15 @@
       , ["executeDialogAfter", "controller", "onExecuteDialogAfter"]
       , ["serverDialog", "view", "onServerDialog"]
       , ["serverDialogAfter", "controller", "onServerDialogAfter"]
+      //★add start 20260526
+      , ["keydownUnbind", "controller", "unbindEnterTabPFKey"]
+      //★add end 20260526
+      //★add start 20260724 選択ダイアログiframe分離方式：親画面のキー再設定・選択結果反映
+      // keydownBind : keydownUnbindの対。model側からenterTabPFKeyを引数に渡して再設定する
+      , ["keydownBind", "controller", "setEnterTabPFKey"]
+      // selectDialogReturn : iframe分離方式の選択結果を親画面へ反映する
+      , ["selectDialogReturn", "controller", "on選択ダイアログ戻り"]
+      //★add end 20260724
     ],
 
     /**
@@ -49,7 +58,7 @@
      * @param {event} event - イベント情報
      */
     onControllerFocus: function (event) {
-      $H.log("ControllerMixin onControllerFocus start name : " + event.target.name);
+      $H.log("ControllerMixin onControllerFocus start name : " + (event.target.getAttribute("halu-ds-field") || event.target.name));
       // 変数宣言
       let isMultiline = null;
       let targetRowObj = null;
@@ -68,8 +77,9 @@
       // ※セルの位置は dataset 上の並び順と無関係であることに注意
       // dataset 上の、該当データの位置
       this.focusIndex = 0;
-      // 対象要素から name 属性を取得
-      this.focusName = event.target.name;
+      // 2026-06-12 後方互換: halu-ds-id/halu-ds-field で要素を特定（なければname属性で検索）
+      // 対象要素から フィールド名を取得（halu-ds-field 優先、なければ name 属性）
+      this.focusName = event.target.getAttribute("halu-ds-field") || event.target.name;
       // dataset を走査して multiline かどうかを求める
       isMultiline = this.model.dataset.isMultilineByName(this.focusName);
 
@@ -90,8 +100,15 @@
           this.focusCurCell = targetCellObj[0].cellIndex;
         }
         //- dataset 上の該当位置を求める ----------
-        // 同じ name 属性の要素を含む、tr 要素の集合を求める
-        sameNameRowObjs = $(document).find('[name="' + this.focusName + '"]').closest('tr');
+        // 2026-06-12 後方互換: halu-ds-id/halu-ds-field で要素を特定（なければname属性で検索）
+        // 同じフィールドの要素を含む、tr 要素の集合を求める
+        if (event.target.getAttribute("halu-ds-field")) {
+          let dsId = event.target.getAttribute("halu-ds-id");
+          let sel = dsId ? "[halu-ds-id='" + dsId + "'][halu-ds-field='" + this.focusName + "']" : "[halu-ds-field='" + this.focusName + "']";
+          sameNameRowObjs = $(document).find(sel).closest('tr');
+        } else {
+          sameNameRowObjs = $(document).find('[name="' + this.focusName + '"]').closest('tr');
+        }
         // sameNameRowObjs 上の targetRowObj の位置がdataset 上の位置に相当します
         this.focusIndex = sameNameRowObjs.index(targetRowObj);
       }
@@ -114,7 +131,7 @@
      * @param {event} event - イベント情報
      */
     onControllerBlur: function (event) {
-      $H.log("ControllerMixin onControllerBlur start name : " + event.target.name);
+      $H.log("ControllerMixin onControllerBlur start name : " + (event.target.getAttribute("halu-ds-field") || event.target.name));
       //変数宣言
       let isMultiline = null;
       let targetRowObj = null;
@@ -134,8 +151,9 @@
 
       // dataset 上の、該当データの位置
       this.blurIndex = 0;
-      // 対象要素から name 属性を取得
-      this.blurName = event.target.name;
+      // 2026-06-12 後方互換: halu-ds-id/halu-ds-field で要素を特定（なければname属性で検索）
+      // 対象要素から フィールド名を取得（halu-ds-field 優先、なければ name 属性）
+      this.blurName = event.target.getAttribute("halu-ds-field") || event.target.name;
       // dataset を走査して multiline かどうかを求める
       isMultiline = this.model.dataset.isMultilineByName(this.blurName);
 
@@ -156,8 +174,15 @@
           this.blurCurCell = targetCellObj[0].cellIndex;
         }
         //- dataset 上の該当位置を求める ----------
-        // 同じ name 属性の要素を含む、tr 要素の集合を求める
-        sameNameRowObjs = $(document).find('[name="' + this.blurName + '"]').closest('tr');
+        // 2026-06-12 後方互換: halu-ds-id/halu-ds-field で要素を特定（なければname属性で検索）
+        // 同じフィールドの要素を含む、tr 要素の集合を求める
+        if (event.target.getAttribute("halu-ds-field")) {
+          let dsId = event.target.getAttribute("halu-ds-id");
+          let sel = dsId ? "[halu-ds-id='" + dsId + "'][halu-ds-field='" + this.blurName + "']" : "[halu-ds-field='" + this.blurName + "']";
+          sameNameRowObjs = $(document).find(sel).closest('tr');
+        } else {
+          sameNameRowObjs = $(document).find('[name="' + this.blurName + '"]').closest('tr');
+        }
         // sameNameRowObjs 上の targetRowObj の位置が dataset 上の位置に相当します
         this.blurIndex = sameNameRowObjs.index(targetRowObj);
       }
@@ -663,7 +688,63 @@
       }
 
       $H.log("ControllerMixin onShowRadioButtonAll : end");
+    },
+
+    //★mod start 20260701 dialogclose廃止・ダイアログclose時はpreviousTransitionで前画面へ戻る方式に変更
+    /**
+     * 選択ダイアログを表示する<br>
+     *
+     * @memberof ControllerMixin
+     * @param {object} requestData  - 選択リクエストデータ
+     * @param {object} responseData - 選択レスポンスデータ
+     * @param {number} row          - クリック行のindex
+     */
+    on選択ダイアログ表示: function (requestData, responseData, row) {
+      $H.log("ControllerMixin on選択ダイアログ表示 : start");
+
+      this.model.on選択画面ダイアログ表示(requestData, responseData, row, null);
+
+      $H.log("ControllerMixin on選択ダイアログ表示 : end");
     }
+    //★mod end 20260701
+    //★add start 20260724 選択ダイアログiframe分離方式：選択結果を親画面へ反映する
+    ,
+    /**
+     * 選択ダイアログ（iframe分離方式）からの戻り処理。<br>
+     * iframe方式では親画面がフルページ再ロードされないため、従来 on初期処理 の選択画面戻り分岐が
+     * 担っていた「on選択画面戻り→データセット反映→view反映→後処理関数呼出」を本メソッドで実行する。<br>
+     * on選択画面戻り本体・sessionStorage契約は不変。呼び出しシグネチャも on初期処理 と同一。
+     * @memberof ControllerMixin
+     */
+    on選択ダイアログ戻り: function () {
+      $H.log("ControllerMixin on選択ダイアログ戻り : start");
+
+      let arg = this.model.on選択画面戻り();
+
+      // 選択画面戻り処理
+      if (arg["status"] == "OK") {
+        let dataSet = this.model.dataset.getData();
+        this.view.on照会OfEditResponseData(dataSet, dataSet, "");
+
+        if (arg["selected"] == "CANCEL") {
+          // 選択画面で選択データなし
+          if (arg["responseData"]["cancelfunction"] != "") {
+            // 選択画面後処理関数呼出
+            this.pubsub.publish(arg["responseData"]["cancelfunction"], arg);
+          }
+        }
+        else {
+          // 選択画面で選択データあり
+          if (arg["responseData"]["afterfunction"] != "") {
+            // 選択画面後処理関数呼出
+            this.pubsub.publish(arg["responseData"]["afterfunction"], arg);
+          }
+        }
+      }
+
+      $H.log("ControllerMixin on選択ダイアログ戻り : end");
+    }
+    //★add end 20260724
 
   };
 }(jQuery, Halu));

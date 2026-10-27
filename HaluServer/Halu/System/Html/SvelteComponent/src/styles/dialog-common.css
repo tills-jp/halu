@@ -1,0 +1,42 @@
+/***********************************************
+ * Framework Name  :  Halu
+ * (c) 2025 TILLS & Co.
+ * --------------------------------------------
+ * ダイアログ共通スタイル
+***********************************************/
+
+.modal {
+    position: fixed;
+    inset: 0;
+    overflow: auto;
+}
+
+.modal.fade {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal.fade.show {
+    opacity: 1;
+    display: block;
+    z-index: 15001;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 15000;
+}
+
+.modal-dialog {
+    margin: 10% auto;
+    z-index: 15001;
+}
+
+.close {
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+    line-height: 1;
+}

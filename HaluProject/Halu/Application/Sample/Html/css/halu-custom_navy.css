@@ -1,0 +1,245 @@
+/*
+ * halu-custom_navy.css
+ * ネイビー×オレンジのテーマ（2026-08-30 追加）。モックアップ「Navy」版由来の配色。
+ *
+ * 【責務】本ファイルは「色」のみを持つ（テーマ変数・コンポーネント変数の上書き）。
+ * サイズ・レイアウト・appearance復帰などテーマ切替で変わってはいけないものは
+ * project.css に置く。判定基準は「テーマを切り替えたときに変わるべきか」の一点。
+ *
+ * 【全テーマ同一プロパティ規約】halu-custom_default.css / halu-custom_dark.css と
+ * 同一のプロパティ一式（64宣言）を過不足なく定義している。
+ * 詳細は docs/01_Halu構造/theme_structure.md 参照。
+ *
+ * 【値の出典】モックアップに明示された値と、明示が無く既定色から補完した値が
+ * 混在する。補完値には各行に「※補完」と注記した。
+ */
+
+/* ---------------------------------------------------------
+ * Halu カラー定義（役割はdefaultと同じ）
+ *   ヘッダー・フッター（header/footer） = primary  (.bg-primary)
+ *   背景色（body）                     = secondary (.bg-secondary)
+ *   ボタン（btn）                      = info      (.btn-info)
+ *   表タイトル（thead）                = dark      (.table-dark)
+ *   表背景（tbody）                    = light     (.tbody-light) ※Bootstrap標準ではない独自クラス
+ * --------------------------------------------------------- */
+:root {
+  /* メイン背景色（ヘッダー・フッター）(＝primary)：ネイビー
+     モックアップ「header #080068」 */
+  --bs-primary: #080068;
+  --bs-primary-rgb: 8, 0, 104;
+
+  /* ボディ背景色(＝secondary)：明るいグレー
+     モックアップ「Background_1 #D9D9D9」 */
+  --bs-secondary: #D9D9D9;
+  --bs-secondary-rgb: 217, 217, 217;
+
+  /* 文字色(＝body-color) */
+  --bs-body-color: #000000;
+
+  /* 入力欄等の地色(＝body-bg)：白。モックアップ「Table #FFFFFF」
+     BS5が .form-control / .modal-content / .dropdown-menu 等の地色に使う変数 */
+  --bs-body-bg: #FFFFFF;
+  --bs-body-bg-rgb: 255, 255, 255;
+
+  /* 補助文字(＝secondary-color)：プレースホルダ等。※補完（明色テーマのため
+     BS5既定値のまま。defaultと同値） */
+  --bs-secondary-color: rgba(33, 37, 41, 0.75);
+
+  /* 無効（disabled）入力欄の地色・補助面の地色・既定の枠線色。
+     ※補完（明色テーマのためBS5既定値のまま。defaultと同値） */
+  --bs-secondary-bg: #e9ecef;
+  --bs-tertiary-bg: #f8f9fa;
+  --bs-border-color: #dee2e6;
+
+  /* ボタン色(＝info)：オレンジ。モックアップ「Primary #D26200」 */
+  --bs-info: #D26200;
+  --bs-info-rgb: 210, 98, 0;
+
+  /* 表タイトル背景(＝dark)：ネイビー。モックアップ「PrimaryContainer #080068」 */
+  --bs-dark: #080068;
+  --bs-dark-rgb: 8, 0, 104;
+
+  /* 表テーブル背景(＝light)：白。モックアップ「Table #FFFFFF」 */
+  --bs-light: #FFFFFF;
+  --bs-light-rgb: 255, 255, 255;
+
+  /* 危険アクセント（ログアウト・削除ボタン）(＝danger)：赤
+     モックアップ「Delete #D55F5A」。他テーマと同値 */
+  --bs-danger: #D55F5A;
+  --bs-danger-rgb: 213, 95, 90;
+
+  /* -------------------------------------------------------
+   * Halu 拡張カラートークン（--halu-*）
+   * defaultと同じ顔ぶれを過不足なく定義する（未定義があると、その箇所だけ
+   * 前のテーマの色が残る）。
+   * ------------------------------------------------------- */
+
+  /* サーフェス：白カード・白地ボタンの地色と hover/active
+     地色はモックアップ「Table #FFFFFF」。hover/activeは※補完（defaultと同値） */
+  --halu-surface: #FFFFFF;
+  --halu-surface-hover: #f1f1f1;
+  --halu-surface-active: #e9e9e9;
+
+  /* 彩色背景の上に置く前景色（ボタン文字・danger押下時の文字）
+     モックアップ「On primary:#FFFFFF」「On PC #FFFFFF」 */
+  --halu-on-accent: #FFFFFF;
+
+  /* ヘッダーの文字色（ログインユーザ表記）。2026-08-30 追加（darkでヘッダー文字だけを
+     本文色に変えるため --halu-on-accent から分離）。navyはモックアップどおり白を維持 */
+  --halu-header-color: #FFFFFF;
+
+  /* 白抜きボタン系の地色（戻る・クリア・全選択・ログアウト・ページング）。
+     2026-08-30 依頼者指示によりカード地 --halu-surface から分離。
+     ※本テーマは明色のため分離前と同値（白）＝見た目は変わらない */
+  --halu-btn-base-bg: #FFFFFF;
+  --halu-btn-base-hover-bg: #f1f1f1;
+  --halu-btn-base-active-bg: #e9e9e9;
+
+  /* 白抜きボタン（クリア・戻る・全選択）の文字色。2026-08-30 依頼者指示により
+   * darkのみ枠色（--bs-info＝Primary）と同色にするため新設したトークン。
+   * navyは現状維持（本文色のまま） */
+  --halu-btn-outline-color: var(--bs-body-color);
+
+  /* 補助文字（ページング）※補完（defaultと同値） */
+  --halu-text-muted: #454545;
+
+  /* 枠線：強（メニューカード）／弱（ページング）／入力欄 ※いずれも補完
+     （defaultと同値。モックアップに指定が無い） */
+  --halu-border-strong: #454545;
+  --halu-border-muted: #B0B0B0;
+  --halu-border-input: #757575;
+
+  /* ボタン色(info)の hover/active。.btn-info と白抜きボタンの枠で共用。
+     hoverは2026-08-30 依頼者指定の #FFAA5F（モックアップのラベル「#526B63」は
+     ダーク版からの転記誤りで、正しい値は #FFAA5F との回答による）。
+     ★注意: hoverがprimary(#D26200)より明るいため、ボタン文字色
+       --halu-on-accent(#FFFFFF) との組み合わせでホバー時のコントラストが下がる。
+     activeは※補完（hoverとprimaryの中間） */
+  --halu-info-hover: #FFAA5F;
+  --halu-info-active: #E8913F;
+
+  /* メニュー画面のタブ（非選択／選択）※補完（defaultと同値） */
+  --halu-tab-inactive-bg: #B0B0B0;
+  --halu-tab-active-bg: #D9D9D9;
+
+  /* 一覧テーブルのデータ行罫線。モックアップ「PrimaryContainer 枠#F2F1FF」。
+     2026-08-30 依頼者決定により、表タイトルの枠とデータ行罫線を同値に揃える */
+  --halu-table-row-border: #F2F1FF;
+
+  /* 一覧の選択行ハイライト背景。モックアップ「選択行ハイライト #F2F1FF」 */
+  --halu-row-selected-bg: #F2F1FF;
+
+  /* 入力欄のフォーカス表示（枠色／背景色／文字色）。
+     枠はモックアップ「Focus(枠) #757575」のまま維持。
+     ★背景 #F2F1FF は、モックアップの記載「Focus(背景) #DCE5E2」を**採用していない**。
+       2026-08-30のUATで、ネイビー×オレンジの配色の中に他テーマ共通の淡ミント
+       #DCE5E2 が浮いて見えることをreadonly欄（OrderList「受注ユーザ」欄）で確認し、
+       依頼者より「**モックアップの指定#DCE5E2が誤りで、#F2F1FF が正しい**」との
+       裁定を得た（C-054 UAT確認）。したがってモックアップとの差分は逸脱ではなく
+       モックアップ側の誤記であり、突合時に本CSSへ合わせる必要はない。
+       #F2F1FF は本テーマの選択行ハイライト・ログインカード地と同じ淡ラベンダー。
+     文字色は※補完（フォーカス背景が明色のため黒。全テーマ共通） */
+  --halu-focus-border: #757575;
+  --halu-focus-bg: #F2F1FF;
+  --halu-focus-color: #000000;
+
+  /* カードの影・ローディングオーバーレイの幕 ※補完（defaultと同値） */
+  --halu-shadow-color: rgba(0, 0, 0, 0.08);
+  --halu-overlay-bg: rgba(33, 37, 41, 0.35);
+
+  /* ログイン画面。他画面と配色が独立しているため専用トークンを持つ。
+     ★2026-08-31 依頼者指示「ログインの背景はネイビー、ボタンはオレンジにして、
+       フォントは#FFFFFF」により、本テーマの基調色（ネイビー #080068 ＝--bs-primary、
+       オレンジ #D26200 ＝--bs-info）を使う配色へ変更した（C-057）。
+       変更前は淡ラベンダー地＋淡パープルボタン＋黒文字だった。
+       （旧コメントにあった「文字色はprogram.css側で--bs-body-color固定」は
+        2026-08-30に --halu-login-btn-color へ移行済みで、現在は当てはまらない） */
+  --halu-login-card-bg: #080068;
+  --halu-login-title-color: #FFFFFF;
+  /* 入力欄アイコン（人物・鍵）。白地の欄の中に置かれる。他テーマと同じ淡グレー
+     #E3E3E3 では白地にほぼ埋もれて見えなかったため、2026-08-31 依頼者指示により
+     本テーマのネイビー（--bs-primary と同値）まで濃くした。白地に対し 17.4:1 */
+  --halu-login-icon-color: #080068;
+  /* 入力欄の地色と枠。※補完（明色テーマのためdefaultと同値。枠は地色と
+     同値にして枠なしに見せる。ネイビーのカード地に対して白い欄が浮く） */
+  --halu-login-field-bg: #FFFFFF;
+  --halu-login-field-border: #FFFFFF;
+  /* LOGINボタン＝テーマのオレンジ（#D26200 ＝--bs-info）の塗りつぶし＋白文字。
+     hover/activeは暗色側へ振る（.btn-info の hover --halu-info-hover #FFAA5F は
+     primaryより明るく、白文字とのコントラストが1.9:1まで落ちるため流用しない）。
+     白文字×#D26200 は 3.83:1 で、19px/400＝大きい文字のAA基準3:1を満たす。
+     枠は塗りつぶしボタンの定石どおり地色と同値にしている（枠トークンは
+     「白地＋色枠」を表現できるようにするため新設したもので、本テーマでは
+     地色と同値を入れて使っている） */
+  --halu-login-btn-bg: #D26200;
+  --halu-login-btn-hover-bg: #B85700;
+  --halu-login-btn-active-bg: #9E4B00;
+  --halu-login-btn-border: #D26200;
+  --halu-login-btn-hover-border: #B85700;
+  --halu-login-btn-active-border: #9E4B00;
+  --halu-login-btn-color: #FFFFFF;
+
+  /* 必須項目マーク（ラベル後ろのアスタリスク）※補完（defaultと同値） */
+  --halu-required-mark: #E00;
+
+  /* ドラッグ＆ドロップゾーン（OrderUpload等のdm-uploader画面）の破線枠。
+     通常時／ドラッグ中（active）。※補完（defaultと同値） */
+  --halu-dnd-border: #A5A5C7;
+  --halu-dnd-active-border: red;
+
+  /* OrderUploadの FileList（#files）／Debug Messages（#debug）のログ文字色。
+     BS5既定では .text-info が --bs-info（本テーマではオレンジ #D26200）、
+     .text-success が --bs-success になるが、2026-08-31 依頼者指示で
+     **種別ごとに個別指定**する（successの #1100DC は本テーマのネイビー系の青）。
+     エラーの .text-danger（赤）と既定の .text-muted（薄グレー）は対象外・変更なし */
+  --halu-upload-log-info-color: #2D2D2D;
+  --halu-upload-log-success-color: #1100DC;
+}
+
+/* body背景色（モックアップ「Background_1 #D9D9D9」）
+   ※defaultは --bs-secondary(#D9D9D9) と body背景(#F5F5F5) が別値だが、
+     navyはモックアップ上どちらも #D9D9D9 のため同値にしている */
+body {
+  background-color: #D9D9D9;
+  color: #000000;
+}
+
+/* 表タイトル（モックアップ「PrimaryContainer #080068 / On PC #FFFFFF / 枠#F2F1FF」） */
+.table-dark {
+  --bs-table-bg: #080068;
+  --bs-table-color: #FFFFFF;
+  --bs-table-border-color: #F2F1FF;
+}
+
+/* タブ選択文字色 */
+.nav-tabs {
+  --bs-nav-tabs-link-active-color: #000000;
+}
+
+/* tbodyの色指定（独自クラス）：モックアップ「Table #FFFFFF」＋黒文字 */
+.table .tbody-light {
+  background-color: #FFFFFF;
+  color: #000000;
+}
+
+/* ボタン色（オレンジ #D26200。hover/activeは --halu-info-hover / -active を参照。
+   白抜きボタン .halu-btn-outline の枠色と共用するため定義元を一本化）。
+   disabledの地色はモックアップ「disabled(無効) #FFE9D6」。文字色は2026-08-31の
+   依頼者指示により、モックアップの #FFD4AD から #FFB879 へ変更した（ページングと
+   選択ボタンの非活性が読みにくいというUAT指摘への対応。C-057）。
+   ★コントラストは 1.17:1 → 1.44:1 の改善に留まる（地色 #FFE9D6 を据え置いたため）。
+     非活性を意図的に沈ませる設計の範囲として依頼者了承済み */
+.btn-info {
+  --bs-btn-color: var(--halu-on-accent);
+  --bs-btn-bg: var(--bs-info);
+  --bs-btn-border-color: var(--bs-info);
+  --bs-btn-hover-color: var(--halu-on-accent);
+  --bs-btn-hover-bg: var(--halu-info-hover);
+  --bs-btn-hover-border-color: var(--halu-info-hover);
+  --bs-btn-active-color: var(--halu-on-accent);
+  --bs-btn-active-bg: var(--halu-info-active);
+  --bs-btn-active-border-color: var(--halu-info-active);
+  --bs-btn-disabled-color: #FFB879;
+  --bs-btn-disabled-bg: #FFE9D6;
+  --bs-btn-disabled-border-color: #FFE9D6;
+}

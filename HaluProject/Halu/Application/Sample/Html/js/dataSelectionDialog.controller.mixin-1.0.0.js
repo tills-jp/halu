@@ -2,7 +2,7 @@
  * Framework Name  :  Halu
  * (c) 2025 TILLS & Co.
  * --------------------------------------------
- * データ選択画面パターン  
+ * データ選択ダイアログパターン  
  * コントローラミックスイン
 ***********************************************/
 
@@ -36,8 +36,8 @@
     /**
      * 前画面よりリクエストデータと引継ぎデータを取得し、データセットに設定後、<br>
      * 検索処理を実施する<br>
-     * ※検索処理はon最初のページを実施<br>
-     * 
+     * ※検索処理はon最初のページDialogを実施<br>
+     *
      * @memberof DataSelectionDialogControllerMixin
      * @param - なし
      */
@@ -57,11 +57,29 @@
         this.view.fromJsonDataToView(dataSet);
       }
 
-      this.on最初のページ();
+      this.on最初のページDialog();
 
       $H.log("Controller on初期処理 : end");
     },
+    /**
+    * 前画面に空データを引き渡し、自画面のセッションストレージをクリア後に<br>
+    * ダイアログを閉じて前画面に戻る<br>
+    * 
+    * @memberof DataSelectionDialogControllerMixin
+    * @param {event} event - イベント情報
+    */
+    on閉じるDialog: function (event) {
+      $H.log("Controller on閉じるDialog : start");
 
+      // 前画面のレスポンスデータを設定
+      this.model.set戻るレスポンスデータOf選択画面();
+
+      // セッションストレージをクリアし、前画面へ戻る
+      this.model.clearセッション情報();
+      this.model.previousTransition();
+
+      $H.log("Controller on閉じるDialog : end");
+    },
     /**
      * フォーカス設定イベント<br>
      * 該当位置のデータをdatasetから取得、表示する<br>
@@ -105,41 +123,20 @@
 
       $H.log("Controller onFocus12 : end");
     },
-
-    /**
-     * 前画面に空データを引き渡し、自画面のセッションストレージをクリア後に<br>
-     * 前画面に戻る<br>
-     * 
-     * @memberof DataSelectionDialogControllerMixin
-     * @param {event} event - イベント情報
-     */
-    on戻る: function (event) {
-      $H.log("Controller on戻る : start");
-
-      // 前画面のレスポンスデータを設定
-      this.model.set戻るレスポンスデータOf選択画面();
-
-      // セッションストレージをクリアし、前画面に戻る
-      this.model.clearセッション情報();
-      this.model.previousTransition();
-
-      $H.log("Controller on戻る : end");
-    },
-
-    
+   
     /**
      * 検索処理を実行する<br>
-     * ※検索処理はon最初のページを実施<br>
-     * 
+     * ※検索処理はon最初のページDialogを実施<br>
+     *
      * @memberof DataSelectionDialogControllerMixin
      * @param {event} event - イベント情報
      */
-    on検索: function (event) {
-      $H.log("Controller on検索 : start");
+    on検索Dialog: function (event) {
+      $H.log("Controller on検索Dialog : start");
 
-      this.on最初のページ();
+      this.on最初のページDialog();
 
-      $H.log("Controller on検索 : end");
+      $H.log("Controller on検索Dialog : end");
     },
 
     /**
@@ -148,37 +145,35 @@
      * @memberof DataSelectionDialogControllerMixin
      * @param {event} event - イベント情報
      */
-    onクリア: function (event) {
-      $H.log("Controller onクリア : start");
+    onクリアDialog: function (event) {
+      $H.log("Controller onクリアDialog : start");
 
       let dataSet = this.model.onクリア();
       this.view.onクリア(dataSet);
 
-      $H.log("Controller onクリア : end");
+      $H.log("Controller onクリアDialog : end");
     },
-
     /**
      * 選択したデータを前画面のセッションストレージに保存し、<br>
-     * 自画面のセッションストレージをクリア後に前画面へ戻る<br>
+     * ダイアログのセッションストレージをクリア後、ダイアログを閉じる<br>
      * 
      * @memberof DataSelectionDialogControllerMixin
      * @param {event} event - イベント情報
      */
-    on選択: function (event) {
-      $H.log("Controller on選択 : start");
+    on選択Dialog: function (event) {
+      $H.log("Controller on選択Dialog : start");
 
       if (!this.model.check行選択()) return;
 
       // 前画面のレスポンスデータを設定
       this.model.set選択レスポンスデータOf選択画面();
 
-      // セッションストレージをクリアし、前画面に戻る
+      // セッションストレージをクリアし、前画面へ戻る
       this.model.clearセッション情報();
       this.model.previousTransition();
 
-      $H.log("Controller on選択 : end");
+      $H.log("Controller on選択Dialog : end");
     },
-
     /**
      * セレクトボックスの値を変更した場合、<br>
      * データセットに格納した値を元に再設定する<br>
@@ -212,7 +207,6 @@
       $H.log("Controller onChangeCheckBox : end");
       return checkValue;
     },
-
     /**
      * 現在ページとデータセットより表示件数（最初のページ部分）を取得し、<br>
      * 検索処理を行う<br>
@@ -220,15 +214,15 @@
      * @memberof DataSelectionDialogControllerMixin
      * @param {event} event - イベント情報
      */
-    on最初のページ: function (event) {
-      $H.log("Controller on最初のページ : start");
+    on最初のページDialog: function (event) {
+      $H.log("Controller on最初のページDialog : start");
 
       this.model.on最初のページ();
       this.ajaxExecute("select");
 
-      $H.log("Controller on最初のページ : end");
+      $H.log("Controller on最初のページDialog : end");
     },
-    
+
     /**
      * 現在ページとデータセットより表示件数（１つ前のページ部分）を取得し、<br>
      * 検索処理を行う<br>
@@ -236,15 +230,15 @@
      * @memberof DataSelectionDialogControllerMixin
      * @param {event} event - イベント情報
      */
-    on前のページ: function (event) {
-      $H.log("Controller on前のページ : start");
+    on前のページDialog: function (event) {
+      $H.log("Controller on前のページDialog : start");
 
       this.model.on前のページ();
       this.ajaxExecute("select");
 
-      $H.log("Controller on前のページ : end");
+      $H.log("Controller on前のページDialog : end");
     },
-    
+
     /**
      * 現在ページとデータセットより表示件数（１つ後のページ部分）を取得し、<br>
      * 検索処理を行う<br>
@@ -252,15 +246,14 @@
      * @memberof DataSelectionDialogControllerMixin
      * @param {event} event - イベント情報
      */
-    on次のページ: function (event) {
-      $H.log("Controller on次のページ : start");
+    on次のページDialog: function (event) {
+      $H.log("Controller on次のページDialog : start");
 
       this.model.on次のページ();
       this.ajaxExecute("select");
 
-      $H.log("Controller on次のページ : end");
+      $H.log("Controller on次のページDialog : end");
     },
-
     /**
      * 現在ページとデータセットより表示件数（最後のページ部分）を取得し、<br>
      * 検索処理を行う<br>
@@ -268,15 +261,14 @@
      * @memberof DataSelectionDialogControllerMixin
      * @param {event} event - イベント情報
      */
-    on最後のページ: function (event) {
-      $H.log("Controller on最後のページ : start");
+    on最後のページDialog: function (event) {
+      $H.log("Controller on最後のページDialog : start");
 
       this.model.on最後のページ();
       this.ajaxExecute("select");
 
-      $H.log("Controller on最後のページ : end");
+      $H.log("Controller on最後のページDialog : end");
     },
-
     /**
      * テーブルの選択行の情報をセッションストレージに保存し、<br>
      * 選択行の背景色を変更する<br>
@@ -285,8 +277,8 @@
      * @param {event} event - イベント情報
      * @param {Object}  arg - 画面情報(クリック情報)
      */
-    onテーブル行クリック: function (event, arg) {
-      $H.log("Controller onテーブル行クリック : start");
+    onテーブル行クリックDialog: function (event, arg) {
+      $H.log("Controller onテーブル行クリックDialog : start");
 
       let row = event.currentTarget.parentNode.rowIndex;
       let idName = event.currentTarget.offsetParent.id;
@@ -294,9 +286,8 @@
       this.model.onテーブル行クリック(selectArg);
       this.view.onテーブル行クリック(selectArg);
 
-      $H.log("Controller onテーブル行クリック : end");
+      $H.log("Controller onテーブル行クリックDialog : end");
     },
-
     /**
      * 初期処理実行前にバリデーションチェック処理をする
      * 
@@ -332,7 +323,7 @@
     /**
      * 初期処理実行後にレスポンスデータからデータセットに値を設定し、<br>
      * セレクトボックスの一括初期表示を設定した後、検索処理を行う<br>
-     * ※検索処理はon最初のページを実施<br>
+     * ※検索処理はon最初のページDialogを実施<br>
      * 
      * @memberof DataSelectionDialogControllerMixin
      * @param {Object} responseData - レスポンスデータ
@@ -346,7 +337,7 @@
       // セレクトボックスの一括初期表示
       this.onShowSelectBoxAll(responseData, this.appspec.selectbox);
 
-      this.on最初のページ();
+      this.on最初のページDialog();
 
       $H.log("Controller on初期処理OfEditResponseData : end");
     },
@@ -383,7 +374,6 @@
 
       $H.log("Controller onErrorResponseData : end");
     },
-
     /**
      * 確認ダイアログ表示後に行う処理を追加する<br>
      * ※フレームワーク自体に実装はしていないため、個別で実装する必要あり<br>
@@ -414,8 +404,8 @@
     
     /**
      * サーバーダイアログ表示後、先頭項目にフォーカスを設定する<br>
-     * ※フレームワーク自体に実装はしていないため、個別で実装する必要あり<br>
-     * 
+     * ※デフォルトでsetFirstFocusItemを実行する。変更する場合は個別でオーバーライドする<br>
+     *
      * @memberof DataSelectionDialogControllerMixin
      * @param - なし
      * @returns なし

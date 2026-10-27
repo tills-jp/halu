@@ -7,13 +7,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Haluサンプル　メニュー</title> 
-<link href="../../../../../Application/Sample/Html/css/bootstrap.min_default.css?var=201710041453" rel="stylesheet"/>
+<title>メニュー(管理者用)</title> 
+<link href="../../../../../Application/Sample/Html/css/bootstrap-5.3.0/bootstrap.min.css?var=202607031000" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/halu-custom_default.css?var=202608311200" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/project.css?var=202608311400" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/Apps/AdminMenu/css/program.css?var=202607271200" rel="stylesheet"/>
+<script type="text/javascript" src="../../../../../System/Html/js/halutheme-preload-1.0.0.js?var=202609081100"></script>
 
-<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.4.1.min.js?var=201710041453"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.7.1.min.js?var=202607111000"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/jquery-ui-1.12.1/jquery-ui.min.js?var=201710041453"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js?var=201710041453"></script>
-<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-4.4.1/bootstrap.bundle.min.js?var=201710041453"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-5.3.0/bootstrap.bundle.min.js?var=202607031000"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/template/jquery.loadTemplate-1.4.5.min.js?var=201710041453"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/bignumberjs/bignumber.min.js?var=201710041453"></script>
 
@@ -30,315 +34,169 @@
 <script type="text/javascript" src="../../../../../Application/Sample/Html/js/tabMenu.model.mixin-1.0.0.js?var=201710130900"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/js/tabMenu.controller.mixin-1.0.0.js?var=201710130900"></script>
 
-<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/AdminMenu/AdminMenu.appspec.js?var=201710130900"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/AdminMenu/AdminMenu.appspec.js?var=202609151300"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/AdminMenu/AdminMenu.model.js?var=201710130900"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/AdminMenu/AdminMenu.view.js?var=201710130900"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/AdminMenu/AdminMenu.controller.js?var=201710130900"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/AdminMenu/AdminMenu.main.js?var=201710130900"></script>
-</head> 
+
+<!-- コンポーネント -->
+<script type="module" src="../../../../../Application/Sample/Html/SvelteComponent/build/AppComponents.js?var=202609151300"></script>
+<script type="module" src="../../../../../System/Html/SvelteComponent/build/HaluComponents.js?var=202605261144"></script>
+</head>
 
 <!-- ================================================================================================================= -->
 <body>                                                                                          <!-- ▼body部 スタート -->
-<div class="container bg-secondary">                                                         <!-- ▼container スタート -->
+<div class="container-fluid bg-secondary">                                               <!-- ▼container-fluid スタート -->
 <form id="mainForm">                                                                              <!-- ▼form スタート -->
 <div class="d-flex flex-column">                                                    <!-- ▼d-flex flex-column スタート -->
 <!-- ================================================================================================================= -->
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-page-header sticky-top bg-primary" style="height:60px;">           <!-- ▼halu-page-header スタート -->
-<!-- ================================================================================================================= -->
-  <div class="d-flex justify-content-between align-items-center">
-    <div class="d-flex">
-      <div class="mx-1 mt-1 halu-page-header-icon" style="width:120px; height:100%;">
-        <img src="../../../../../Application/Sample/Html/images/Halulogo_238-85_02business.png" class="img-fluid">
-      </div>
-
-      <div class="mx-1 mt-3">
-        <button type="button" class="btn btn-info btn-sm mx-1" id="戻る"   name="戻る"  style="width:110px;">ログアウト</button>
-      </div>
-    </div>
-    <div>
-      <div class="mx-1 mt-3">
-        <h5 id="ヘッダータイトル">Haluサンプル　Adminメニュー</h5>
-      </div>
-    </div>  
-    <div class="d-flex">
-      <div class="mx-1 mt-1">
-        <div>
-          <!-- <label class="my-0" id="ログイン和暦" name="ログイン和暦">　</label> -->
-        </div>
-        <div>
-          <label class="my-0">　</label>
-        </div>
-      </div>
-      <div class="mx-1 mt-1">
-        <div>
-          <label class="my-0">ログイン日時：</label>
-          <label class="my-0" id="ログイン日時" name="ログイン日時">　</label>
-        </div>
-        <div>
-          <label class="my-0">　ユーザ氏名：</label>
-          <label class="my-0" id="ユーザ氏名" name="ユーザ氏名">　</label>
-        </div>
-      </div>
-    </div>
-  </div>
-<!-- ================================================================================================================= -->
-</div>                                                                                 <!-- ▲halu-page-header エンド -->
+<!-- ★▼halu-page-header -->
+<div componentID="Header" props-Title="メニュー(管理者用)"></div>
 <!-- ================================================================================================================= -->
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-header-tab my-4" style="height:560px;">                             <!-- ▼halu-header-tab スタート -->
+<div class="halu-header-tab my-4">                             <!-- ▼halu-header-tab スタート -->
 <!-- ================================================================================================================= -->
-  <ul class="nav nav-tabs">
+  <ul class="nav nav-tabs halu-menu-tabs">
     <li class="nav-item">
-      <a href="#タブ_1" class="nav-link メニュータブ" id="tab_1" active data-toggle="tab">基本の画面パターン</a>
+      <a href="#タブ_1" class="nav-link active メニュータブ" id="tab_1" data-bs-toggle="tab">受注管理</a>
     </li>
     <li class="nav-item">
-      <a href="#タブ_2" class="nav-link メニュータブ" id="tab_2" data-toggle="tab">応用</a>
+      <a href="#タブ_2" class="nav-link メニュータブ" id="tab_2" data-bs-toggle="tab">マスタ</a>
     </li>
     <li class="nav-item">
-      <a href="#タブ_3" class="nav-link メニュータブ" id="tab_3" data-toggle="tab">システム</a>
+      <a href="#タブ_3" class="nav-link メニュータブ" id="tab_3" data-bs-toggle="tab">システム</a>
     </li>
   </ul>
 
   <div class="tab-content">                             <!-- ▼tab-content スタート -->
-    <div class="tab-pane fade show active" id="タブ_1">   <!-- ▼タブ_1 スタート -->
-      <div class="d-flex  justify-content-between">
-
-        <div class="d-flex flex-column">
-          <div class="m-3">
-            <button type="button" name="Sample/Html/Apps/UserList" class="btn btn-info メニュー" style="width:320px;">一覧照会（単一テーブル）</button>
+    <div class="tab-pane fade show active" id="タブ_1">   <!-- ▼タブ_1（受注管理） スタート -->
+      <div class="halu-menu-columns">
+          <div class="halu-menu-col">
+            <button type="button" name="Sample/Html/Apps/OrderList" class="btn btn-info メニュー halu-menu-card">
+              <svg class="halu-menu-card-icon" viewBox="0 0 34 34" fill="none" aria-hidden="true"><path d="M11.9004 10.2H22.1004M11.9004 15.3H22.1004M11.9004 20.4H17.0004M9.34996 3.40002H24.6503C26.5281 3.40002 28.0503 4.9223 28.0503 6.80009L28.0499 27.2001C28.0498 29.0778 26.5276 30.6 24.6499 30.6L9.34981 30.5999C7.47204 30.5999 5.94982 29.0777 5.94983 27.1999L5.94996 6.80001C5.94997 4.92225 7.4722 3.40002 9.34996 3.40002Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="halu-menu-card-label">受注一覧</span>
+            </button>
+            <button type="button" name="Sample/Html/Apps/OrderUpload" class="btn btn-info メニュー halu-menu-card">
+              <svg class="halu-menu-card-icon" viewBox="0 0 30 30" fill="none" aria-hidden="true"><path d="M15 7.4V1M15 29V22.6M22.6 15H29M1 15H7.4M20.3745 9.62626L24.9 5.10078M5.09952 24.8997L9.625 20.3742M20.3745 20.3737L24.9 24.8992M5.09952 5.1003L9.625 9.62578" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="halu-menu-card-label">受注データアップロード</span>
+            </button>
+            <!-- C-041: 取込エラー一覧（受注ＣＳＶ取込で検出したエラーの照会） -->
+            <button type="button" name="Sample/Html/Apps/OrderUploadErrorList" class="btn btn-info メニュー halu-menu-card">
+              <svg class="halu-menu-card-icon" viewBox="0 0 34 34" fill="none" aria-hidden="true"><path d="M17 4.25L31.45 29.75H2.55L17 4.25Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13.6V20.4M17 25.075H17.017" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="halu-menu-card-label">取込エラー一覧</span>
+            </button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
           </div>
-          <div class="m-3">
-            <button type="button" name="Sample/Html/Apps/UserDetailMainte" class="btn btn-info メニュー" style="width:320px;">単票登録（単一テーブル）</button>
+          <div class="halu-menu-col">
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
           </div>
-          <div class="m-3">
-            <button type="button" name="Sample/Html/Apps/CustomerListMainte" class="btn btn-info メニュー" style="width:320px;">一覧登録（単一テーブル）</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-        </div>
-
-        <div class="d-flex flex-column">
-          <div class="m-3">
-            <button type="button" name="Sample/Html/Apps/OrderList" class="btn btn-info メニュー" style="width:320px;">一覧照会（親子テーブル）</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="Sample/Html/Apps/OrderDetailListMainte" class="btn btn-info メニュー" style="width:320px;">明細一覧登録（子テーブル）</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
+          <div class="halu-menu-col">
+            <button type="button" name="Sample/Html/Apps/BatchList" class="btn btn-info メニュー halu-menu-card">
+              <svg class="halu-menu-card-icon" viewBox="0 0 34 34" fill="none" aria-hidden="true"><path d="M11.9004 10.2H22.1004M11.9004 15.3H22.1004M11.9004 20.4H17.0004M9.34996 3.40002H24.6503C26.5281 3.40002 28.0503 4.9223 28.0503 6.80009L28.0499 27.2001C28.0498 29.0778 26.5276 30.6 24.6499 30.6L9.34981 30.5999C7.47204 30.5999 5.94982 29.0777 5.94983 27.1999L5.94996 6.80001C5.94997 4.92225 7.4722 3.40002 9.34996 3.40002Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="halu-menu-card-label">バッチ一覧</span>
+            </button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
           </div>
         </div>
-
-        <div class="d-flex flex-column">
-          <div class="m-3">
-            <button type="button" name="Sample/Html/Apps/XXXX" class="btn btn-info メニュー" style="width:320px;">ログイン（画面サンプルなし）</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">メニュー（画面サンプルなし）</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-        </div>
-
-      </div>
     </div>   <!-- ▲タブ_1 エンド -->
 
-
-    <div class="tab-pane fade" id="タブ_2">   <!-- ▼タブ_2 スタート -->
-      <div class="d-flex  justify-content-between">
-
-        <div class="d-flex flex-column">
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
+    <div class="tab-pane fade" id="タブ_2">   <!-- ▼タブ_2（マスタ） スタート -->
+      <div class="halu-menu-columns">
+          <div class="halu-menu-col">
+            <button type="button" name="Sample/Html/Apps/CustomerListMainte" class="btn btn-info メニュー halu-menu-card">
+              <svg class="halu-menu-card-icon" viewBox="0 0 26 26" fill="none" aria-hidden="true"><path d="M11.9181 3.16443H5.09428C2.83307 3.16443 1 4.99744 1 7.25857V20.9059C1 23.167 2.83307 25 5.09428 25H18.7419C21.0031 25 22.8361 23.167 22.8361 20.9059L22.8361 14.0822M7.82379 18.1763L12.7892 17.1758C13.0528 17.1227 13.2949 16.9929 13.4849 16.8027L24.6005 5.6814C25.1335 5.14819 25.1331 4.28388 24.5997 3.75112L22.245 1.39917C21.7119 0.866627 20.848 0.86699 20.3153 1.39998L9.19852 12.5225C9.0088 12.7123 8.87926 12.9538 8.8261 13.2169L7.82379 18.1763Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="halu-menu-card-label">顧客一覧登録</span>
+            </button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
           </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
+          <div class="halu-menu-col">
+            <button type="button" name="Sample/Html/Apps/ProductListMainte" class="btn btn-info メニュー halu-menu-card">
+              <svg class="halu-menu-card-icon" viewBox="0 0 26 26" fill="none" aria-hidden="true"><path d="M11.9181 3.16443H5.09428C2.83307 3.16443 1 4.99744 1 7.25857V20.9059C1 23.167 2.83307 25 5.09428 25H18.7419C21.0031 25 22.8361 23.167 22.8361 20.9059L22.8361 14.0822M7.82379 18.1763L12.7892 17.1758C13.0528 17.1227 13.2949 16.9929 13.4849 16.8027L24.6005 5.6814C25.1335 5.14819 25.1331 4.28388 24.5997 3.75112L22.245 1.39917C21.7119 0.866627 20.848 0.86699 20.3153 1.39998L9.19852 12.5225C9.0088 12.7123 8.87926 12.9538 8.8261 13.2169L7.82379 18.1763Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="halu-menu-card-label">商品一覧登録</span>
+            </button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
           </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-        </div>
-
-        <div class="d-flex flex-column">
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
+          <div class="halu-menu-col">
+            <button type="button" name="Sample/Html/Apps/UserList" class="btn btn-info メニュー halu-menu-card">
+              <svg class="halu-menu-card-icon" viewBox="0 0 34 34" fill="none" aria-hidden="true"><path d="M11.9004 10.2H22.1004M11.9004 15.3H22.1004M11.9004 20.4H17.0004M9.34996 3.40002H24.6503C26.5281 3.40002 28.0503 4.9223 28.0503 6.80009L28.0499 27.2001C28.0498 29.0778 26.5276 30.6 24.6499 30.6L9.34981 30.5999C7.47204 30.5999 5.94982 29.0777 5.94983 27.1999L5.94996 6.80001C5.94997 4.92225 7.4722 3.40002 9.34996 3.40002Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="halu-menu-card-label">ユーザ一覧</span>
+            </button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
           </div>
         </div>
-
-        <div class="d-flex flex-column">
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-        </div>
-
-      </div>
     </div>   <!-- ▲タブ_2 エンド -->
 
-
-    <div class="tab-pane fade" id="タブ_3">   <!-- ▼タブ_3 スタート -->
-      <div class="d-flex  justify-content-between">
-
-        <div class="d-flex flex-column">
-          <div class="m-3">
-            <button type="button" name="Sample/Html/Apps/ThemeListMainte" class="btn btn-info メニュー" style="width:320px;">テーマ</button>
+    <div class="tab-pane fade" id="タブ_3">   <!-- ▼タブ_3（システム） スタート -->
+      <div class="halu-menu-columns">
+          <div class="halu-menu-col">
+            <button type="button" name="Sample/Html/Apps/ThemePersonalListMainte" class="btn btn-info メニュー halu-menu-card">
+              <svg class="halu-menu-card-icon" viewBox="0 0 26 26" fill="none" aria-hidden="true"><path d="M11.9181 3.16443H5.09428C2.83307 3.16443 1 4.99744 1 7.25857V20.9059C1 23.167 2.83307 25 5.09428 25H18.7419C21.0031 25 22.8361 23.167 22.8361 20.9059L22.8361 14.0822M7.82379 18.1763L12.7892 17.1758C13.0528 17.1227 13.2949 16.9929 13.4849 16.8027L24.6005 5.6814C25.1335 5.14819 25.1331 4.28388 24.5997 3.75112L22.245 1.39917C21.7119 0.866627 20.848 0.86699 20.3153 1.39998L9.19852 12.5225C9.0088 12.7123 8.87926 12.9538 8.8261 13.2169L7.82379 18.1763Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="halu-menu-card-label">個人用テーマ設定</span>
+            </button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
           </div>
-          <div class="m-3">
-            <button type="button" name="Sample/Html/Apps/ThemePersonalListMainte" class="btn btn-info メニュー" style="width:320px;">個人用テーマ</button>
+          <div class="halu-menu-col">
+            <button type="button" name="Sample/Html/Apps/ThemeListMainte" class="btn btn-info メニュー halu-menu-card">
+              <svg class="halu-menu-card-icon" viewBox="0 0 26 26" fill="none" aria-hidden="true"><path d="M11.9181 3.16443H5.09428C2.83307 3.16443 1 4.99744 1 7.25857V20.9059C1 23.167 2.83307 25 5.09428 25H18.7419C21.0031 25 22.8361 23.167 22.8361 20.9059L22.8361 14.0822M7.82379 18.1763L12.7892 17.1758C13.0528 17.1227 13.2949 16.9929 13.4849 16.8027L24.6005 5.6814C25.1335 5.14819 25.1331 4.28388 24.5997 3.75112L22.245 1.39917C21.7119 0.866627 20.848 0.86699 20.3153 1.39998L9.19852 12.5225C9.0088 12.7123 8.87926 12.9538 8.8261 13.2169L7.82379 18.1763Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="halu-menu-card-label">システム用テーマ設定</span>
+            </button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
           </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-        </div>
-
-        <div class="d-flex flex-column">
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
+          <div class="halu-menu-col">
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
+            <button type="button" name="" class="btn btn-info メニュー halu-menu-card halu-menu-item-blank">…</button>
           </div>
         </div>
-
-        <div class="d-flex flex-column">
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-          <div class="m-3">
-            <button type="button" name="" class="btn btn-info メニュー" style="width:320px;">　</button>
-          </div>
-        </div>
-
-      </div>
     </div>   <!-- ▲タブ_3 エンド -->
 
   </div>     <!-- ▲tab-content エンド -->
@@ -348,18 +206,15 @@
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-page-footer bg-primary mt-3" style="height:20px;">    <!-- ▼halu-page-footer スタート -->
-<!-- ================================================================================================================= -->
-
-<!-- ================================================================================================================= -->
-</div>                                                                                 <!-- ▲halu-page-footer エンド -->
+<!-- ★▼halu-page-footer -->
+<div componentID="Footer"></div>
 <!-- ================================================================================================================= -->
 
 
 <!-- ================================================================================================================= -->
 </div>                                                                                <!-- ▲d-flex flex-column エンド -->
 </form>                                                                                             <!-- ▲form エンド -->
-</div>                                                                                         <!-- ▲container エンド -->
+</div>                                                                                   <!-- ▲container-fluid エンド -->
 </body>                                                                                           <!-- ▲body部 エンド -->
 <!-- ================================================================================================================= -->
 

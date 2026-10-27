@@ -1,0 +1,93 @@
+{
+  "request": {
+    "comment": "商品一覧登録 更新処理 リクエストデータ",
+    "html" : "Sample/Json/Apps/ProductListMainte",
+    "mode": "execute",
+    "prog": "no",
+    "model": "yes",
+    "message": {
+      "status": "OK",
+      "msg": ""
+    },
+    "records": [
+    {
+      "id": "login",
+      "before": "",
+      "after": "",
+      "multiline": "no",
+      "record": {
+        "ユーザＩＤ": {
+          "value": [""]
+        },
+        "ユーザ名称": {
+          "value": [""]
+        }
+      }
+    },
+    {
+      "id": "detail",
+      "before": "",
+      "after": "",
+      "multiline": "yes",
+      "record": {
+        "商品ＩＤ": {
+          "value": [""]
+        },
+        "商品コード": {
+          "value": [""]
+        },
+        "商品名称": {
+          "value": [""]
+        },
+        "標準単価": {
+          "value": [""]
+        },
+        "備考": {
+          "value": [""]
+        },
+        "削除": {
+          "value": [""]
+        }
+      }
+    }
+    ]
+  },
+  "response": {
+    "comment": "商品一覧登録 更新処理 レスポンスデータ",
+    "html" : "Sample/Json/Apps/ProductListMainte",
+    "mode": "execute",
+    "prog": "no",
+    "message": {
+      "status": "OK",
+      "msg": "更新処理は正常に終了しました。"
+    },
+    "records": [
+    {
+      "id": "detail",
+      "before": "",
+      "after": "",
+      "multiline": "yes",
+      "record": {
+        "商品ＩＤ": {
+          "value": [""]
+        },
+        "商品コード": {
+          "value": [""]
+        },
+        "商品名称": {
+          "value": [""]
+        },
+        "標準単価": {
+          "value": [""]
+        },
+        "備考": {
+          "value": [""]
+        },
+        "削除": {
+          "value": [""]
+        }
+      }
+    }
+    ]
+  }
+}

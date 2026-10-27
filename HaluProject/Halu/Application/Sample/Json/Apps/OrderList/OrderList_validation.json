@@ -20,17 +20,15 @@
       },
       "検索受注日カラ": {
         "validation": ["nonrequired",
-        "yyyymmdd"],
-        "format": "yyyySmmSdd",
-        "min": "8",
-        "max": "8"
+        "yyyyhmmhdd"],
+        "min": "10",
+        "max": "10"
       },
       "検索受注日マデ": {
         "validation": ["nonrequired",
-        "yyyymmdd"],
-        "format": "yyyySmmSdd",
-        "min": "8",
-        "max": "8"
+        "yyyyhmmhdd"],
+        "min": "10",
+        "max": "10"
       }
     }
   }

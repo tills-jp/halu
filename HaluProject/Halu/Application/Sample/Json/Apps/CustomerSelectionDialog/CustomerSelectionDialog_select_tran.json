@@ -1,0 +1,97 @@
+{
+  "request": {
+    "comment": "顧客選択画面 照会処理  リクエストデータ",
+    "html" : "Sample/Json/Apps/CustomerSelectionDialog",
+    "mode": "select",
+    "prog": "no",
+    "model": "yes",
+    "message": {
+      "status": "OK",
+      "msg": ""
+    },
+    "records": [
+    {
+      "id": "header",
+      "before": "",
+      "after": "",
+      "multiline": "no",
+      "record": {
+        "ページライン数": {
+          "value": [""]
+        },
+        "カレントページ": {
+          "value": [""]
+        },
+        "検索顧客ＩＤ": {
+          "value": [""]
+        }
+      }
+    }
+    ]
+  },
+  "response": {
+    "comment": "顧客選択画面　照会処理　　レスポンスデータ",
+    "html" : "Sample/Json/Apps/CustomerSelectionDialog",
+    "mode": "select",
+    "prog": "yes",
+    "message": {
+      "status": "OK",
+      "msg": "照会処理は正常に終了しました。"
+    },
+    "records": [
+    {
+      "comment": "テーブルページング情報（行数・カレント行・総ページ数・総件数）getMaxPageCount：総ページ数を計算する。",
+      "id": "header",
+      "before": "",
+      "after": "getMaxPageCountOfCustomerSelection('header')",
+      "multiline": "no",
+      "record": {
+        "ページライン数": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "ページライン数"
+        },
+        "カレントページ": {
+          "value": ["1"],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "カレントページ"
+        },
+        "最大ページ": {
+          "value": [""]
+        },
+        "トータル件数": {
+          "value": [""],
+          "fromtype": "sqls",
+          "fromid": "total_count",
+          "fromio": "output",
+          "fromname": "トータル件数"
+        }
+      }
+    },
+    {
+      "id": "detail",
+      "before": "",
+      "after": "",
+      "multiline": "yes",
+      "record": {
+        "顧客ＩＤ一覧": {
+          "value": [""]
+        },
+        "顧客氏名一覧": {
+          "value": [""]
+        },
+        "検索顧客ＩＤ": {
+          "value": [""]
+        },
+        "検索顧客氏名": {
+          "value": [""]
+        }
+      }
+    }
+    ]
+  }
+}

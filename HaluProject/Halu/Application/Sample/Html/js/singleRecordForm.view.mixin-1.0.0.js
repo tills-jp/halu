@@ -52,8 +52,6 @@
         this.appendCSS(arg);
       }
 
-      $('body').fadeIn("normal");
-
       $H.log("View initテンプレートロード : end");
     },
 
@@ -66,11 +64,19 @@
     setログイン情報: function (arg) {
       $H.log("View setログイン情報 : start");
 
-      $("#ユーザ氏名").html(arg["ユーザ名称"]);
-      $("#ログイン日時").html(arg["ログイン時刻"]);
+      // 後方互換: halu-ds-id="login"+halu-ds-field で要素を特定（なければ #id で検索）
+      let $氏名 = $("[halu-ds-id='login'][halu-ds-field='ユーザ氏名']");
+      if (!$氏名.length) $氏名 = $("#ユーザ氏名");
+      $氏名.html(arg["ユーザ名称"]);
+
+      let $日時 = $("[halu-ds-id='login'][halu-ds-field='ログイン日時']");
+      if (!$日時.length) $日時 = $("#ログイン日時");
+      $日時.html(arg["ログイン時刻"]);
 
       if (arg["ログイン和暦"] != "") {
-        $("#ログイン和暦").html(arg["ログイン和暦"]);
+        let $和暦 = $("[halu-ds-id='login'][halu-ds-field='ログイン和暦']");
+        if (!$和暦.length) $和暦 = $("#ログイン和暦");
+        $和暦.html(arg["ログイン和暦"]);
       }
 
       $H.log("View setログイン情報 : end");
@@ -115,6 +121,13 @@
       }
 
       $("#ヘッダータイトル").html(title);
+
+      // D-006 フェーズ2デザイン適用: 本文側の大見出し（.halu-page-title）を置く画面では
+      // モード付きタイトルをそこへも反映する（当該画面のprogram.cssがヘッダー中央タイトルを
+      // 非表示化するため、モード表示（新規/訂正等）の欠落を防ぐ）。大見出しが無い画面では何もしない
+      if ($(".halu-page-title").length) {
+        $(".halu-page-title").text(title);
+      }
 
       if ($("#モード切替")) {
         let beforHtmlName = this.appspec.beforename;
@@ -165,8 +178,39 @@
     },
 
     /**
+     * クリックされた行の背景色を変更し、選択状態を表示する<br>
+     * ※C-071: 2026-09-24 修正者：AI 追加（multiTableListForm.view.mixinを踏襲。
+     * 従来は本ミックスインに行クリックの表示処理自体が存在せず、controller側で
+     * onテーブル行クリックを呼んでもハイライトが付かなかった）
+     *
+     * @memberof SingleRecordFormViewMixin
+     * @param {object} arg - クリック行情報（クリック行、セレクタ名）
+     */
+    onテーブル行クリック: function (arg) {
+      $H.log("View onテーブル行クリック : start");
+
+      let clickRow = arg["クリック行"];
+
+      // セッションストレージに識別名を保存する
+      sessionStorage.setIdName(this.appspec.sysname + "." + this.appspec.name);
+
+      // 選択行にCSSクラスを設定する
+      // C-071: 前回行の解除は sessionStorage の「クリック行」に依存しない
+      //（モデルが先に上書き済みで前回行を取れないため）。全行から外してからクリック行に付ける
+      $("#mainTable td").removeClass("table-success");
+      let rows = $("#mainTable")[0].rows;
+      if (rows[clickRow]) {
+        $(rows[clickRow].cells).addClass("table-success");
+      }
+
+      sessionStorage.saveItem("クリック行", clickRow);
+
+      $H.log("View onテーブル行クリック : end");
+    },
+
+    /**
      * データセットの内容を画面に表示する
-     * 
+     *
      * @memberof SingleRecordFormViewMixin
      * @param {object} dataset - データセット
      * @param {object} responseData - レスポンスデータ

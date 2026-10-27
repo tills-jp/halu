@@ -34,7 +34,7 @@ class UserList_view():
             self.requestdict  = requestdict
 
         except Exception as e:
-            self.mvclog.debug(self.mvclogname, 'UserList_view init exception message : {e}')
+            self.mvclog.debug(self.mvclogname, f'UserList_view init exception message : {e}')
 
         finally:
             self.mvclog.debug(self.mvclogname, 'UserList_view init end')
@@ -60,4 +60,3 @@ class UserList_view():
 
         self.mvclog.debug(self.mvclogname, 'UserList_view getMaxPageCountOfUserList end')
         return status
-

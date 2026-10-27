@@ -288,7 +288,27 @@
       let url = null;
 
       if (arg["cssName"]) {
-        url = $H.ApplicationURL + arg["cssName"];
+        // 2026-09-08 Issue #51 index.html の halutheme-preload-1.0.0.js が先読み済み（または本関数で追加済み）で、
+        //   最後に読まれたテーマCSSが同じものなら二重ロードしない（別テーマへの切替時は末尾に追加して上書きさせる）
+        let themeLinks = $("head link[rel='stylesheet']").filter(function () {
+          return ($(this).attr("href") || "").indexOf("/css/halu-custom_") >= 0;
+        });
+        let lastHref = themeLinks.length > 0 ? (themeLinks.last().attr("href") || "") : "";
+        if (lastHref.indexOf(arg["cssName"]) >= 0) {
+          $H.log("LoadTemplateMixin appendCSS : already loaded " + arg["cssName"]);
+          $H.log("LoadTemplateMixin appendCSS : end");
+          return;
+        }
+        // 2026-09-08 Issue #51 キャッシュバスターは同一ページの halu-custom_default.css の ?var= を流用する
+        let ver = "";
+        $("head link[rel='stylesheet']").each(function () {
+          let href = $(this).attr("href") || "";
+          if (href.indexOf("halu-custom_default.css") >= 0 && href.indexOf("?") >= 0) {
+            ver = href.substring(href.indexOf("?"));
+            return false;
+          }
+        });
+        url = $H.ApplicationURL + arg["cssName"] + ver;
 
         $("head").append("<link>");
         css = $("head").children(":last");
@@ -348,7 +368,9 @@
       if (wFocusCurRow > 0) {
         wFocusCurRow = wFocusCurRow - 1;
       }
-      idname = "#error" + event.target.name + wFocusCurRow;
+      // 2026-06-12 後方互換: halu-ds-field を優先しエラーツールチップidを生成（なければ name）。生成側(onErrorToolTip)と同一規則
+      let fieldKey = target.getAttribute("halu-ds-field") || target.name;
+      idname = "#error" + fieldKey + wFocusCurRow;
       if (!$(idname)) return;
       $(idname).hide();
       $(idname).remove();
@@ -417,7 +439,9 @@
       $H.log("ViewMixin onErrorToolTip : start");
 
       let toolTip = function (target, errorText, multiline, index) {
-        let toolTip = $("<div id='error" + target.name + index + "'></div>");
+        // 2026-06-12 後方互換: halu-ds-field を優先しエラーツールチップidを生成（なければ name）。消去側(onFocus)と同一規則
+        let fieldKey = target.getAttribute("halu-ds-field") || target.name;
+        let toolTip = $("<div id='error" + fieldKey + index + "'></div>");
         $(toolTip).addClass("errorToolTip");
         $(target).parent().append(toolTip);
 
@@ -453,278 +477,503 @@
 
       $H.log("ViewMixin onRemoveToolTip : end");
     },
+    //★del start 20260518 メッセージダイアログ(jQuery)削除
+    // /**
+    //  * 警告ダイアログ 初期設定
+    //  * @memberof ViewMixin
+    //  */
+    // initAlertDialog: function () {
+    //   $H.log("ViewMixin initAlertDialog : start");
+
+    //   let data = '<div class="modal fade" id="alertDialog" tabindex="-1" role="dialog" aria-labelledby="alertHeader" aria-hidden="true">';
+    //   data += '<div class="modal-dialog">';
+    //   data += '<div class="modal-content">';
+    //   data += '<div class="modal-header">';
+    //   data += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+    //   data += '<h4 class="modal-title" id="alertHeader">サーバ  エラー</h4>';
+    //   data += '</div>';
+    //   data += '<div class="modal-body" id="alertBody">';
+    //   data += '<p></p></br>';
+    //   data += '</div>';
+    //   data += '<div class="modal-footer" id="alertFooter">'
+    //   data += '<button id="alertDialogCLOSE" type="button" class="btn btn-default" data-dismiss="modal" default-value="閉じる" '
+    //   data += '>閉じる</button>'
+    //   data += '</div>';
+    //   data += '</div>';
+    //   data += '</div>';
+    //   data += '</div>';
+    //   $("body").append(data);
+
+    //   $('#alertDialog').on('shown.bs.modal', function () {
+    //     $("#alertDialogCLOSE").focus();
+    //   })
+
+    //   $H.log("ViewMixin initAlertDialog : end");
+    // },
+    // /**
+    //  * 警告ダイアログを表示する
+    //  * @memberof ViewMixin
+    //  * @param {object} arg - 警告情報
+    //  */
+    // onAlertDialog: function (arg) {
+    //   $H.log("ViewMixin onAlertDialog : start");
+
+    //   // タイトル・メッセージに 複数行を設定できるようにしました
+    //   if (Array.isArray(arg["title"])) {
+    //     $("#alertHeader").html(arg["title"].join('<br />'));
+    //   } else {
+    //     $("#alertHeader").text(arg["title"]);
+    //   }
+    //   if (Array.isArray(arg["message"])) {
+    //     $("#alertBody p").html(arg["message"].join('<br />'));
+    //   } else {
+    //     $("#alertBody p").text(arg["message"]);
+    //   }
+    //   // ボタンの文字列を設定できるようにしました
+    //   this.setDialogButtonLabels($("#alertFooter"), arg);
+    //   $("#alertDialog").modal("show");
+
+    //   $H.log("ViewMixin onAlertDialog : end");
+    // },
+    // /**
+    //  * 確認ダイアログ 初期設定
+    //  * @memberof ViewMixin
+    //  * @param {object} object - ダイアログ情報
+    //  */
+    // initConfirmDialog: function (object) {
+    //   $H.log("ViewMixin initConfirmDialog : start");
+
+    //   let self = object;
+    //   let data = '<div id="confirmDialog" class="modal fade" tabindex="-1" role="dialog">';
+    //   data += '  <div class="modal-dialog">';
+    //   data += '    <div class="modal-content">';
+    //   data += '      <div id="confirmHeader" class="modal-header">';
+    //   data += '        <h4>確認</h4>';
+    //   data += '      </div>';  // confirmHeader
+    //   data += '      <div id="confirmBody" class="modal-body">';
+    //   data += '        <p></p></br>';
+    //   data += '      </div>';  // confirmBody
+    //   data += '      <div id="confirmFooter" class="modal-footer">';
+    //   data += '        <input id="confirmDialogYES" type="button" class="btn" data-dismiss="modal" aria-hidden="true" value="は  い" ';
+    //   data += '          default-value="は  い" ';
+    //   data += '          onclick="sessionStorage.setItem(\'confirmDialog\', 1);">';
+    //   data += '        <input id="confirmDialogNO" type="button" class="btn" data-dismiss="modal" aria-hidden="true" value="いいえ" ';
+    //   data += '          default-value="いいえ" ';
+    //   data += '          onclick="sessionStorage.setItem(\'confirmDialog\', 0);">';
+    //   data += '      </div>';  // confirmFooter
+    //   data += '    </div>';  // confirmDialog
+    //   data += '  <div>';
+    //   data += '<div>';
+    //   $("body").append(data);
+
+    //   $('#confirmDialog').on('hidden.bs.modal', function () {
+    //     let status = self.pubsub.publish("confirmDialogAfter");
+    //   })
+
+    //   $('#confirmDialog').on('shown.bs.modal', function () {
+    //     $("#confirmDialogYES").focus();
+    //   })
+
+    //   $H.log("ViewMixin initConfirmDialog : end");
+    // },
+    // /**
+    //  * 確認ダイアログを表示する
+    //  * @memberof ViewMixin
+    //  * @param {object} arg - ダイアログ情報
+    //  */
+    // onConfirmDialog: function (arg) {
+    //   $H.log("ViewMixin onConfirmDialog : start");
+
+    //   // タイトル・メッセージ設定(複数行可)
+    //   if (Array.isArray(arg["title"])) {
+    //     $("#confirmHeader h4").html(arg["title"].join('<br />'));
+    //   } else {
+    //     $("#confirmHeader h4").text(arg["title"]);
+    //   }
+    //   if (Array.isArray(arg["message"])) {
+    //     $("#confirmBody p").html(arg["message"].join('<br />'));
+    //   } else {
+    //     $("#confirmBody p").text(arg["message"]);
+    //   }
+    //   // ボタンの文字列を設定
+    //   this.setDialogButtonLabels($("#confirmFooter"), arg);
+    //   $("#confirmDialog").modal("show");
+
+    //   $H.log("ViewMixin onConfirmDialog : end");
+    // },
+    // /**
+    //  * 実行確認ダイアログ 初期設定
+    //  * @memberof ViewMixin
+    //  * @param {object} arg - ダイアログ情報
+    //  */
+    // initExecuteDialog: function (object) {
+    //   $H.log("ViewMixin initExecuteDialog : start");
+
+    //   let self = object;
+    //   let data = '<div id="executeDialog" class="modal fade" tabindex="-1" role="dialog">';
+    //   data += '  <div class="modal-dialog">';
+    //   data += '    <div class="modal-content">';
+    //   data += '      <div id="executeHeader" class="modal-header">';
+    //   data += '        <h4>実行確認</h4>';
+    //   data += '      </div>';  // executeHeader
+    //   data += '      <div id="executeBody" class="modal-body">';
+    //   data += '        <p></p></br>';
+    //   data += '      </div>';  // executeBody
+    //   data += '      <div id="executeFooter" class="modal-footer">';
+    //   data += '        <input id="executeDialogYES" type="button" class="btn" data-dismiss="modal" aria-hidden="true" value="は  い" ';
+    //   data += '          default-value="は  い" ';
+    //   data += '          onclick="sessionStorage.setItem(\'executeDialog\', 1);">';
+    //   data += '        <input id="executeDialogNO" type="button" class="btn" data-dismiss="modal" aria-hidden="true" value="いいえ" ';
+    //   data += '          default-value="いいえ" ';
+    //   data += '          onclick="sessionStorage.setItem(\'executeDialog\', 0);">';
+    //   data += '      </div>';  // executeFooter
+    //   data += '    </div>';  // executeDialog
+    //   data += '  </div>';
+    //   data += '</div>';
+    //   $("body").append(data);
+
+    //   $('#executeDialog').on('hidden.bs.modal', function () {
+    //     let status = self.pubsub.publish("executeDialogAfter");
+    //   })
+
+    //   $('#executeDialog').on('shown.bs.modal', function () {
+    //     $("#executeDialogYES").focus();
+    //   })
+
+    //   $H.log("ViewMixin initExecuteDialog : end");
+    // },
+    // /**
+    //  * 実行確認ダイアログを表示する
+    //  * @memberof ViewMixin
+    //  * @param {object} arg - ダイアログ情報
+    //  */
+    // onExecuteDialog: function (arg) {
+    //   $H.log("ViewMixin onExecuteDialog : start");
+
+    //   // タイトル・メッセージ設定(複数行可)
+    //   if (Array.isArray(arg["title"])) {
+    //     $("#executeHeader h4").html(arg["title"].join('<br />'));
+    //   } else {
+    //     $("#executeHeader h4").text(arg["title"]);
+    //   }
+    //   if (Array.isArray(arg["message"])) {
+    //     $("#executeBody p").html(arg["message"].join('<br />'));
+    //   } else {
+    //     $("#executeBody p").text(arg["message"]);
+    //   }
+    //   // ボタンの文字列を設定
+    //   this.setDialogButtonLabels($("#executeFooter"), arg);
+    //   $("#executeDialog").modal("show");
+
+    //   $H.log("ViewMixin onExecuteDialog : end");
+    // },
+    // /**
+    //  * サーバ確認ダイアログ 初期設定
+    //  * @memberof ViewMixin
+    //  * @param {object} object - ダイアログ情報
+    //  */
+    // initServerDialog: function (object) {
+    //   $H.log("ViewMixin initServerDialog : start");
+
+    //   let self = object;
+    //   let data = '<div class="modal fade" id="serverDialog" tabindex="-1" role="dialog" aria-labelledby="serverHeader" aria-hidden="true">';
+    //   data += '  <div class="modal-dialog">';
+    //   data += '    <div class="modal-content">';
+    //   data += '      <div class="modal-header">';
+    //   data += '        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+    //   data += '        <div class="modal-header" id="serverHeader">';
+    //   data += '          <h4>サーバ確認</h4>';
+    //   data += '        </div>';
+    //   data += '      </div>';
+    //   data += '      <div class="modal-body" id="serverBody">';
+    //   data += '        <p></p></br>';
+    //   data += '      </div>';
+    //   data += '      <div class="modal-footer" id="serverFooter">'
+    //   data += '        <button id="serverDialogＯＫ" type="button" class="btn btn-default" data-dismiss="modal" default-value="ＯＫ" '
+    //   data += '          onclick="sessionStorage.setItem(\'serverDialog\', 1);">ＯＫ</button>'
+    //   data += '      </div>';
+    //   data += '    </div>';
+    //   data += '  </div>';
+    //   data += '</div>';
+    //   $("body").append(data);
+
+    //   $('#serverDialog').on('hidden.bs.modal', function () {
+    //     let status = self.pubsub.publish("serverDialogAfter");
+    //   })
+
+    //   $('#serverDialog').on('shown.bs.modal', function () {
+    //     $("#serverDialogＯＫ").focus();
+    //   })
+
+    //   $H.log("ViewMixin initServerDialog : end");
+    // },
+    // /**
+    //  * サーバ確認ダイアログを表示する
+    //  * @memberof ViewMixin
+    //  * @param {object} arg - ダイアログ情報
+    //  */
+    // onServerDialog: function (arg) {
+    //   $H.log("ViewMixin onServerDialog : start");
+
+    //   // タイトル・メッセージ設定(複数行可)
+    //   if (Array.isArray(arg["title"])) {
+    //     $("#serverHeader h4").html(arg["title"].join('<br />'));
+    //   } else {
+    //     $("#serverHeader h4").text(arg["title"]);
+    //   }
+    //   if (Array.isArray(arg["message"])) {
+    //     $("#serverBody p").html(arg["message"].join('<br />'));
+    //   } else {
+    //     $("#serverBody p").text(arg["message"]);
+    //   }
+    //   // ボタンの文字列を設定
+    //   this.setDialogButtonLabels($("#serverFooter"), arg);
+    //   $("#serverDialog").modal("show");
+
+    //   $H.log("ViewMixin onServerDialog : end");
+    // },
+    //★del end   20260518 メッセージダイアログ(jQuery)削除
+    //★add start 20260518 メッセージダイアログ(Svelte)各種処理
     /**
-     * 警告ダイアログ 初期設定
+     * 警告ダイアログ(Svelte) 初期設定
      * @memberof ViewMixin
      */
     initAlertDialog: function () {
       $H.log("ViewMixin initAlertDialog : start");
-
-      let data = '<div class="modal fade" id="alertDialog" tabindex="-1" role="dialog" aria-labelledby="alertHeader" aria-hidden="true">';
-      data += '<div class="modal-dialog">';
-      data += '<div class="modal-content">';
-      data += '<div class="modal-header">';
-      data += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-      data += '<h4 class="modal-title" id="alertHeader">サーバ  エラー</h4>';
-      data += '</div>';
-      data += '<div class="modal-body" id="alertBody">';
-      data += '<p></p></br>';
-      data += '</div>';
-      data += '<div class="modal-footer" id="alertFooter">'
-      data += '<button id="alertDialogCLOSE" type="button" class="btn btn-default" data-dismiss="modal" default-value="閉じる" '
-      data += '>閉じる</button>'
-      data += '</div>';
-      data += '</div>';
-      data += '</div>';
-      data += '</div>';
-      $("body").append(data);
-
-      $('#alertDialog').on('shown.bs.modal', function () {
-        $("#alertDialogCLOSE").focus();
-      })
-
+      //メッセージダイアログコンポーネントの生成
+      window.createAlertDialog();
       $H.log("ViewMixin initAlertDialog : end");
     },
     /**
-     * 警告ダイアログを表示する
+     * 警告ダイアログ(Svelte)を表示する
      * @memberof ViewMixin
      * @param {object} arg - 警告情報
      */
     onAlertDialog: function (arg) {
       $H.log("ViewMixin onAlertDialog : start");
 
-      // タイトル・メッセージに 複数行を設定できるようにしました
+      // タイトル(配列から改行に変換)
+      let title = arg["title"];
       if (Array.isArray(arg["title"])) {
-        $("#alertHeader").html(arg["title"].join('<br />'));
-      } else {
-        $("#alertHeader").text(arg["title"]);
+        title = arg["title"].join("<br />");
       }
-      if (Array.isArray(arg["message"])) {
-        $("#alertBody p").html(arg["message"].join('<br />'));
-      } else {
-        $("#alertBody p").text(arg["message"]);
+      //未設定の場合はデフォルト値を設定
+      if (!title) {
+        title = "サーバ エラー";
       }
-      // ボタンの文字列を設定できるようにしました
-      this.setDialogButtonLabels($("#alertFooter"), arg);
-      $("#alertDialog").modal("show");
 
+      // メッセージ(配列から改行に変換)
+      let message = arg["message"];
+      if (Array.isArray(arg["message"])) {
+        message = arg["message"].join("<br />");
+      }
+
+      // ボタンラベル(デフォルト値)
+      const defaults = ["閉じる"];
+      let buttonLabel = this.setDialogButtonLabels(defaults, arg);
+
+      //警告ダイアログを表示
+      window.showAlertDialog({ title, message, buttonLabel });
       $H.log("ViewMixin onAlertDialog : end");
     },
     /**
-     * 確認ダイアログ 初期設定
+     * 確認ダイアログ(Svelte) 初期設定
      * @memberof ViewMixin
      * @param {object} object - ダイアログ情報
      */
     initConfirmDialog: function (object) {
       $H.log("ViewMixin initConfirmDialog : start");
-
       let self = object;
-      let data = '<div id="confirmDialog" class="modal fade" tabindex="-1" role="dialog">';
-      data += '  <div class="modal-dialog">';
-      data += '    <div class="modal-content">';
-      data += '      <div id="confirmHeader" class="modal-header">';
-      data += '        <h4>確認</h4>';
-      data += '      </div>';  // confirmHeader
-      data += '      <div id="confirmBody" class="modal-body">';
-      data += '        <p></p></br>';
-      data += '      </div>';  // confirmBody
-      data += '      <div id="confirmFooter" class="modal-footer">';
-      data += '        <input id="confirmDialogYES" type="button" class="btn" data-dismiss="modal" aria-hidden="true" value="は  い" ';
-      data += '          default-value="は  い" ';
-      data += '          onclick="sessionStorage.setItem(\'confirmDialog\', 1);">';
-      data += '        <input id="confirmDialogNO" type="button" class="btn" data-dismiss="modal" aria-hidden="true" value="いいえ" ';
-      data += '          default-value="いいえ" ';
-      data += '          onclick="sessionStorage.setItem(\'confirmDialog\', 0);">';
-      data += '      </div>';  // confirmFooter
-      data += '    </div>';  // confirmDialog
-      data += '  <div>';
-      data += '<div>';
-      $("body").append(data);
 
-      $('#confirmDialog').on('hidden.bs.modal', function () {
-        let status = self.pubsub.publish("confirmDialogAfter");
-      })
+      //クローズ後呼び出し関数の取得
+      const onAfterfunction
+        = () => { self.pubsub.publish("confirmDialogAfter"); };
 
-      $('#confirmDialog').on('shown.bs.modal', function () {
-        $("#confirmDialogYES").focus();
-      })
+      //確認ダイアログコンポーネントの生成
+      window.createConfirmDialog(onAfterfunction);
 
       $H.log("ViewMixin initConfirmDialog : end");
     },
     /**
-     * 確認ダイアログを表示する
-     * @memberof ViewMixin
-     * @param {object} arg - ダイアログ情報
-     */
+    * 確認ダイアログ(Svelte)を表示する
+    * @memberof ViewMixin
+    * @param {object} arg - ダイアログ情報
+    */
     onConfirmDialog: function (arg) {
       $H.log("ViewMixin onConfirmDialog : start");
 
-      // タイトル・メッセージ設定(複数行可)
+      // タイトル(配列から改行に変換)
+      let title = arg["title"];
       if (Array.isArray(arg["title"])) {
-        $("#confirmHeader h4").html(arg["title"].join('<br />'));
-      } else {
-        $("#confirmHeader h4").text(arg["title"]);
+        title = arg["title"].join("<br />");
       }
+      //未設定の場合はデフォルト値を設定
+      if (!title) {
+        title = "確認";
+      }
+
+      // メッセージ(配列から改行に変換)
+      let message = arg["message"];
       if (Array.isArray(arg["message"])) {
-        $("#confirmBody p").html(arg["message"].join('<br />'));
-      } else {
-        $("#confirmBody p").text(arg["message"]);
+        message = arg["message"].join("<br />");
       }
-      // ボタンの文字列を設定
-      this.setDialogButtonLabels($("#confirmFooter"), arg);
-      $("#confirmDialog").modal("show");
+
+      // ボタンラベル(デフォルト値)
+      const defaults = ["は  い", "いいえ"];
+      let buttonLabel = this.setDialogButtonLabels(defaults, arg);
+
+      //確認ダイアログを表示
+      window.showConfirmDialog({ title, message, buttonLabel });
 
       $H.log("ViewMixin onConfirmDialog : end");
     },
     /**
-     * 実行確認ダイアログ 初期設定
-     * @memberof ViewMixin
-     * @param {object} arg - ダイアログ情報
-     */
+ * 実行ダイアログ(Svelte) 初期設定
+ * @memberof ViewMixin
+ * @param {object} object - ダイアログ情報
+ */
     initExecuteDialog: function (object) {
       $H.log("ViewMixin initExecuteDialog : start");
-
       let self = object;
-      let data = '<div id="executeDialog" class="modal fade" tabindex="-1" role="dialog">';
-      data += '  <div class="modal-dialog">';
-      data += '    <div class="modal-content">';
-      data += '      <div id="executeHeader" class="modal-header">';
-      data += '        <h4>実行確認</h4>';
-      data += '      </div>';  // executeHeader
-      data += '      <div id="executeBody" class="modal-body">';
-      data += '        <p></p></br>';
-      data += '      </div>';  // executeBody
-      data += '      <div id="executeFooter" class="modal-footer">';
-      data += '        <input id="executeDialogYES" type="button" class="btn" data-dismiss="modal" aria-hidden="true" value="は  い" ';
-      data += '          default-value="は  い" ';
-      data += '          onclick="sessionStorage.setItem(\'executeDialog\', 1);">';
-      data += '        <input id="executeDialogNO" type="button" class="btn" data-dismiss="modal" aria-hidden="true" value="いいえ" ';
-      data += '          default-value="いいえ" ';
-      data += '          onclick="sessionStorage.setItem(\'executeDialog\', 0);">';
-      data += '      </div>';  // executeFooter
-      data += '    </div>';  // executeDialog
-      data += '  </div>';
-      data += '</div>';
-      $("body").append(data);
 
-      $('#executeDialog').on('hidden.bs.modal', function () {
-        let status = self.pubsub.publish("executeDialogAfter");
-      })
+      //クローズ後呼び出し関数の取得
+      const onAfterfunction
+        = () => { self.pubsub.publish("executeDialogAfter"); };
 
-      $('#executeDialog').on('shown.bs.modal', function () {
-        $("#executeDialogYES").focus();
-      })
+      //実行ダイアログコンポーネントの生成
+      window.createExecuteDialog(onAfterfunction);
 
       $H.log("ViewMixin initExecuteDialog : end");
     },
     /**
-     * 実行確認ダイアログを表示する
-     * @memberof ViewMixin
-     * @param {object} arg - ダイアログ情報
-     */
+    * 実行ダイアログ(Svelte)を表示する
+    * @memberof ViewMixin
+    * @param {object} arg - ダイアログ情報
+    */
     onExecuteDialog: function (arg) {
       $H.log("ViewMixin onExecuteDialog : start");
 
-      // タイトル・メッセージ設定(複数行可)
+      // タイトル(配列から改行に変換)
+      let title = arg["title"];
       if (Array.isArray(arg["title"])) {
-        $("#executeHeader h4").html(arg["title"].join('<br />'));
-      } else {
-        $("#executeHeader h4").text(arg["title"]);
+        title = arg["title"].join("<br />");
       }
+
+      // メッセージ(配列から改行に変換)
+      let message = arg["message"];
       if (Array.isArray(arg["message"])) {
-        $("#executeBody p").html(arg["message"].join('<br />'));
-      } else {
-        $("#executeBody p").text(arg["message"]);
+        message = arg["message"].join("<br />");
       }
-      // ボタンの文字列を設定
-      this.setDialogButtonLabels($("#executeFooter"), arg);
-      $("#executeDialog").modal("show");
+
+      // ボタンラベル(デフォルト値)
+      const defaults = ["は  い", "いいえ"];
+      let buttonLabel = this.setDialogButtonLabels(defaults, arg);
+
+      //実行確認ダイアログを表示
+      window.showExecuteDialog({ title, message, buttonLabel });
 
       $H.log("ViewMixin onExecuteDialog : end");
     },
     /**
-     * サーバ確認ダイアログ 初期設定
-     * @memberof ViewMixin
-     * @param {object} object - ダイアログ情報
-     */
+ * サーバダイアログ(Svelte) 初期設定
+ * @memberof ViewMixin
+ * @param {object} object - ダイアログ情報
+ */
     initServerDialog: function (object) {
       $H.log("ViewMixin initServerDialog : start");
-
       let self = object;
-      let data = '<div class="modal fade" id="serverDialog" tabindex="-1" role="dialog" aria-labelledby="serverHeader" aria-hidden="true">';
-      data += '  <div class="modal-dialog">';
-      data += '    <div class="modal-content">';
-      data += '      <div class="modal-header">';
-      data += '        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-      data += '        <div class="modal-header" id="serverHeader">';
-      data += '          <h4>サーバ確認</h4>';
-      data += '        </div>';
-      data += '      </div>';
-      data += '      <div class="modal-body" id="serverBody">';
-      data += '        <p></p></br>';
-      data += '      </div>';
-      data += '      <div class="modal-footer" id="serverFooter">'
-      data += '        <button id="serverDialogＯＫ" type="button" class="btn btn-default" data-dismiss="modal" default-value="ＯＫ" '
-      data += '          onclick="sessionStorage.setItem(\'serverDialog\', 1);">ＯＫ</button>'
-      data += '      </div>';
-      data += '    </div>';
-      data += '  </div>';
-      data += '</div>';
-      $("body").append(data);
 
-      $('#serverDialog').on('hidden.bs.modal', function () {
-        let status = self.pubsub.publish("serverDialogAfter");
-      })
+      //クローズ後呼び出し関数の取得
+      const onAfterfunction
+        = () => { self.pubsub.publish("serverDialogAfter"); };
 
-      $('#serverDialog').on('shown.bs.modal', function () {
-        $("#serverDialogＯＫ").focus();
-      })
+      //サーバダイアログコンポーネントの生成
+      window.createServerDialog(onAfterfunction);
 
       $H.log("ViewMixin initServerDialog : end");
     },
     /**
-     * サーバ確認ダイアログを表示する
-     * @memberof ViewMixin
-     * @param {object} arg - ダイアログ情報
-     */
+    * サーバ確認ダイアログ(Svelte)を表示する
+    * @memberof ViewMixin
+    * @param {object} arg - ダイアログ情報
+    */
     onServerDialog: function (arg) {
       $H.log("ViewMixin onServerDialog : start");
 
-      // タイトル・メッセージ設定(複数行可)
+      // タイトル(配列から改行に変換)
+      let title = arg["title"];
       if (Array.isArray(arg["title"])) {
-        $("#serverHeader h4").html(arg["title"].join('<br />'));
-      } else {
-        $("#serverHeader h4").text(arg["title"]);
+        title = arg["title"].join("<br />");
       }
+      //未設定の場合はデフォルト値を設定
+      if(!title){
+        title = "サーバ確認";
+      }
+
+      // メッセージ(配列から改行に変換)
+      let message = arg["message"];
       if (Array.isArray(arg["message"])) {
-        $("#serverBody p").html(arg["message"].join('<br />'));
-      } else {
-        $("#serverBody p").text(arg["message"]);
+        message = arg["message"].join("<br />");
       }
-      // ボタンの文字列を設定
-      this.setDialogButtonLabels($("#serverFooter"), arg);
-      $("#serverDialog").modal("show");
+
+      // ボタンラベル(デフォルト値)
+      const defaults = ["ＯＫ"];
+      let buttonLabel = this.setDialogButtonLabels(defaults, arg);
+
+      //サーバ確認ダイアログを表示
+      window.showServerDialog({ title, message, buttonLabel });
 
       $H.log("ViewMixin onServerDialog : end");
     },
+    // ★add end
+    //★del start 20260518 メッセージダイアログ(jQuery)削除
+    // /**
+    //  * ダイアログのボタンを設定
+    //  * @memberof ViewMixin
+    //  * @param {object} footerObject - フッター情報
+    //  * @param {object} arg - ダイアログ情報
+    //  */
+    // setDialogButtonLabels: function (footerObject, arg) {
+    //   $H.log("ViewMixin setDialogButtonLabels : start");
+
+    //   if ('button_labels' in arg) {
+    //     footerObject.find('input[type="button"]').each(function (index) {
+    //       $(this).val(arg.button_labels[index] !== undefined ?
+    //         arg.button_labels[index] : $(this).attr('default-value'));
+    //     });
+    //   }
+
+    //   $H.log("ViewMixin setDialogButtonLabels : end");
+    // },
+    //★del end   20260518 メッセージダイアログ(jQuery)削除
+    //★add start 20260518 メッセージダイアログ(Svelte)各種処理
     /**
-     * ダイアログのボタンを設定
+     * ダイアログのボタンラベルを設定する(Svelte用)
      * @memberof ViewMixin
-     * @param {object} footerObject - フッター情報
+     * @param {Array} defaults - デフォルトボタンラベルの配列
      * @param {object} arg - ダイアログ情報
+     * @returns {Array} ボタンラベルの配列
      */
-    setDialogButtonLabels: function (footerObject, arg) {
+    setDialogButtonLabels: function (defaults, arg) {
       $H.log("ViewMixin setDialogButtonLabels : start");
 
-      if ('button_labels' in arg) {
-        footerObject.find('input[type="button"]').each(function (index) {
-          $(this).val(arg.button_labels[index] !== undefined ?
-            arg.button_labels[index] : $(this).attr('default-value'));
-        });
+      let buttonLabel = [];
+      if (Array.isArray(arg["button_labels"])) {
+        for (let i = 0; i < defaults.length; i++) {
+          if (arg["button_labels"][i] !== undefined) {
+            buttonLabel.push(arg["button_labels"][i]);
+          } else {
+            buttonLabel.push(defaults[i]);
+          }
+        }
+      } else {
+        buttonLabel = defaults;
       }
 
       $H.log("ViewMixin setDialogButtonLabels : end");
+      return buttonLabel;
     },
+    //★add end   20260518 メッセージダイアログ(Svelte)各種処理
     /**
      * セレクトボックス表示処理（ＩＤでの設定）
      * @memberof ViewMixin
@@ -741,13 +990,17 @@
       let htmlName = defSelectBox["init"]["htmlname"];
       let max = responseRecord[valueName]["value"].length;
 
-      $("#" + selectorID + " option").remove();
+      // 2026-03-16 後方互換: halu-ds-field で要素を特定（なければ #id で検索）
+      let $sel = $("[halu-ds-field='" + selectorID + "']");
+      if (!$sel.length) $sel = $("#" + selectorID);
+
+      $sel.find("option").remove();
 
       let option = $('<option selected:selected/>');
       if (initHtml) {
         option.val(initValue);
         option.html(initHtml);
-        $("#" + selectorID).append(option);
+        $sel.append(option);
       }
 
 
@@ -755,7 +1008,7 @@
         option = $('<option />');
         option.val(responseRecord[valueName]["value"][i]);
         option.html(responseRecord[htmlName]["value"][i]);
-        $("#" + selectorID).append(option);
+        $sel.append(option);
       }
 
       $H.log("ViewMixin onShowSelectBox : end");
@@ -767,7 +1020,7 @@
      * @param {object} defSelectBox - セレクトボックス(画面要素)
      */
     showCurrentSelectBox: function (dataSetInfo, defSelectBox) {
-      $H.log("View setCurrentSelectBox : start");
+      $H.log("View showCurrentSelectBox : start");
       //変数宣言
       let selectorid = null;
       let detasetID = null;
@@ -792,11 +1045,14 @@
         dataSetRecord = this.appspec.getJSONChunkByIdAtRecords(dataSetInfo, detasetID);
         codeValue = dataSetRecord["record"][codeName]["value"][0];
 
-        $("#" + selectorid).val(codeValue);
+        // 2026-03-16 後方互換: halu-ds-field で要素を特定（なければ #id で検索）
+        let $sel = $("[halu-ds-field='" + selectorid + "']");
+        if (!$sel.length) $sel = $("#" + selectorid);
+        $sel.val(codeValue);
 
       }
 
-      $H.log("View setCurrentSelectBox : end");
+      $H.log("View showCurrentSelectBox : end");
     },
     /**
      * チェックボックス表示処理
@@ -818,11 +1074,15 @@
       onValue = defCheckBox["value"]["on"];
       offValue = defCheckBox["value"]["off"];
 
+      // 2026-06-12 後方互換: halu-ds-id+halu-ds-field属性で要素を特定（なければ #selectorid で検索）
+      let $checkbox = $("[halu-ds-id='" + defCheckBox["datasetid"] + "'][halu-ds-field='" + datasetName + "']");
+      if (!$checkbox.length) $checkbox = $("#" + selectorID);
+
       if (responseRecord[datasetName]["value"][0] == onValue) {
-        $("#" + selectorID).prop("checked", true);
+        $checkbox.prop("checked", true);
       }
       if (responseRecord[datasetName]["value"][0] == offValue) {
-        $("#" + selectorID).prop("checked", false);
+        $checkbox.prop("checked", false);
       }
 
       $H.log("ViewMixin onShowCheckBox : end");
@@ -841,7 +1101,9 @@
       let onValue = defCheckBox["value"]["on"];
       let offValue = defCheckBox["value"]["off"];
       let max = responseRecord[datasetName]["value"].length;
-      let targetObject = $("." + selectorName);
+      // 2026-06-12 後方互換: halu-ds-id+halu-ds-field属性で要素を特定（なければ .selectorname で検索）
+      let targetObject = $("[halu-ds-id='" + defCheckBox["datasetid"] + "'][halu-ds-field='" + datasetName + "']");
+      if (!targetObject.length) targetObject = $("." + selectorName);
 
       for (let i = 0; i < max; i++) {
         if (responseRecord[datasetName]["value"][i] == onValue) {
@@ -933,7 +1195,11 @@
           typeName = null;
 
           //データ取得
-          object = $("#" + name)[0];
+          // 2026-03-06 halu-ds-id属性+halu-ds-field属性でrecord id単位に要素を特定（後方互換: なければid属性で検索）
+          object = $("[halu-ds-id='" + jsonRecord["id"] + "'][halu-ds-field='" + name + "']")[0];
+          if (object === undefined) {
+            object = $("#" + name)[0];
+          }
           if (object === undefined) {
             continue;
           }
@@ -976,7 +1242,8 @@
 
       // 明細テーブルの１行目をクリアする
       detailRecord = this.appspec.getJSONChunkByIdAtRecords(jsonData, idName)["record"];
-      this.clearTableFirstRow(detailRecord);
+      // 2026-03-04 idNameをclearTableFirstRowに渡す
+      this.clearTableFirstRow(detailRecord, idName);
 
       // 明細行数を設定する
       maxSize = 0;
@@ -988,8 +1255,8 @@
       // 明細テーブルの１行目をデータ件数分コピーする
       this.copyTableFirstRow(tableID, maxSize);
 
-      // 明細テーブルにデータを表示する
-      this.showJsonDataToTable(detailRecord, maxSize);
+      // 2026-03-04 idNameをshowJsonDataToTableに渡す
+      this.showJsonDataToTable(detailRecord, maxSize, idName);
 
       $H.log("ViewMixin resetJsonDataToTable : end");
     },
@@ -1021,8 +1288,9 @@
      * 明細テーブルの１行目をクリアする
      * @memberof ViewMixin
      * @param {object} detailRecord - 明細データ
+     * @param {string} idName - record id名
      */
-    clearTableFirstRow: function (detailRecord) {
+    clearTableFirstRow: function (detailRecord, idName) {
       $H.log("ViewMixin clearTableFirstRow : start");
       //変数宣言
       let name = null;
@@ -1036,7 +1304,13 @@
         tagName = null;
         typeName = null;
 
-        objArray = $("." + name);
+        // 2026-03-06 halu-ds-id属性+halu-ds-field属性でrecord id単位に要素を特定（後方互換: なければclass属性のみで検索）
+        if (idName) {
+          objArray = $("[halu-ds-id='" + idName + "'][halu-ds-field='" + name + "']");
+        }
+        if (!objArray || !objArray.length) {
+          objArray = $("." + name);
+        }
         if (!objArray.length) {
           continue;
         }
@@ -1101,8 +1375,9 @@
      * @memberof ViewMixin
      * @param {object} detailRecord - 明細データ
      * @param {number} maxSize - 最大行数 
+     * @param {string} idName - record id名
      */
-    showJsonDataToTable: function (detailRecord, maxSize) {
+    showJsonDataToTable: function (detailRecord, maxSize, idName) {
       $H.log("ViewMixin showJsonDataToTable : start");
       //変数宣言
       let name = null;
@@ -1125,7 +1400,13 @@
           arg = null;
 
           //項目名を取得
-          objArray = $("." + name);
+          // 2026-03-06 halu-ds-id属性+halu-ds-field属性でrecord id単位に要素を特定（後方互換: なければclass属性のみで検索）
+          if (idName) {
+            objArray = $("[halu-ds-id='" + idName + "'][halu-ds-field='" + name + "']");
+          }
+          if (!objArray || !objArray.length) {
+            objArray = $("." + name);
+          }
           if (!objArray.length) {
             continue;
           }
@@ -1287,6 +1568,7 @@
       let typeName = null;
       let strArray = null;
       let $select = null;
+      let $elements = null;
 
       // 検索項目をクリアする
       maxSizeKeyInfo = keyInfo.length;
@@ -1307,34 +1589,46 @@
           typeName = null;
           strArray = null;
           $select = null;
+          $elements = null;
 
           //値取得
           itemName = keyInfo[i]["dataname"][j];
           className = keyInfo[i]["classname"][j];
           typeName = keyInfo[i]["typename"][j];
 
+          // 2026-03-13 halu-ds-id+halu-ds-field属性で要素を特定
+          // 後方互換: 見つからなければ classname で検索（multipleselect のみ #id セレクタ）
+          $elements = $("[halu-ds-id='" + datasetID + "'][halu-ds-field='" + itemName + "']");
+          if ($elements.length === 0 && className) {
+            if (typeName == "multipleselect") {
+              $elements = $("#" + className);
+            } else {
+              $elements = $("." + className);
+            }
+          }
+
           if (typeName == "text") {
-            $("." + className).val(datasetRecord[itemName]["value"][0]);
+            $elements.val(datasetRecord[itemName]["value"][0]);
           }
           if (typeName == "select") {
-            $("." + className).val(datasetRecord[itemName]["value"][0]);
+            $elements.val(datasetRecord[itemName]["value"][0]);
           }
           if (typeName == "multipleselect") {
             strArray = datasetRecord[itemName]["value"][0].split(",");
-            $select = $("#" + className);
+            $select = $elements;
             $select.multipleSelect("uncheckAll");
             $select.multipleSelect("setSelects", strArray);
           }
           if (typeName == "checkbox") {
             if (datasetRecord[itemName]["value"][0] == "" || datasetRecord[itemName]["value"][0] == "0") {
-              $("." + className).prop("checked", false);
+              $elements.prop("checked", false);
             }
             else {
-              $("." + className).prop("checked", true);
+              $elements.prop("checked", true);
             }
           }
           if (typeName == "td") {
-            $("." + className).text(datasetRecord[itemName]["value"][0]);
+            $elements.text(datasetRecord[itemName]["value"][0]);
           }
         }
       }
@@ -1353,6 +1647,15 @@
         if (this.appspec.isExists(this.appspec.firstFocusItem[0])) {
           if (this.appspec.firstFocusItem[0][0] == "class") {
             object = $("." + this.appspec.firstFocusItem[0][1])[0];
+          }
+          // 2026-06-12 後方互換: "field"指定時はhalu-ds-fieldで特定（第3要素があればhalu-ds-idでrecord id単位に特定）。class/id分岐は従来通り
+          else if (this.appspec.firstFocusItem[0][0] == "field") {
+            if (this.appspec.isExists(this.appspec.firstFocusItem[0][2])) {
+              object = $("[halu-ds-id='" + this.appspec.firstFocusItem[0][2] + "'][halu-ds-field='" + this.appspec.firstFocusItem[0][1] + "']")[0];
+            }
+            else {
+              object = $("[halu-ds-field='" + this.appspec.firstFocusItem[0][1] + "']")[0];
+            }
           }
           else {
             object = $("#" + this.appspec.firstFocusItem[0][1])[0];
@@ -1382,6 +1685,15 @@
         if (this.appspec.isExists(this.appspec.f12FocusItem[0])) {
           if (this.appspec.f12FocusItem[0][0] == "class") {
             object = $("." + this.appspec.f12FocusItem[0][1])[0];
+          }
+          // 2026-06-12 後方互換: "field"指定時はhalu-ds-fieldで特定（第3要素があればhalu-ds-idでrecord id単位に特定）。class/id分岐は従来通り
+          else if (this.appspec.f12FocusItem[0][0] == "field") {
+            if (this.appspec.isExists(this.appspec.f12FocusItem[0][2])) {
+              object = $("[halu-ds-id='" + this.appspec.f12FocusItem[0][2] + "'][halu-ds-field='" + this.appspec.f12FocusItem[0][1] + "']")[0];
+            }
+            else {
+              object = $("[halu-ds-field='" + this.appspec.f12FocusItem[0][1] + "']")[0];
+            }
           }
           else {
             object = $("#" + this.appspec.f12FocusItem[0][1])[0];

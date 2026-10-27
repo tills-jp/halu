@@ -1,19 +1,24 @@
-﻿<!-- ***********************************************
+<!-- ***********************************************
  * Framework Name  :  Halu
  * (c) 2025 TILLS & Co.
  *********************************************** -->
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Haluサンプル　ログイン</title> 
-<link href="../../../../../Application/Sample/Html/css/bootstrap.min_default.css?var=201710041453" rel="stylesheet"/>
+<title>ログイン</title> 
+<link href="../../../../../Application/Sample/Html/css/bootstrap-5.3.0/bootstrap.min.css?var=202607031000" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/halu-custom_default.css?var=202608311200" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/project.css?var=202608311400" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/Apps/Login/css/program.css?var=202608311200" rel="stylesheet"/>
+<script type="text/javascript" src="../../../../../System/Html/js/halutheme-preload-1.0.0.js?var=202609081100"></script>
 
-<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.4.1.min.js?var=201710041453"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.7.1.min.js?var=202607111000"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/jquery-ui-1.12.1/jquery-ui.min.js?var=201710041453"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js?var=201710041453"></script>
-<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-4.4.1/bootstrap.bundle.min.js?var=201710041453"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-5.3.0/bootstrap.bundle.min.js?var=202607031000"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/template/jquery.loadTemplate-1.4.5.min.js?var=201710041453"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/bignumberjs/bignumber.min.js?var=201710041453"></script>
 
@@ -35,6 +40,11 @@
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/Login/login.view.js?var=201905011454"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/Login/login.controller.js?var=201905011454"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/Login/login.main.js?var=201905011454"></script>
+
+<!-- コンポーネント -->
+<script type="module" src="../../../../../Application/Sample/Html/SvelteComponent/build/AppComponents.js?var=202609151300"></script>
+<script type="module" src="../../../../../System/Html/SvelteComponent/build/HaluComponents.js?var=202605261144"></script>
+
 </head>
 
 <!-- ================================================================================================================= -->
@@ -44,66 +54,40 @@
 <div class="d-flex flex-column">                                                    <!-- ▼d-flex flex-column スタート -->
 <!-- ================================================================================================================= -->
 
+<!-- ================================================================================================================= -->
+<!-- ★▼halu-page-header -->
+<div componentID="Header" props-Title="ログイン" props-LoginInfo-visible=false></div>
+<!-- ================================================================================================================= -->
 
 <!-- ================================================================================================================= -->
-<div class="halu-page-header sticky-top bg-primary" style="height:60px;">           <!-- ▼halu-page-header スタート -->
+<div class="halu-header-login halu-login-card">                                          <!-- ▼halu-header スタート -->
 <!-- ================================================================================================================= -->
-  <div class="d-flex justify-content-start align-items-center">
-    <div class="d-flex">
-      <div class="mx-1 mt-1 halu-page-header-icon" style="width:120px; height:100%;">
-        <img src="../../../../../Application/Sample/Html/images/Halulogo_238-85_02business.png" class="img-fluid">
-      </div>
 
-      <div class="mx-1 mt-3">
-        <button type="button" class="btn btn-info btn-sm mx-1" id="クリア"   name="クリア"   style="width:100px;">クリア：Esc</button>
-        <button type="button" class="btn btn-info btn-sm mx-1" id="ログイン" name="ログイン" style="width:110px;">ログイン：F1</button>
-      </div>
-    </div>
-  
-    <div>
-      <div class="mx-5 mt-3">
-        <h5 id="ヘッダータイトル">Haluサンプル</h5>
-      </div>
-    </div>
-
+  <div class="halu-login-title">
+    Haluサンプル<br>ログインページ
   </div>
-<!-- ================================================================================================================= -->
-</div>                                                                                 <!-- halu-page-header エンド -->
-<!-- ================================================================================================================= -->
 
-
-<!-- ================================================================================================================= -->
-<div class="halu-header-login my-4" style="height:220px;">                               <!-- ▼halu-header スタート -->
-<!-- ================================================================================================================= -->
-  <div class="d-flex justify-content-center">
-
-    <div class="d-flex align-items-end" style="height:220px;">
-      <table class="table table-borderless table-sm">
-        <tbody>
-          <tr>
-            <td class="text-center" style="width:150px;">ログインＩＤ</td>
-            <td style="width:260px;">
-              <input type="text" class="form-control form-control-sm text-left" id="ログインＩＤ" name="ログインＩＤ">
-            </td>
-            <td style="width:100px;"></td>
-          </tr>
-          <tr>
-            <td style="width:150px;"></td>
-            <td style="width:260px;"></td>
-            <td style="width:100px;"></td>
-          </tr>
-          <tr>
-            <td class="text-center" style="width:150px;">パスワード</td>
-            <td style="width:260px;">
-              <input type="password" class="form-control form-control-sm text-left" id="パスワード" name="パスワード">
-            </td>
-            <td style="width:100px;"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
+  <div class="halu-login-field">
+    <svg class="halu-login-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+      <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+    </svg>
+    <input type="text" class="form-control form-control-sm text-start halu-login-input" halu-ds-id="header" halu-ds-field="ログインＩＤ" placeholder="ログインID">
   </div>
+
+  <div class="halu-login-field">
+    <svg class="halu-login-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+    </svg>
+    <input type="password" class="form-control form-control-sm text-start halu-login-input" halu-ds-id="header" halu-ds-field="パスワード" placeholder="パスワード">
+  </div>
+
+  <div class="halu-login-actions">
+    <!-- D-005/要C管理番号: モックアップに「クリア」ボタンは表示されないため非表示化（Escキーでのクリア機能自体は維持、非表示化のみ） -->
+    <button type="button" class="btn btn-info btn-sm mx-1 halu-login-clear-hidden" id="クリア" name="クリア">クリア：Esc</button>
+    <button type="button" class="btn btn-info btn-sm halu-login-submit" id="ログイン" name="ログイン">LOGIN</button>
+  </div>
+
 <!-- ================================================================================================================= -->
 </div>                                                                                      <!-- ▲halu-header エンド -->
 <!-- ================================================================================================================= -->
@@ -119,7 +103,8 @@
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-page-footer bg-primary mt-3" style="height:20px;">    <!-- ▼halu-page-footer スタート -->
+<!-- ★▼halu-page-footer -->
+<div componentID="Footer"></div>
 <!-- ================================================================================================================= -->
 
 <!-- ================================================================================================================= -->

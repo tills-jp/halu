@@ -1,0 +1,30 @@
+# Halu Framework - Python Dependencies
+# Reference: https://tills.co.jp/halu_wiki/%e7%92%b0%e5%a2%83%e6%a7%8b%e7%af%89/
+# Python 3.11
+
+# Web server (ASGI)
+uvicorn==0.52.4
+starlette[full]==1.6.0
+
+# Database
+sqlalchemy==1.4.29
+psycopg2-binary==2.9.6
+
+# RPC
+msgpack-rpc-python
+
+# Excel / PDF file generation
+openpyxl
+
+# Data processing
+pandas
+
+# Password encryption
+bcrypt
+
+# Python typing compatibility (starlette 1.6.0 requires >=4.10.0)
+typing_extensions==4.16.0
+
+# Development tools
+pytest
+flake8

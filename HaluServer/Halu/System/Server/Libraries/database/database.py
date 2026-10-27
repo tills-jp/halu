@@ -133,6 +133,8 @@ class Database():
             self.doGenerateSql(dbname, sql_info)
         except Exception as e:
             self.dlog.error(self.dlogname, f'Database SQL文の実行 exception message : {e}')
+            # 2026-08-02 B-007 SQL実行例外を握りつぶさず呼び出し元へ再送出（サイレント失敗解消）
+            raise
 
         finally:
             self.dlog.debug(self.dlogname, f'Database SQL文の実行 end : dbname = {dbname}')

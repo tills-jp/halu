@@ -1,0 +1,202 @@
+<!-- ***********************************************
+ * Framework Name  :  Halu
+ * (c) 2025 TILLS & Co.
+ *********************************************** -->
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品選択ダイアログ</title>
+  <!-- iframe分離方式では親documentのCSS・フレームワークJSを流用できないため、通常画面と同じフル構成で読み込む -->
+  <link href="../../../../../Application/Sample/Html/css/bootstrap-5.3.0/bootstrap.min.css?var=202607031000" rel="stylesheet"/>
+  <link href="../../../../../Application/Sample/Html/css/halu-custom_default.css?var=202608311200" rel="stylesheet"/>
+  <link href="../../../../../Application/Sample/Html/css/project.css?var=202608311400" rel="stylesheet"/>
+<script type="text/javascript" src="../../../../../System/Html/js/halutheme-preload-1.0.0.js?var=202609081100"></script>
+
+  <script type="text/javascript" src="../../../../../System/Html/js/jquery-3.7.1.min.js?var=202607111000"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/jquery-ui-1.12.1/jquery-ui.min.js?var=202408171800"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js?var=202408171800"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/bootstrap-5.3.0/bootstrap.bundle.min.js?var=202607031000"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/template/jquery.loadTemplate-1.4.5.min.js?var=202408171800"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/bignumberjs/bignumber.min.js?var=202408171800"></script>
+
+  <script type="text/javascript" src="../../../../../System/Html/js/halumvc-1.0.0.js?var=202408171800"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/halumodel.mixin-1.0.0.js?var=202607271000"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/haluview.mixin-1.0.0.js?var=202408171800"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/halucontroller.mixin-1.0.0.js?var=202607241800"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/haluentertabpfkey.mixin-1.0.0.js?var=202408171800"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/haluvalidation.mixin-1.0.0.js?var=202408171800"></script>
+  <script type="text/javascript" src="../../../../../System/Html/js/haluappspec.mixin-1.0.0.js?var=202408171800"></script>
+  <script type="text/JavaScript" src="../../../../../System/Html/js/webstorage-1.0.0.js?var=202408171800"></script>
+
+  <script type="text/javascript"
+    src="../../../../../Application/Sample/Html/js/dataSelectionDialog.view.mixin-1.0.0.js?var=202606191330"></script>
+  <script type="text/javascript"
+    src="../../../../../Application/Sample/Html/js/dataSelectionDialog.model.mixin-1.0.0.js?var=202606191330"></script>
+  <script type="text/javascript"
+    src="../../../../../Application/Sample/Html/js/dataSelectionDialog.controller.mixin-1.0.0.js?var=202606191330"></script>
+
+  <script type="text/javascript"
+    src="../../../../../Application/Sample/Html/Apps/ProductSelectionDialog/ProductSelectionDialog.appspec.js?var=202608051000"></script>
+  <script type="text/javascript"
+    src="../../../../../Application/Sample/Html/Apps/ProductSelectionDialog/ProductSelectionDialog.model.js?var=202608051000"></script>
+  <script type="text/javascript"
+    src="../../../../../Application/Sample/Html/Apps/ProductSelectionDialog/ProductSelectionDialog.view.js?var=202608051000"></script>
+  <script type="text/javascript"
+    src="../../../../../Application/Sample/Html/Apps/ProductSelectionDialog/ProductSelectionDialog.controller.js?var=202608051000"></script>
+  <script type="text/javascript"
+    src="../../../../../Application/Sample/Html/Apps/ProductSelectionDialog/ProductSelectionDialog.main.js?var=202608051000"></script>
+
+  <!-- コンポーネント -->
+  <script type="module" src="../../../../../Application/Sample/Html/SvelteComponent/build/AppComponents.js?var=202609151300"></script>
+  <!-- iframe分離方式では別documentのため重複生成問題は発生しない。ヘッダ/フッタ・警告Dialogの表示に必要なため読み込む -->
+  <script type="module" src="../../../../../System/Html/SvelteComponent/build/HaluComponents.js?var=202607241800"></script>
+  </head>
+
+<!-- ================================================================================================================= -->
+
+<body> <!-- ▼body部 スタート -->
+  <div class="container-fluid bg-secondary"> <!-- ▼container-fluid スタート -->
+    <form id="dialogForm"> <!-- ▼form スタート -->
+      <div class="d-flex flex-column"> <!-- ▼d-flex flex-column スタート -->
+        <!-- ================================================================================================================= -->
+
+
+        <!-- ================================================================================================================= -->
+        <!-- ★▼halu-page-header -->
+        <div componentID="Header" props-Title="商品選択ダイアログ" props-LoginInfo-visible="false"></div>
+        <!-- ================================================================================================================= -->
+
+
+        <!-- ================================================================================================================= -->
+        <div class="halu-button-area" style="height:60px;"> <!-- ▼ボタン行 スタート -->
+          <!-- ================================================================================================================= -->
+          <div class="d-flex align-items-center" style="height:60px;">
+            <div class="mx-1">
+              <button type="button" class="btn btn-info btn-sm halu-btn-outline" id="閉じるDialog" name="閉じるDialog"
+                style="width:110px;">閉じる：Esc</button>
+            </div>
+            <div class="mx-1">
+              <button type="button" class="btn btn-info btn-sm" id="選択Dialog" name="選択Dialog"
+                style="width:110px;">選択：F1</button>
+            </div>
+          </div>
+          <!-- ================================================================================================================= -->
+        </div> <!-- ▲ボタン行 エンド -->
+        <!-- ================================================================================================================= -->
+
+
+        <!-- ================================================================================================================= -->
+        <div class="halu-header-input"> <!-- ▼検索条件 スタート -->
+          <!-- ================================================================================================================= -->
+          <div class="d-flex justify-content-center">
+            <div class="d-flex align-items-end gap-2" style="width:527px;">
+              <div>
+                <span class="halu-form-label">商品コード</span>
+                <input type="text" class="form-control form-control-sm text-start" style="width:130px;"
+                  halu-ds-id="header" halu-ds-field="検索商品コード">
+              </div>
+              <div>
+                <span class="halu-form-label">商品名称</span>
+                <input type="text" class="form-control form-control-sm text-start" style="width:185px;"
+                  halu-ds-id="header" halu-ds-field="検索商品名称">
+              </div>
+              <div>
+                <button type="button" class="btn btn-info btn-sm" id="検索Dialog" name="検索Dialog"
+                  style="width:90px;">検索：F5</button>
+              </div>
+              <div>
+                <button type="button" class="btn btn-info btn-sm halu-btn-outline" id="クリアDialog" name="クリアDialog"
+                  style="width:90px;">クリア</button>
+              </div>
+            </div>
+          </div>
+          <!-- ================================================================================================================= -->
+        </div> <!-- ▲検索条件 エンド -->
+        <!-- ================================================================================================================= -->
+
+
+        <!-- ================================================================================================================= -->
+        <div class="halu-detail-readonly mt-3" style="height:340px;"> <!-- ▼halu-detail-readonly スタート -->
+          <!-- ================================================================================================================= -->
+          <div class="d-flex justify-content-center">
+
+            <div id="scrollable-Table" style="width:527px;"> <!-- 510px + 17px -->
+              <div id="scrollable-HTable" style="width:510px;">
+                <table id="dialogTableH" class="table table-sm table-bordered my-0"
+                  style="width:510px;table-layout:fixed;">
+                  <thead class="table-dark">
+                    <tr>
+                      <th class="text-center" style="width:110px;">商品コード</th>
+                      <th class="text-center" style="width:300px;">商品名称</th>
+                      <th class="text-center" style="width:100px;">標準単価</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+
+              <div id="scrollable-DTable" style="width:527px;height:300px;overflow-x:auto;overflow-y:auto;">
+                <table id="dialogTable" class="table table-striped table-sm table-bordered my-0"
+                  style="width:510px;table-layout:fixed;">
+                  <tbody class="tbody-light">
+                    <tr style="height:33px">
+                      <td halu-ds-id="detail" halu-ds-field="商品コード" class="text-start" style="width:110px;"></td>
+                      <td halu-ds-id="detail" halu-ds-field="商品名称" class="text-start" style="width:300px;"></td>
+                      <td halu-ds-id="detail" halu-ds-field="標準単価" class="text-end" style="width:100px;"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+          <!-- ================================================================================================================= -->
+        </div> <!-- ▲halu-detail-readonly エンド -->
+        <!-- ================================================================================================================= -->
+
+
+        <!-- ================================================================================================================= -->
+        <div class="halu-footer mt-3" style="height:30px;"> <!-- ▼halu-footer スタート -->
+          <!-- ================================================================================================================= -->
+          <div class="d-flex justify-content-center">
+            <div class="mx-1">
+              <button type="button" class="btn btn-info btn-sm" id="最初のページDialog" name="最初のページDialog"
+                style="width:84px;">最初：F9</button>
+            </div>
+            <div class="mx-1">
+              <button type="button" class="btn btn-info btn-sm" id="前のページDialog" name="前のページDialog"
+                style="width:84px;">前へ：F10</button>
+            </div>
+            <div class="mx-1">
+              <input type="text" class="form-control form-control-sm text-center" id="ページ情報Dialog" name="ページ情報Dialog"
+                readonly tabIndex=-1 style="width:160px;">
+            </div>
+            <div class="mx-1">
+              <button type="button" class="btn btn-info btn-sm" id="次のページDialog" name="次のページDialog"
+                style="width:84px;">次へ：F11</button>
+            </div>
+            <div class="mx-1">
+              <button type="button" class="btn btn-info btn-sm" id="最後のページDialog" name="最後のページDialog"
+                style="width:84px;">最後：F12</button>
+            </div>
+          </div>
+          <!-- ================================================================================================================= -->
+        </div> <!-- ▲halu-footer エンド -->
+        <!-- ================================================================================================================= -->
+
+        <!-- ================================================================================================================= -->
+        <!-- ★▼halu-page-footer -->
+        <div componentID="Footer"></div>
+        <!-- ================================================================================================================= -->
+
+
+        <!-- ================================================================================================================= -->
+      </div> <!-- ▲d-flex flex-column エンド -->
+    </form> <!-- ▲form エンド -->
+  </div> <!-- ▲container-fluid エンド -->
+</body> <!-- ▲body部 エンド -->
+<!-- ================================================================================================================= -->
+
+</html>

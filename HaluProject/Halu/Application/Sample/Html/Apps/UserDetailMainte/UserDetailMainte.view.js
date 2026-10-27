@@ -40,6 +40,13 @@
       if (mode == "select" || mode == "delete") {
         $("input").prop('disabled', true);
         $("select").prop('disabled', true);
+        // C-009: 備考のtextarea化に伴い無効化対象へ追加（照会/削除モードのグレーアウト）
+        $("textarea").prop('disabled', true);
+      }
+      // C-070: 訂正モードではユーザコードを読取専用にする（設計書3章「登録時のみ入力可。訂正・削除・照会時は読取専用」）。
+      // disabled ではなく readonly を使い、表示・データセット同期を維持する（update SQL 側でも更新対象から除外済み）
+      else if (mode == "update") {
+        $("input[halu-ds-field='ユーザコード']").prop('readOnly', true);
       }
 
       $H.log("View set項目制御 : end");

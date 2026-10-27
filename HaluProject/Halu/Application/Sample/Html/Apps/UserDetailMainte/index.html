@@ -7,14 +7,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>単票登録（単一テーブル）</title> 
-<link href="../../../../../Application/Sample/Html/css/bootstrap.min_default.css?var=201710041453" rel="stylesheet"/>
-<link href="../../../../../Application/Sample/Html/Apps/UserDetailMainte/css/program.css?var=201908101132" rel="stylesheet"/>
+<title>ユーザ詳細</title> 
+<link href="../../../../../Application/Sample/Html/css/bootstrap-5.3.0/bootstrap.min.css?var=202607031000" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/halu-custom_default.css?var=202608311200" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/project.css?var=202608311400" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/Apps/UserDetailMainte/css/program.css?var=202608301500" rel="stylesheet"/>
+<script type="text/javascript" src="../../../../../System/Html/js/halutheme-preload-1.0.0.js?var=202609081100"></script>
 
-<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.4.1.min.js?var=201710041453"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.7.1.min.js?var=202607111000"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/jquery-ui-1.12.1/jquery-ui.min.js?var=201710041453"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js?var=201710041453"></script>
-<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-4.4.1/bootstrap.bundle.min.js?var=201710041453"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-5.3.0/bootstrap.bundle.min.js?var=202607031000"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/template/jquery.loadTemplate-1.4.5.min.js?var=201710041453"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/bignumberjs/bignumber.min.js?var=201710041453"></script>
 
@@ -27,15 +30,19 @@
 <script type="text/javascript" src="../../../../../System/Html/js/haluappspec.mixin-1.0.0.js?var=201908101132"></script>
 <script type="text/JavaScript" src="../../../../../System/Html/js/webstorage-1.0.0.js?var=201908101132"></script>
 
-<script type="text/javascript" src="../../../../../Application/Sample/Html/js/singleRecordForm.view.mixin-1.0.0.js?var=201908101132"></script>
-<script type="text/javascript" src="../../../../../Application/Sample/Html/js/singleRecordForm.model.mixin-1.0.0.js?var=201908101132"></script>
-<script type="text/javascript" src="../../../../../Application/Sample/Html/js/singleRecordForm.controller.mixin-1.0.0.js?var=201908101132"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/js/singleRecordForm.view.mixin-1.0.0.js?var=202609240200"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/js/singleRecordForm.model.mixin-1.0.0.js?var=202609240200"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/js/singleRecordForm.controller.mixin-1.0.0.js?var=202609240200"></script>
 
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/UserDetailMainte/UserDetailMainte.appspec.js?var=201908101132"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/UserDetailMainte/UserDetailMainte.model.js?var=201908101132"></script>
-<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/UserDetailMainte/UserDetailMainte.view.js?var=201908101132"></script>
-<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/UserDetailMainte/UserDetailMainte.controller.js?var=201908101132"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/UserDetailMainte/UserDetailMainte.view.js?var=202609211900"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/UserDetailMainte/UserDetailMainte.controller.js?var=202608011000"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/UserDetailMainte/UserDetailMainte.main.js?var=201908101132"></script>
+
+<!-- コンポーネント -->
+<script type="module" src="../../../../../Application/Sample/Html/SvelteComponent/build/AppComponents.js?var=202609151300"></script>
+<script type="module" src="../../../../../System/Html/SvelteComponent/build/HaluComponents.js?var=202605261144"></script>
 </head>
 
 <!-- ================================================================================================================= -->
@@ -47,143 +54,96 @@
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-page-header sticky-top bg-primary" style="height:60px;">           <!-- ▼halu-page-header スタート -->
+<!-- ★▼halu-page-header -->
+<div componentID="Header" props-Title="ユーザ詳細"></div>
 <!-- ================================================================================================================= -->
+
+
+<!-- ================================================================================================================= -->
+<div class="halu-header-btn">                                                        <!-- ▼halu-header-btn スタート -->
+<!-- ================================================================================================================= -->
+  <!-- ★フェーズ2デザイン適用 D-007: 本文左上の大見出し（モード付きタイトルはsingleRecordForm.view.mixinが反映）
+       ＋戻るボタン（UAT指摘 2026-07-27: UserListと同じ見出し右側配置へ。id/name・キーバインドは不変） -->
   <div class="d-flex justify-content-between align-items-center">
-    <div class="d-flex">
-      <div class="mx-1 mt-1 halu-page-header-icon" style="width:140px; height:100%;">
-        <img src="../../../../../Application/Sample/Html/images/Halulogo_238-85_02business.png" class="img-fluid">
-      </div>
-  
-      <div class="mx-1 mt-3">
-        <button type="button" class="btn btn-info btn-sm mx-1" id="戻る" name="戻る" style="width:84px;">戻る：Esc</button>
-        <button type="button" class="btn btn-info btn-sm mx-1" id="実行" name="実行" style="width:84px;">実行：F1</button>
-      </div>
-    </div>
-  
-    <div>
-      <div class="mx-1 mt-3">
-        <h5 id="ヘッダータイトル">単票登録（単一テーブル）</h5>
-      </div>
-    </div>
-  
-    <div class="d-flex">
-      <div class="mx-1 mt-1">
-        <div>
-          <!-- <label class="my-0" id="ログイン和暦" name="ログイン和暦">　</label> -->
-        </div>
-        <div>
-          <label class="my-0">　</label>
-        </div>
-      </div>
-  
-      <div class="mx-1 mt-1">
-        <div>
-          <label class="my-0">ログイン日時：</label>
-          <label class="my-0" id="ログイン日時" name="ログイン日時">　</label>
-        </div>
-        <div>
-          <label class="my-0">　ユーザ氏名：</label>
-          <label class="my-0" id="ユーザ氏名" name="ユーザ氏名">　</label>
-        </div>
-      </div>
+    <div class="halu-page-title">ユーザ詳細</div>
+    <div class="me-2">
+      <button type="button" class="btn btn-info btn-sm halu-btn-outline" id="戻る" name="戻る" style="width:110px;">戻る：Esc</button>
     </div>
   </div>
 <!-- ================================================================================================================= -->
-</div>                                                                                 <!-- ▲halu-page-header エンド -->
+</div>                                                                                  <!-- ▲halu-header-btn エンド -->
 <!-- ================================================================================================================= -->
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-header-input mt-4" style="height:480px;">                         <!-- ▼halu-header-input スタート -->
+<div class="halu-header-input mt-4">                                               <!-- ▼halu-header-input スタート -->
 <!-- ================================================================================================================= -->
   <div class="d-flex justify-content-center">
-    <div>
-      <table class="table table-borderless table-sm">
-        <tbody class="tbody-light">
-          <tr>
-            <td class="text-left" style="width:160px;"><b>＜ユーザ基本情報＞</b></td>
-            <td class="text-right" style="width:300px;">　</td>
-          </tr>
-          <tr>
-            <td class="text-right" style="width:160px;">ユーザＩＤ</td>
-            <td style="width:300px;">
-              <input type="text" class="ユーザＩＤ form-control form-control-sm text-left" id="ユーザＩＤ" name="ユーザＩＤ" disabled>
-            </td>
-          </tr>
-          <tr>
-            <td class="text-right required" style="width:160px;">ユーザ名</td>
-            <td style="width:300px;">
-              <input type="text" class="ユーザ名 form-control form-control-sm text-left" id="ユーザ名" name="ユーザ名">
-            </td>
-          </tr>
-          <tr>
-            <td class="text-right" style="width:160px;">メールアドレス</td>
-            <td style="width:300px;">
-              <input type="text" class="メールアドレス form-control form-control-sm text-left" id="メールアドレス" name="メールアドレス">
-            </td>
-          </tr>
-          <tr>
-            <td class="text-right" style="width:160px;">テーマコード</td>
-            <td style="width:300px;">
-              <select class="テーマコード form-control form-control-sm" id="テーマコード" name="テーマコード">
-              </select>
-          </td>
-          </tr>
-          <tr>
-            <td class="text-right" style="width:160px;">備考</td>
-            <td style="width:300px;">
-              <input type="text" class="備考 form-control form-control-sm text-left" id="備考" name="備考">
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+    <!-- ★フェーズ2デザイン適用 D-007: 3セクション構成の白カードフォームへ再構成（halu-ds-*・id/nameは不変） -->
+    <div class="halu-form-card halu-card">
+
+      <div class="halu-form-section">
+        <div class="halu-form-section-title">＜ユーザ基本情報＞</div>
+        <div class="halu-form-grid">
+          <div class="halu-form-item">
+            <span class="halu-form-label">ユーザＩＤ</span>
+            <input type="text" class="form-control form-control-sm text-start" halu-ds-id="header" halu-ds-field="ユーザＩＤ" disabled>
+          </div>
+          <div class="halu-form-item">
+            <span class="halu-form-label">テーマコード</span>
+            <select class="form-control form-control-sm" halu-ds-id="header" halu-ds-field="テーマコード">
+            </select>
+          </div>
+          <div class="halu-form-item">
+            <span class="halu-form-label required">ユーザ名</span>
+            <input type="text" class="form-control form-control-sm text-start" halu-ds-id="header" halu-ds-field="ユーザ名">
+          </div>
+          <div class="halu-form-item halu-form-item-biko">
+            <span class="halu-form-label">備考</span>
+            <!-- C-009: 複数行入力に対応するためinput→textarea化（halu-ds-*は不変。Enterで改行、フォーカス移動しない） -->
+            <textarea class="form-control form-control-sm text-start" halu-ds-id="header" halu-ds-field="備考"></textarea>
+          </div>
+          <div class="halu-form-item">
+            <span class="halu-form-label">メールアドレス</span>
+            <input type="text" class="form-control form-control-sm text-start" halu-ds-id="header" halu-ds-field="メールアドレス">
+          </div>
+        </div>
+      </div>
+
+      <div class="halu-form-section">
+        <div class="halu-form-section-title">＜ログイン情報＞</div>
+        <div class="halu-form-grid">
+          <div class="halu-form-item">
+            <span class="halu-form-label required">ユーザコード</span>
+            <input type="text" class="form-control form-control-sm text-start" halu-ds-id="header" halu-ds-field="ユーザコード">
+          </div>
+          <div></div>
+          <div class="halu-form-item">
+            <span class="halu-form-label required">パスワード</span>
+            <input type="password" class="form-control form-control-sm text-start" halu-ds-id="header" halu-ds-field="パスワード">
+          </div>
+        </div>
+      </div>
+
+      <div class="halu-form-section">
+        <div class="halu-form-section-title">＜権限情報＞</div>
+        <div class="halu-form-grid">
+          <div class="halu-form-item">
+            <span class="halu-form-label required">メニュー名</span>
+            <select class="form-control form-control-sm" halu-ds-id="header" halu-ds-field="メニュー名">
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ★フェーズ2デザイン適用 D-007: 実行ボタンはカード右下（id/name・F1キーバインド・モード別表示切替は不変） -->
+      <div class="halu-form-actions">
+        <button type="button" class="btn btn-info btn-sm mx-1" id="実行" name="実行" style="width:110px;">実行：F1</button>
+      </div>
+
     </div>
 
-    <div>
-      <label>　　</label>
-    </div>
-
-    <div>
-      <table class="table table-borderless table-sm">
-        <tbody class="tbody-light">
-          <tr>
-            <td class="text-left" style="width:150px;"><b>＜ログイン情報＞</b></td>
-            <td class="text-right" style="width:220px;">　</td>
-            <td class="text-right" style="width:80px;">　</td>
-          </tr>
-          <tr>
-            <td class="text-right required" style="width:150px;">ユーザコード</td>
-            <td style="width:220px;">
-              <input type="text" class="ユーザコード form-control form-control-sm text-left" id="ユーザコード" name="ユーザコード">
-            </td>
-          </tr>
-          <tr>
-            <td class="text-right required" style="width:150px;">パスワード</td>
-            <td style="width:220px;">
-              <input type="password" class="パスワード form-control form-control-sm text-left" id="パスワード" name="パスワード">
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <table class="table table-borderless table-sm">
-        <tbody class="tbody-light">
-          <tr>
-            <td class="text-left" style="width:150px;"><b>＜権限情報＞</b></td>
-            <td class="text-right" style="width:220px;">　</td>
-            <td class="text-right" style="width:80px;">　</td>
-          </tr>
-          <tr>
-            <td class="text-right required" style="width:150px;">メニュー名</td>
-            <td style="width:220px;">
-              <select class="メニュー名 form-control form-control-sm" id="メニュー名" name="メニュー名">
-              </select>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </div>
 <!-- ================================================================================================================= -->
 </div>                                                                                <!-- ▲halu-header-input エンド -->
@@ -191,7 +151,7 @@
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-footer-dummy mt-3" style="height:283px;">                         <!-- ▼halu-footer-dummy スタート -->
+<div class="halu-footer-dummy mt-3" style="height:40px;">                          <!-- ▼halu-footer-dummy スタート -->
 <!-- ================================================================================================================= -->
 
 <!-- ================================================================================================================= -->
@@ -200,11 +160,8 @@
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-page-footer bg-primary mt-3" style="height:20px;">                 <!-- ▼halu-page-footer スタート -->
-<!-- ================================================================================================================= -->
-
-<!-- ================================================================================================================= -->
-</div>                                                                                 <!-- ▲halu-page-footer エンド -->
+<!-- ★▼halu-page-footer -->
+<div componentID="Footer"></div>
 <!-- ================================================================================================================= -->
 
 

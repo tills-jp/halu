@@ -45,6 +45,23 @@
         sessionStorage.saveItem("処理モード", "insert");
       }
 
+      // C-023: 新規登録モード（insert・複製のconvert）のときだけ、パスワードの画面バリデーションを必須へ動的に切り替える
+      // （訂正・照会・削除モードは任意のまま＝validation.jsonの既定["free"]/min"0"を維持する）
+      // ここ（on初期処理の先頭）はvalidation JSON同期完了後・ユーザー操作前であることが
+      // 同期チェーン（dataset→validation→transaction→initExecute→on初期処理）により保証されているため、
+      // getTargetRuleが返す共有validationデータ（Validation.fn.data配下の参照）をその場で書き換える
+      let パスワードルール = this.model.getValidation().getTargetRule("パスワード");
+      if (パスワードルール) {
+        if (mode == "insert" || mode == "convert") {
+          パスワードルール["validation"] = ["required", "free"];
+          パスワードルール["min"] = "1";
+        }
+        else {
+          パスワードルール["validation"] = ["free"];
+          パスワードルール["min"] = "0";
+        }
+      }
+
       // 初期処理
       let arg = this.model.on初期処理();
       this.view.on初期処理(arg);

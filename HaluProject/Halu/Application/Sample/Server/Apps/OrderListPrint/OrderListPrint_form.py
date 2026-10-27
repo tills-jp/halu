@@ -38,7 +38,7 @@ class OrderListPrint_form():
             self.requestdict  = requestdict
 
         except Exception as e:
-            self.excellog.debug(self.excellogname, 'OrderListPrint_form init exception message : {e}')
+            self.excellog.debug(self.excellogname, f'OrderListPrint_form init exception message : {e}')
 
         finally:
             self.excellog.debug(self.excellogname, 'OrderListPrint_form init end')
@@ -66,7 +66,7 @@ class OrderListPrint_form():
     def page_headerHM(self):
         """
         カレントページ番号を設定する
-        
+
         Returns
         -------
         status : str
@@ -81,4 +81,3 @@ class OrderListPrint_form():
 
         self.excellog.debug(self.excellogname, f'OrderListPrint_form page_headerHM end ページ番号 : {w_PageNo}')
         return status
-

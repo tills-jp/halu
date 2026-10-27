@@ -1,0 +1,191 @@
+@charset "UTF-8";
+
+/* ===================================================================
+ * Login フェーズ2 UIデザイン適用
+ * 指示書: HaluProject/Halu/Application/Sample/docs/90_UI適用/design_apply_Login.md
+ * 当該画面のみに適用（program.cssのため他画面へは波及しない）
+ * 2026-07-27（D-010）: CSS値ファイル（docs/90_UI適用/css/Login_css.txt）受領に
+ * より、D-005の近似値を厳密値へ同期（カード#E5F8F2・角丸8px・タイトル
+ * Inter 32px/400 #1A1A1A・入力欄角なし・アイコン#E3E3E3・LOGINボタン
+ * #AEE1D0 Noto Sans）
+ * 2026-07-27 UAT指摘反映: ①寸法はFigma値の80%へ縮小（依頼者指示。色・
+ * 比率は厳密値維持）②必須エラー（errorToolTip）が入力欄flex行の必要幅を
+ * 増やしカードが横に広がるため、エラーは絶対配置のオーバーレイ表示に変更
+ * 2026-08-01: CSS責務分離により配色をテーマ側トークンへ移設（本ファイルは
+ * 色リテラルを持たない。値はdefaultテーマで従来と同一＝見た目不変）。
+ * 参照トークン: --halu-login-card-bg / --halu-login-title-color /
+ * --halu-login-icon-color / --halu-login-btn-bg / -hover-bg / -active-bg、
+ * および共通の --halu-surface・--bs-body-color
+ * =================================================================== */
+
+/* -------------------------------------------------------------------
+ * No.1: ヘッダーバー・フッターバー（共通コンポーネント）の非表示
+ * モックアップに存在しないため本画面のみ非表示化する（構造・Svelte側は
+ * 不変。単なる表示/非表示のCSSのため機能変更に該当しない）。
+ * ------------------------------------------------------------------- */
+[componentid="Header"],
+[componentid="Footer"] {
+  display: none;
+}
+
+/* -------------------------------------------------------------------
+ * No.2: ログインカードを画面中央に配置
+ * ページ背景はテーマの.bg-secondaryに追従（Figmaの#DDDDDDはテーマ
+ * defaultの#D9D9D9とほぼ同値のため個別上書きしない＝テーマ切替優先）
+ * ------------------------------------------------------------------- */
+.container.bg-secondary {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 32px;    /* ウィンドウが低い場合でもカード上下に最低限の余白を確保 */
+  padding-bottom: 32px;
+}
+
+/* UAT指摘反映（2026-07-27）: フェーズ1由来の下部スペーサー（inline height:200px）が
+   低いウィンドウで「カード＋スペーサー」を画面高より大きくし、中央寄せが崩れて
+   カードが上端に張り付くため、本画面では高さを無効化（要素・領域クラスは維持） */
+.halu-footer-dummy {
+  height: 0 !important;
+  margin: 0 !important;
+}
+
+.halu-login-card {
+  width: 100%;
+  max-width: 486px;               /* Figma 608px の80% */
+  background-color: var(--halu-login-card-bg);   /* default=#E5F8F2（Figma厳密値） */
+  border-radius: 8px;             /* Figma厳密値 */
+  padding: 45px 74px;             /* Figma 56/92px の80% */
+}
+
+/* -------------------------------------------------------------------
+ * No.3: カード上部の2行見出し（Figma: Inter 32px/400・#1A1A1A。
+ * 2026-08-07 依頼者決定によりInterからNoto Sansへ変更。design_apply_common.md 差分No.13参照）
+ * ------------------------------------------------------------------- */
+.halu-login-title {
+  text-align: center;
+  font-family: var(--halu-font-body);
+  font-size: 26px;                /* Figma 32px の80% */
+  font-weight: 400;               /* Figma厳密値 */
+  color: var(--halu-login-title-color);   /* default=#1A1A1A（Figma厳密値） */
+  line-height: 1.25;
+  margin-bottom: 45px;
+}
+
+/* -------------------------------------------------------------------
+ * No.4: ログインID・パスワード欄（アイコン付き・枠なし・白背景。
+ * Figma: 424x73px（80%適用）・角丸なし・ラベルNoto Sans・アイコン#E3E3E3）
+ * ------------------------------------------------------------------- */
+.halu-login-field {
+  position: relative;             /* エラーツールチップの絶対配置基準 */
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  /* 2026-08-30: カード地と同色になって欄の輪郭が消える問題（暗色テーマのUAT指摘）
+     のため、アプリ共通のサーフェス色から専用トークンへ分離。枠も追加したが、
+     default/Navyは枠色を地色と同値にしているため従来どおり枠なしに見える */
+  background-color: var(--halu-login-field-bg);
+  border: 1px solid var(--halu-login-field-border);
+  border-radius: 0;               /* Figma厳密値（角丸なし） */
+  height: 58px;                   /* Figma 73px の80% */
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+
+.halu-login-icon {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  color: var(--halu-login-icon-color);   /* default=#E3E3E3（Figma厳密値） */
+}
+
+.halu-login-input.form-control {
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0;
+  font-family: var(--halu-font-body);
+  font-size: 14px;                /* Figma 16px の80%相当（可読性で14px） */
+}
+
+.halu-login-input.form-control:focus {
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+  /* 2026-08-30: 文字色をカード地に合わせて本文色へ戻す。project.css の
+     .form-control:focus がフォーカス時の文字色を --halu-focus-color（黒）に
+     するが、当欄は上の background-color:transparent でカード地
+     （--halu-login-card-bg）が透けるため、暗色系カードのテーマでは
+     黒文字が沈む。ここは地色を上書きしている側で文字色も戻す */
+  color: var(--bs-body-color);
+}
+
+/* 2026-08-30 UAT指摘: ブラウザのオートフィル（自動補完）背景色の上書き。
+   Chrome等は :-webkit-autofill に背景色を強制指定し、通常の
+   background-color: transparent（上の.halu-login-input.form-control）では
+   打ち消せないため、-webkit-box-shadow の inset で塗りつぶす定石パターンで
+   対処する。色は入力欄の地色（--halu-login-field-bg）に揃え、文字色も
+   -webkit-text-fill-color で明示しないとブラウザ既定の黒文字のまま残り、
+   暗色系テーマ（--halu-login-field-bg が暗色）で読めなくなる。
+   transition は自動補完時にブラウザが背景色を遅延適用する挙動への対策
+   （長い遅延を指定し実質無効化する一般的な回避策） */
+.halu-login-input.form-control:-webkit-autofill,
+.halu-login-input.form-control:-webkit-autofill:hover,
+.halu-login-input.form-control:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--halu-login-field-bg) inset;
+  box-shadow: 0 0 0 1000px var(--halu-login-field-bg) inset;
+  -webkit-text-fill-color: var(--bs-body-color);
+  caret-color: var(--bs-body-color);
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* 必須エラー等のツールチップ（フレームワークが入力欄の親へappendする
+   .errorToolTip）を絶対配置のオーバーレイにして、flex行の必要幅を増やさない
+   （＝カードの横幅が変わらない）。入力欄右端に重ねて表示する */
+.halu-login-field .errorToolTip {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------
+ * No.5/6: 操作ボタン（LOGINのみ表示・クリアは非表示）
+ * Figma: 232x73px（80%適用）・#AEE1D0・Noto Sans・#000・角丸なし
+ * ------------------------------------------------------------------- */
+.halu-login-actions {
+  margin-top: 38px;
+  display: flex;
+  justify-content: center;
+}
+
+/* D-005/C-004: クリアボタンの非表示化（Esc機能は維持、非表示のみ） */
+.halu-login-clear-hidden {
+  display: none;
+}
+
+.halu-login-submit.btn.btn-info {
+  width: 186px;                   /* Figma 232px の80% */
+  height: 58px;                   /* Figma 73px の80% */
+  /* 文字色は2026-08-30に var(--bs-body-color) 固定から専用トークンへ変更。
+     本文色固定だと、暗色テーマでボタン地色と文字色を対で決められないため
+     （default=#000000でこれまでと同値） */
+  /* 枠色は2026-08-31に地色トークンの流用から専用トークンへ分離した。
+     流用のままだと「白地＋アクセント色の枠」（navyのUAT指摘で採用した
+     白ベース×オレンジ枠）が表現できないため。default/darkは枠トークンに
+     地色と同じ値を入れており、分離前と見た目は変わらない */
+  --bs-btn-color: var(--halu-login-btn-color);
+  --bs-btn-bg: var(--halu-login-btn-bg);            /* default=#AEE1D0（Figma厳密値） */
+  --bs-btn-border-color: var(--halu-login-btn-border);
+  --bs-btn-hover-color: var(--halu-login-btn-color);
+  --bs-btn-hover-bg: var(--halu-login-btn-hover-bg);
+  --bs-btn-hover-border-color: var(--halu-login-btn-hover-border);
+  --bs-btn-active-color: var(--halu-login-btn-color);
+  --bs-btn-active-bg: var(--halu-login-btn-active-bg);
+  --bs-btn-active-border-color: var(--halu-login-btn-active-border);
+  border-radius: 0;               /* Figma厳密値（角丸なし） */
+  font-family: var(--halu-font-body);
+  font-size: 19px;                /* Figma 24px の80% */
+  font-weight: 400;               /* Figma厳密値 */
+}

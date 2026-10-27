@@ -1,0 +1,54 @@
+{
+  "comment": "商品一覧登録 照会処理",
+  "html": "Sample/Json/Apps/ProductListMainte",
+  "dbname": "sample",
+  "mode": "select",
+  "prog": "yes",
+  "message": {
+    "status": "OK",
+    "msg": "照会処理は正常に終了しました。"
+  },
+  "sqls": [
+  {
+    "comment": "商品マスタ 照会処理",
+    "id": "detail",
+    "before": "",
+    "after":  "",
+    "sql": {
+      "type": "select",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "商品",
+        "where": "削除フラグ='0'",
+        "order": "商品コード"
+      }
+    },
+    "output": {
+      "multiline": "yes",
+      "record": {
+        "商品ＩＤ": {
+          "value": [""]
+        },
+        "商品コード": {
+          "value": [""]
+        },
+        "商品名称": {
+          "value": [""]
+        },
+        "標準単価": {
+          "value": [""],
+          "funct": "TO_CHAR(標準単価, 'FM999999999')"
+        },
+        "備考": {
+          "value": [""]
+        },
+        "削除": {
+          "value": [""],
+          "field": "削除フラグ"
+        }
+      }
+    }
+  }
+  ]
+}

@@ -70,6 +70,9 @@ class MainController():
             レスポンスデータ
             main_view.call の戻り値
         """
+        # 2026-09-15 Issue #14 モデル呼び出し前の例外（帳票サーバー未起動等）で except の return が
+        # 未定義変数を参照しないよう先に初期化する（None は halumain がエラー応答に置き換える）
+        responsedict = None
         try:
             self.clog.debug(self.clogname, f'MainController: call start requestdict : {requestdict}')
 
@@ -91,13 +94,15 @@ class MainController():
             if requestdict['message']['status'] == 'OK':
                 if 'model' in requestdict:
                     if requestdict['model'] == 'yes':
-                        for sql_info in sqldict['sqls']:
-                            if sql_info['id'] == 'printParam':
-                                next_sw       = 'print'
-                                break
-                            if sql_info['id'] == 'batchStartup':
-                                next_sw       = 'batchStartup'
-                                break
+                        # 2026-08-02 B-008 SQL実行・フックがERRORの場合はバッチ/帳票を起動せずエラー応答へ
+                        if sqldict['message']['status'] == 'OK':
+                            for sql_info in sqldict['sqls']:
+                                if sql_info['id'] == 'printParam':
+                                    next_sw       = 'print'
+                                    break
+                                if sql_info['id'] == 'batchStartup':
+                                    next_sw       = 'batchStartup'
+                                    break
 
 
             if next_sw == 'print':

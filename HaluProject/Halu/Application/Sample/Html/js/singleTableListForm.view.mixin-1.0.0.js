@@ -52,8 +52,6 @@
         this.appendCSS(arg);
       }
 
-      $('body').fadeIn("normal");
-
       $H.log("View initテンプレートロード : end");
     },
 
@@ -66,9 +64,18 @@
     setログイン情報: function (arg) {
       $H.log("View setログイン情報 : start");
 
-      $("#ログイン和暦").html(arg["ログイン和暦"]);
-      $("#ログイン日時").html(arg["ログイン時刻"]);
-      $("#ユーザ氏名").html(arg["ユーザ名称"]);
+      // 後方互換: halu-ds-id="login"+halu-ds-field で要素を特定（なければ #id で検索）
+      let $和暦 = $("[halu-ds-id='login'][halu-ds-field='ログイン和暦']");
+      if (!$和暦.length) $和暦 = $("#ログイン和暦");
+      $和暦.html(arg["ログイン和暦"]);
+
+      let $日時 = $("[halu-ds-id='login'][halu-ds-field='ログイン日時']");
+      if (!$日時.length) $日時 = $("#ログイン日時");
+      $日時.html(arg["ログイン時刻"]);
+
+      let $氏名 = $("[halu-ds-id='login'][halu-ds-field='ユーザ氏名']");
+      if (!$氏名.length) $氏名 = $("#ユーザ氏名");
+      $氏名.html(arg["ユーザ名称"]);
 
       $H.log("View setログイン情報 : end");
     },
@@ -125,7 +132,9 @@
     on行チェック: function (name, index) {
       $H.log("View on行チェック : start");
 
-      let object = $("." + name)
+      // 2026-06-12 後方互換: halu-ds-field で要素を特定（なければ class 名で検索）
+      let object = $("[halu-ds-field='" + name + "']");
+      if (!object.length) object = $("." + name);
       let maxSize = object.length;
       for (let i = 0; i < maxSize; i++) {
         if (i == index) {
@@ -188,10 +197,18 @@
       $H.log("View on照会OfEditResponseData : start");
 
       this.fromJsonDataToView(responseData);
+
+      // 行選択状態をクリアする
+      // resetJsonDataToTable はテンプレート行をコピーするため、
+      // rowBackground が残っていると全行に引き継がれてしまう
+      $("#mainTable td").removeClass("rowBackground");
+
       this.resetJsonDataToTable("#mainTable", dataSet, "detail");
 
       // 削除チェックボックスに値を設定する
-      let deleteCheckBox = $(".削除");
+      // 2026-06-12 後方互換: halu-ds-field で要素を特定（なければ class 名で検索）
+      let deleteCheckBox = $("[halu-ds-field='削除']");
+      if (!deleteCheckBox.length) deleteCheckBox = $(".削除");
       let maxSize = deleteCheckBox.length;
       for (let i = 0; i < maxSize; i++) {
         $(deleteCheckBox[i]).prop("checked", false);

@@ -175,9 +175,12 @@ class SingleTableListForm_model():
         sqlRecord = getjsonchunkbyid(self.sqldict, 'sqls', sqlsId, 'input', 'record')
 
         idData = requestRecord[idName]['value']
-        maxId = max([a for a in idData if a != ''], key=int)
-        if maxId == '':
-            maxId = 0
+        # 2026-08-04 C-051: 既存キーが0件（マスタ全件削除後の新規登録等）のとき
+        #   max([]) が ValueError になるため空判定を max の前に置く
+        #   （従来の `if maxId == '': maxId = 0` は max が空文字を返し得ないため機能していなかった）。
+        #   あわせて int() を通し、画面往復で文字列化された値でも後続の `+ 1` が成立するようにする。
+        existIds = [int(a) for a in idData if a != '']
+        maxId = max(existIds) if existIds else 0
         j = 0
         emptySW = 'PASS'
         for i in range(len(idData)):

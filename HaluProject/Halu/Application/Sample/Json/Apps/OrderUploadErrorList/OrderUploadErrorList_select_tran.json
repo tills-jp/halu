@@ -1,0 +1,101 @@
+{
+  "request": {
+    "comment": "取込エラー一覧 照会処理のrequestデータ",
+    "html": "Sample/Json/Apps/OrderUploadErrorList",
+    "mode": "select",
+    "prog": "no",
+    "model": "yes",
+    "message": {
+      "status": "OK",
+      "msg": ""
+    },
+    "records": [{
+      "comment": "テーブルの行数",
+      "id": "header",
+      "before": "",
+      "after": "",
+      "multiline": "no",
+      "record": {
+        "ページライン数": {
+          "value": [""]
+        },
+        "カレントページ": {
+          "value": [""]
+        }
+      }
+    }]
+  },
+  "response": {
+    "comment": "取込エラー一覧 照会処理のresponseデータ",
+    "html": "Sample/Json/Apps/OrderUploadErrorList",
+    "mode": "select",
+    "prog": "yes",
+    "message": {
+      "status": "OK",
+      "msg": "照会処理は正常に終了しました。"
+    },
+    "records": [{
+      "comment": "テーブルページング情報（行数・カレント行・総ページ数・総件数）getMaxPageCount：総ページ数を計算する。",
+      "id": "header",
+      "before": "",
+      "after": "getMaxPageCountOfOrderUploadErrorList('header')",
+      "multiline": "no",
+      "record": {
+        "ページライン数": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "ページライン数"
+        },
+        "カレントページ": {
+          "value": ["1"],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "カレントページ"
+        },
+        "最大ページ": {
+          "value": [""]
+        },
+        "トータル件数": {
+          "value": [""],
+          "fromtype": "sqls",
+          "fromid": "total_count",
+          "fromio": "output",
+          "fromname": "トータル件数"
+        }
+      }
+    },
+    {
+      "comment": "テーブルの明細データ",
+      "id": "detail",
+      "before": "",
+      "after": "",
+      "multiline": "yes",
+      "record": {
+        "行番号": {
+          "value": [""]
+        },
+        "受注番号": {
+          "value": [""]
+        },
+        "明細番号": {
+          "value": [""]
+        },
+        "項目名": {
+          "value": [""]
+        },
+        "項目値": {
+          "value": [""]
+        },
+        "エラー内容": {
+          "value": [""]
+        },
+        "取込日時": {
+          "value": [""]
+        }
+      }
+    }]
+  }
+}

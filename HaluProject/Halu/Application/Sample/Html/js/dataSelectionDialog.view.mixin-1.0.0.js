@@ -2,7 +2,7 @@
  * Framework Name  :  Halu
  * (c) 2025 TILLS & Co.
  * --------------------------------------------
- * データ選択画面パターン 
+ * データ選択ダイアログパターン 
  * ビューミックスイン
 ***********************************************/
 
@@ -52,8 +52,6 @@
         this.appendCSS(arg);
       }
 
-      $('body').fadeIn("normal");
-
       $H.log("View initテンプレートロード : end");
     },
 
@@ -66,11 +64,19 @@
     setログイン情報: function (arg) {
       $H.log("View setログイン情報 : start");
 
-      $("#ユーザ氏名").html(arg["ユーザ名称"]);
-      $("#ログイン日時").html(arg["ログイン時刻"]);
+      // 後方互換: halu-ds-id="login"+halu-ds-field で要素を特定（なければ #id で検索）
+      let $氏名 = $("[halu-ds-id='login'][halu-ds-field='ユーザ氏名']");
+      if (!$氏名.length) $氏名 = $("#ユーザ氏名");
+      $氏名.html(arg["ユーザ名称"]);
+
+      let $日時 = $("[halu-ds-id='login'][halu-ds-field='ログイン日時']");
+      if (!$日時.length) $日時 = $("#ログイン日時");
+      $日時.html(arg["ログイン時刻"]);
 
       if (arg["ログイン和暦"] != "") {
-        $("#ログイン和暦").html(arg["ログイン和暦"]);
+        let $和暦 = $("[halu-ds-id='login'][halu-ds-field='ログイン和暦']");
+        if (!$和暦.length) $和暦 = $("#ログイン和暦");
+        $和暦.html(arg["ログイン和暦"]);
       }
 
       $H.log("View setログイン情報 : end");
@@ -93,7 +99,7 @@
       }
       else {
         if (detailInfo["multiline"] == "yes") {
-          this.resetJsonDataToTable("#mainTable", dataSet, "detail");
+          this.resetJsonDataToTable("#dialogTable", dataSet, "detail");
         }
       }
 
@@ -106,31 +112,31 @@
      * @memberof DataSelectionDialogViewMixin
      * @param {Object} arg - 画面情報(ページ情報)
      */
-    showページ情報: function (arg) {
-      $H.log("View showページ情報 : start");
+    showページ情報Dialog: function (arg) {
+      $H.log("View showページ情報Dialog : start");
 
-      let pageline = arg["ページライン数"];
-      let curpage = arg["カレントページ"];
-      let maxpage = arg["最大ページ"];
-      let totalcount = arg["トータル件数"];
+      let pageline = arg["ページライン数Dialog"];
+      let curpage = arg["カレントページDialog"];
+      let maxpage = arg["最大ページDialog"];
+      let totalcount = arg["トータル件数Dialog"];
       let pagedata = curpage + "/" + maxpage + "ページ(" + totalcount + "件)";
-      $("#mainForm input[name='ページ情報']").val(pagedata);
-      $("#mainForm input[name='ページ情報']").attr("disabled", "disabled");
+      $("#dialogForm input[name='ページ情報Dialog']").val(pagedata);
+      $("#dialogForm input[name='ページ情報Dialog']").attr("disabled", "disabled");
 
-      $("#最初のページ").removeAttr("disabled");
-      $("#前のページ").removeAttr("disabled");
-      $("#次のページ").removeAttr("disabled");
-      $("#最後のページ").removeAttr("disabled");
+      $("#最初のページDialog").removeAttr("disabled");
+      $("#前のページDialog").removeAttr("disabled");
+      $("#次のページDialog").removeAttr("disabled");
+      $("#最後のページDialog").removeAttr("disabled");
       if (curpage == 1) {
-        $("#最初のページ").attr("disabled", "disabled");
-        $("#前のページ").attr("disabled", "disabled");
+        $("#最初のページDialog").attr("disabled", "disabled");
+        $("#前のページDialog").attr("disabled", "disabled");
       }
       if (curpage == maxpage) {
-        $("#最後のページ").attr("disabled", "disabled");
-        $("#次のページ").attr("disabled", "disabled");
+        $("#最後のページDialog").attr("disabled", "disabled");
+        $("#次のページDialog").attr("disabled", "disabled");
       }
 
-      $H.log("View showページ情報 : end");
+      $H.log("View showページ情報Dialog : end");
     },
 
     /**
@@ -165,7 +171,7 @@
       // 選択行にCSSクラスを設定する
       let j, k;
       let beforeRow = sessionStorage.loadItem("クリック行");
-      let rows = $("#mainTable")[0].rows;
+      let rows = $("#dialogTable")[0].rows;
       jQuery.each(rows, function (j) {
         k = j;
         let cells = rows[j].cells;
@@ -197,8 +203,14 @@
 
       // テーブル以外の項目（ヘッダー・フッター）にデータを表示する
       this.fromJsonDataToView(dataSet);
+
+      // 行選択状態をクリアする
+      // resetJsonDataToTable はテンプレート行をコピーするため、
+      // table-success が残っていると全行に引き継がれてしまう
+      $("#dialogTable td").removeClass("table-success");
+
       // テーブルにデータを表示する
-      this.resetJsonDataToTable("#mainTable", dataSet, "detail");
+      this.resetJsonDataToTable("#dialogTable", dataSet, "detail");
 
       $H.log("View on照会OfEditResponseData : end");
     }

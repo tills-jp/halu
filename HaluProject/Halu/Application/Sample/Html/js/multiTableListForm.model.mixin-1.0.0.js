@@ -133,6 +133,14 @@
 
       let clickRow = arg["クリック行"];
 
+      // 2026-09-25 修正者：AI（C-075）
+      // sessionStorageDetailKey が未定義／空配列の画面（遷移先を持たない照会専用一覧）は
+      // 明細キーの保存対象が無いため、キー保存処理をスキップしてハイライトのみ行う
+      if (!this.appspec.sessionStorageDetailKey || this.appspec.sessionStorageDetailKey.length === 0) {
+        $H.log("Model onテーブル行クリック : end");
+        return "OK";
+      }
+
       // データセットを取得する
       let dataSet = this.dataset.getData();
 

@@ -77,26 +77,12 @@
         ],
         "where": "true && GROUP BY hdr.受注番号, cst.顧客氏名, hdr.受注日",
         "order": "hdr.受注番号, hdr.受注日",
-        "limit": "? OFFSET ?"
+        "limit": ""
       }
     },
     "input": {
       "multiline": "no",
       "record": {
-        "オフセットライン数": {
-          "value": [""],
-          "fromtype": "request",
-          "fromid": "printKey",
-          "fromio": "",
-          "fromname": "オフセットライン数"
-        },
-        "オフセット現在位置": {
-          "value": [""],
-          "fromtype": "request",
-          "fromid": "printKey",
-          "fromio": "",
-          "fromname": "オフセット現在位置"
-        }
       }
     },
     "output": {

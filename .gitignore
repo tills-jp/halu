@@ -1,5 +1,9 @@
-HaluServer/Halu/__pycache__/*.pyc
-HaluServer/Halu/System/Server/Libraries/**/__pycache__/*.pyc
+# インストールキットの環境ファイル（パスワードを含むためコミット禁止）
+install_scripts/.env
+
+# Python キャッシュ
+**/__pycache__/
+
 HaluServer/Halu/System/Server/Logs/*
 !HaluServer/Halu/System/Server/Logs/batch/
 HaluServer/Halu/System/Server/Logs/batch/*
@@ -7,11 +11,9 @@ HaluServer/Halu/System/Server/Logs/batch/*
 !HaluServer/Halu/System/Server/Logs/print/
 HaluServer/Halu/System/Server/Logs/print/*
 !HaluServer/Halu/System/Server/Logs/print/.gitkeep
-HaluProject/Halu/Application/Sample/Server/Apps/**/__pycache__/*.pyc
-HaluProject/Halu/Application/Sample/Server/Commons/__pycache__/*.pyc
-!HaluProject/Halu/Application/Sample/DownLoad/
-HaluProject/Halu/Application/Sample/DownLoad/*
-!HaluProject/Halu/Application/Sample/DownLoad/Apps/OrderListPrint/.gitkeep
-!HaluProject/Halu/Application/Sample/UpLoad/
-HaluProject/Halu/Application/Sample/UpLoad/*
-!HaluProject/Halu/Application/Sample/UpLoad/Apps/OrderUpload/.gitkeep
+HaluProject/Halu/Application/Sample/DownLoad/**
+!HaluProject/Halu/Application/Sample/DownLoad/**/
+!HaluProject/Halu/Application/Sample/DownLoad/**/.gitkeep
+HaluProject/Halu/Application/Sample/UpLoad/**
+!HaluProject/Halu/Application/Sample/UpLoad/**/
+!HaluProject/Halu/Application/Sample/UpLoad/**/.gitkeep

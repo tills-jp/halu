@@ -35,6 +35,22 @@
   // --------------------------------------------------------
   View.include({
 
+    /**
+     * 全選択トグルの画面反映（C-011）
+     * @param {object} arg - { rows: 対象行indexの配列, value: '9'（チェック）/'0'（解除） }
+     */
+    on全選択: function (arg) {
+      $H.log("View on全選択 : start");
+
+      let checked = (arg["value"] == "9");
+      let trs = $("#mainTable tbody tr");
+      for (let i = 0; i < arg["rows"].length; i++) {
+        trs.eq(arg["rows"][i]).find("input[halu-ds-field='削除']").prop("checked", checked);
+      }
+
+      $H.log("View on全選択 : end");
+    },
+
   });
 
   App.View = View;

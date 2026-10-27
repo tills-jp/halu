@@ -1,0 +1,36 @@
+{
+  "comment": "顧客選択画面 validation",
+  "html": "Sample/Json/Apps/CustomerSelectionDialog",
+  "records": [
+  {
+    "id": "header",
+    "multiline": "no",
+    "record": {
+      "ページライン数": {
+        "validation": ["required",
+        "integerP"],
+        "min": "1",
+        "max": "11"
+      },
+      "カレントページ": {
+        "validation": ["required",
+        "integerP"],
+        "min": "1",
+        "max": "11"
+      }
+    }
+  },
+  {
+    "id": "detail",
+    "multiline": "yes",
+    "record": {
+      "顧客ＩＤ一覧": {
+        "validation": ["nonrequired",
+        "integerP"],
+        "min": "1",
+        "max": "11"
+      }
+    }
+  }
+  ]
+}

@@ -1,115 +1,30 @@
 @charset "UTF-8";
 
-/* #mainForm高さ調整 */
-#mainForm {
-  height: calc(100vh - 120px);
-  min-height: 350px
+/* ===================================================================
+ * BatchList フェーズ2 UIデザイン適用
+ * モックアップ無し。モダンUI適用済みの正典画面（UserList・CustomerListMainte）
+ * への追従適用。共通様式（カード・ボタン・一覧テーブル・ページング）は
+ * project.css の共通ルールを使用し、本ファイルは画面固有分のみ記載する。
+ * =================================================================== */
+
+/* ヘッダー中央タイトルの非表示（本文側の大見出し .halu-page-title で代替） */
+#ヘッダータイトル {
+  display: none;
 }
 
-/* コピー　開始 */
-@media screen and (max-width: 1919px) {
-/* ▼表示領域が1919px以下の場合ここから */
+/* 【2026-07-30 UAT指摘により訂正】一覧はカード化しない（モックアップ準拠。
+   グレー背景に直置き）。10列1811px＋スクロールバー17pxは変更せず、狭い
+   画面幅では #scrollable-DTable の横スクロール（overflow-x）で対応する。
+   高さ可変化（.halu-detail-readonly）はproject.cssの共通ルールへ
+   格上げ済み（D-031） */
 
-/* 検索キー */
-#searchkey-Table {
-  width: 1268px;
-  margin: 10px auto;
-}
-
-/* スクロールテーブルの表示窓 */
-#scrollable-Table  {
-  width: calc(1268px + 17px);
-  margin: 10px auto;
-  overflow-x: auto;
-}
-
-/* スクロールテーブルのヘッダ */
-#scrollable-HTable  {
-  width: 1268px;
-  height: 34px;
-  overflow: hidden;
-}
-
-/* スクロールテーブルの明細 */
-#scrollable-DTable  {
-  overflow-x: auto;      /* 水平スクロールバー auto:自動表示 hidden:非表示 */
-  overflow-y: scroll;      /* 垂直スクロールバー auto:自動表示 hidden:非表示 */
-  width: calc(1268px + 17px);
+/* 【2026-07-30 UAT指摘②】ブラウザ幅がテーブル幅(1828px)より狭いときの
+   横スクロールラッパー対処（#scrollable-Table）はproject.cssの共通ルールへ
+   格上げ済み（D-033）。一覧の縦スクロール高さのみ画面固有として維持 */
+#scrollable-DTable {
   height: calc(100vh - 360px);
+  min-height: 300px;
 }
 
-/* ▲表示領域が1919px以下の場合ここまで */
-}
-
-
-@media screen and (min-width: 1920px) {
-/* ▼表示領域が1920px以上の場合ここから */
-
-/* 検索キー */
-#searchkey-Table {
-  width: 1268px;
-  margin: 10px auto;
-}
-
-
-/* スクロールテーブルの表示窓 */
-#scrollable-Table  {
-  width: calc(1268px + 17px);
-  margin: 10px auto;
-  overflow-x: auto;
-}
-
-/* スクロールテーブルのヘッダ */
-#scrollable-HTable  {
-  width: 1268px;
-  height: 34px;
-  overflow: hidden;
-}
-
-/* スクロールテーブルの明細 */
-#scrollable-DTable  {
-  overflow-x: auto;      /* 水平スクロールバー auto:自動表示 hidden:非表示 */
-  overflow-y: ;      /* 垂直スクロールバー auto:自動表示 hidden:非表示 */
-  width: calc(1268px + 17px);
-  height: calc(100vh - 340px);
-}
-
-/* ▲表示領域が1920pxpx以上の場合ここまで */
-}
-/* コピー　終了 */
-
-
-#mainTableH {
-  table-layout: fixed;
-  width: 100%;
-}
-
-/* 幅のオーバ部分を折り返す指示 */
-#mainTableH {
-  word-break: break-all;
-  white-space: normal;
-}
-
-#mainTableH tr {
-  height: 32px;
-}
-
-#mainTable {
-  table-layout: fixed;
-  width: 100%;
-  cursor:pointer;     /* iOS用 pointerでクリックイベントが発生する */
-}
-
-/* 幅のオーバ部分を折り返す指示 */
-#mainTable {
-  word-break: break-all;
-  white-space: normal;
-}
-
-#mainTable tr {
-  height: 24px;
-}
-
-#mainTable > tbody > tr > td {
-  vertical-align: top;
-}
+/* 【2026-07-30 UAT指摘③】ロードパス欄の折り返し（隣列への文字被り解消）は
+   依頼者指示によりproject.cssの共通設定（word-break: break-all）へ格上げ済み（D-025） */

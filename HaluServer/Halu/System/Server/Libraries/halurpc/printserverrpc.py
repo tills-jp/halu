@@ -7,7 +7,7 @@ from logger.halulogger               import HaluLogger
 from halumain.haluconf               import HaluConf
 from model.mainmodel                 import MainModel
 from view.mainview                   import MainView
-from excelprint.printmaincontroller  import PrintMainController
+from excelprint.printmaincontroller  import PrintMainController, makePrintErrorResponse
 
 
 class PrintServer():
@@ -47,6 +47,8 @@ class PrintServer():
 
         
     def call(self, sqldict):
+        # 2026-09-15 Issue #14 例外時も応答を返す（finally の参照エラー防止のため先に初期化）
+        responsedict = None
         try:
             self.pserverlog.debug(self.pserverlogname, f'PrintServer call start printdict   : {sqldict}')
 
@@ -57,6 +59,9 @@ class PrintServer():
 
         except Exception as e:
             self.pserverlog.error(self.pserverlogname, f'PrintServer abnormal message : {e}')
+            # 2026-09-15 Issue #14 戻り値なしではなくエラー応答を返す
+            responsedict = makePrintErrorResponse()
+            return responsedict
 
         finally:
             self.pserverlog.debug(self.pserverlogname, f'PrintServer call end responsedict : {responsedict}\n')

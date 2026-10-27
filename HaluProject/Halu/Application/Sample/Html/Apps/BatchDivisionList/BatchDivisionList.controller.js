@@ -43,6 +43,34 @@
       $H.log("Controller on再表示 : end");
     }
 
+   ,on再処理: function(event) {
+      $H.log("Controller on再処理 : start");
+
+      if (!this.model.check行選択()) return;
+
+      var arg = {};
+      arg["title"]   = "再処理  実行確認";
+      arg["message"] = "再処理を実行します。よろしいですか。";
+      this.pubsub.publish("executeDialog", arg);
+
+      $H.log("Controller on再処理 : end");
+    }
+
+   ,onExecuteDialogAfter: function() {
+      $H.log("Controller onExecuteDialogAfter : start");
+
+      var yesno = sessionStorage.getItem("executeDialog");
+
+      if (yesno != 1){
+        $H.log("Controller onExecuteDialogAfter : end");
+        return;
+      }
+
+      this.ajaxExecute("restart");
+
+      $H.log("Controller onExecuteDialogAfter : end");
+    }
+
     // -----------------------------------
     //  リクエストデータ  チェック処理
     // -----------------------------------

@@ -1,0 +1,95 @@
+{
+  "comment": "取込エラー一覧 照会処理",
+  "html": "Sample/Json/Apps/OrderUploadErrorList",
+  "dbname": "sample",
+  "mode": "select",
+  "prog": "yes",
+  "message": {
+    "status": "OK",
+    "msg": "照会処理は正常に終了しました。"
+  },
+  "sqls": [{
+    "comment": "総件数を取得する",
+    "id": "total_count",
+    "before": "",
+    "after": "",
+    "sql": {
+      "type": "select",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "受注ＣＳＶエラー",
+        "where": "",
+        "order": ""
+      }
+    },
+    "output": {
+      "multiline": "no",
+      "record": {
+        "トータル件数": {
+          "value": [""],
+          "funct": "COUNT(*)"
+        }
+      }
+    }
+  },
+  {
+    "comment": "指定件数分のデータを取得する。getOffsetLine：オフセット行数を計算する。",
+    "id": "detail",
+    "before": "getOffsetLineOfOrderUploadErrorList('header', 'detail')",
+    "after": "",
+    "sql": {
+      "type": "select",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "受注ＣＳＶエラー",
+        "where": "",
+        "order": "行番号, 受注番号, 明細番号, 受注ＣＳＶエラーＩＤ",
+        "limit": "? OFFSET ?"
+      }
+    },
+    "input": {
+      "multiline": "no",
+      "record": {
+        "ページライン数": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "ページライン数"
+        },
+        "オフセットライン数": {
+          "value": [""]
+        }
+      }
+    },
+    "output": {
+      "multiline": "yes",
+      "record": {
+        "行番号": {
+          "value": [""]
+        },
+        "受注番号": {
+          "value": [""]
+        },
+        "明細番号": {
+          "value": [""]
+        },
+        "項目名": {
+          "value": [""]
+        },
+        "項目値": {
+          "value": [""]
+        },
+        "エラー内容": {
+          "value": [""]
+        },
+        "取込日時": {
+          "value": [""],
+          "funct": "TO_CHAR(取込日時, 'YYYY/MM/DD HH24:MI:SS')"
+        }
+      }
+    }
+  }]
+}

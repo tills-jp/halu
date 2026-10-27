@@ -110,9 +110,11 @@ class OrderDetailListMainte_model():
         sqlRecord = getjsonchunkbyid(self.sqldict, 'sqls', sqlsId, 'input', 'record')
 
         idData = requestRecord[idName]['value']
-        maxId = max([a for a in idData if a != ''], key=int)
-        if maxId == '':
-            maxId = 0
+        # 2026-08-04 C-051: 既存キーが0件のとき max([]) が ValueError になるため空判定を max の前に置く
+        #   （従来の `if maxId == '': maxId = 0` は max が空文字を返し得ないため機能していなかった）。
+        #   あわせて int() を通し、画面往復で文字列化された値でも後続の `+ 1` が成立するようにする。
+        existIds = [int(a) for a in idData if a != '']
+        maxId = max(existIds) if existIds else 0
         j = 0
         emptySW = 'PASS'
         for i in range(len(idData)):
@@ -168,13 +170,20 @@ class OrderDetailListMainte_model():
             if idData[i] == '':
                 continue
 
+            # 2026-08-04 C-050: 2行目以降は append する（setUpdateData/setInsertDataと同じ方式）。
+            #   SQL入力の値配列は長さ1で初期化されるため、添字への直接代入では
+            #   2行目（j=1）でIndexErrorとなり複数行の同時削除ができなかった。
+            #   なお受注番号のようにdetailリクエストに無い項目は単一値のまま残るが、
+            #   フレームワークのバインド置換（databasecommon.replaceSql）が
+            #   「添字が上限を超えたらvalue[0]を使う」ため全行に同じ値が展開される。
             for key, value in requestRecord.items():
                 if key in sqlRecord:
-                    sqlRecord[key]['value'][j] = value['value'][i]
+                    if j == 0:
+                        sqlRecord[key]['value'][0] = value['value'][i]
+                    else:
+                        sqlRecord[key]['value'].append(value['value'][i])
                     emptySW = 'OK'
             j = j + 1
 
         self.mvclog.debug(self.mvclogname, f'OrderDetailListMainte_model setDeleteData end status = {emptySW}')
         return emptySW
-
-

@@ -57,7 +57,7 @@
           "value": [""],
           "funct": "TO_CHAR(A.受注日, 'YYYY/MM/DD')"
         },
-        "受注金額合計": {
+        "合計金額": {
           "value": [""],
           "funct": "TO_CHAR(A.受注金額合計, 'FM999,999,999')"
         }

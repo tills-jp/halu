@@ -2,7 +2,7 @@
  * Framework Name  :  Halu
  * (c) 2025 TILLS & Co.
  * --------------------------------------------
- * データ選択画面パターン 
+ * データ選択ダイアログパターン 
  * モデルミックスイン
 ***********************************************/
 
@@ -15,7 +15,7 @@
    * @mixin DataSelectionDialogModelMixin
    */
   App.DataSelectionDialogModelMixin = {
-    
+
     /**
      * データセットを取得し、値をクリアする
      * 
@@ -129,15 +129,15 @@
 
       $H.log("Model onテーブル行クリック : end");
     },
-
     /**
+     * ★ ダイアログ用
      * データセットからデータ件数およびページ情報を取得し、画面に表示する
      * 
      * @memberof DataSelectionDialogModelMixin
      * @param {Object} arg - ページ情報（ページライン数、カレントページ、最大ページ、トータル件数）
      */
-    onDeriveトータル件数: function (arg) {
-      $H.log("Model onDeriveトータル件数 : start");
+    onDeriveトータル件数Dialog: function (arg) {
+      $H.log("Model onDeriveトータル件数Dialog : start");
 
       let pageline = this.dataset.getElementData("ページライン数");
       let curpage = this.dataset.getElementData("カレントページ");
@@ -146,12 +146,11 @@
       if (totalcount == "") {
         totalcount = "0";
       }
-      let targetArg = { ページライン数: pageline, カレントページ: curpage, 最大ページ: maxpage, トータル件数: totalcount };
-      this.pubsub.publish("showページ情報", targetArg);
+      let targetArg = { ページライン数Dialog: pageline, カレントページDialog: curpage, 最大ページDialog: maxpage, トータル件数Dialog: totalcount };
+      this.pubsub.publish("showページ情報Dialog", targetArg);
 
-      $H.log("Model onDeriveトータル件数 : end");
+      $H.log("Model onDeriveトータル件数Dialog : end");
     },
-
     /**
      * データセットから現在ページ情報を取得し、<br>
      * 最初のページが表示できるようにページ情報をセッションストレージ・データセットへ保存する<br>
@@ -321,12 +320,13 @@
       $H.log("Model on初期処理OfEditResponseData : end");
       return dataSet;
     },
-    
+
     /**
      * 照会処理実行後、レスポンスデータからデータセットへ設定を行う
      * 
      * @memberof DataSelectionDialogModelMixin
      * @param {Object} responseData - レスポンスデータ
+     * @param {string} mode - 照会モード
      * @returns {Object} データセット
      */
     on照会OfEditResponseData: function (responseData, mode) {
@@ -354,7 +354,26 @@
       this.pubsub.publish("serverDialog", arg);
 
       $H.log("Model onサーバ処理確認ダイアログ : end");
-    }
+    },
+    /**
+     * イベント名を "derive{name}Dialog" に変更し、親画面の "deriveトータル件数" との衝突を防ぐ
+     * @memberof DataSelectionDialogModelMixin
+     * @param {Object} pubsub - PubSubオブジェクト
+     * @param {string} name - データ名
+     * @param {string} value - データ値
+     * @param {number} index - 行番号
+     */
+    deriveJsonValueToDatasetValue: function (pubsub, name, value, index) {
+      if (pubsub === undefined) return;
 
+      let objArray = $("." + name);
+      let eventname = "derive" + name + "Dialog";
+
+      if (pubsub.isEvent(eventname)) {
+        let target = objArray[index];
+        let arg = { target: target, value: value, row: index, name: name };
+        pubsub.publish(eventname, arg);
+      }
+    }
   };
 }(jQuery, Halu));

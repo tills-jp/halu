@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+/* ===================================================================
+ * CustomerListMainte フェーズ2 UIデザイン適用（D-008）
+ * 指示書: HaluProject/Halu/Application/Sample/docs/90_UI適用/design_apply_CustomerListMainte.md
+ *         （共通分は design_apply_common.md。カード・ボタン・一覧テーブルの
+ *          様式は project.css の共通ルールを使用）
+ * =================================================================== */
+
+/* ヘッダー中央タイトルの非表示（本文側の大見出し .halu-page-title で代替） */
+#ヘッダータイトル {
+  display: none;
+}
+
+/* 【2026-07-30 UAT指摘により訂正】一覧はカード化しない（モックアップ準拠。
+   グレー背景に直置き）。高さ可変化（.halu-detail-input）はproject.cssの
+   共通ルールへ格上げ済み（D-031） */

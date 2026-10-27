@@ -2,12 +2,12 @@
   //グローバルオブジェクトthisへのアクセス
   let root = globalThis;
 
-  // トップレベルの名前空間。Rmenuのすべてのパブリックのクラスとモジュールはこれに含まれる
+  // トップレベルの名前空間。Haluのすべてのパブリックのクラスとモジュールはこれに含まれる
   let Halu = root.Halu = {};
   Halu.Application = {};
   Halu.Library = {};
 
-  // Rmenuにアクセスするためのショートカット
+  // Haluにアクセスするためのショートカット
   let $H = Halu;
   // ライブラリの現在のバージョン
   $H.Version = "1.0.0";
@@ -108,6 +108,9 @@
         execute: function (selector, event, callback) {
           // 全てのオブジェクトに対して、
           // delegate(), live() に相当するイベント登録を行う
+          //★mod start 20260617 重複登録防止（ダイアログ2回目以降のイベント二重発火対策）
+          $(document).off(event, selector);
+          //★mod end 20260617
           $(document).on(event, selector, function (e, arg) {
             let fnc = "self." + callback + "(e, arg)";
             eval(fnc);
@@ -802,6 +805,12 @@
         , data: "data=" + encodeURIComponent(requestData)
         , dataType: "json"
         , success: function (data) {
+          // 2026-09-15 Issue #14 message を持たない応答（null 等）は通信エラー扱いにする（TypeError で complete が走らずローディングが残るのを防ぐ）
+          if (!data || !data["message"]) {
+            $H.log("Transaction ajax : invalid response " + JSON.stringify(data));
+            self.connectError(null, "invalidresponse", "response has no message");
+            return;
+          }
           let status = data["message"]["status"];
           if (status == "OK") {
             tranSelf.setResponseValue(data, tranSelf);
@@ -853,6 +862,12 @@
         , data: "data=" + encodeURIComponent(requestData)
         , dataType: "json"
         , success: function (data) {
+          // 2026-09-15 Issue #14 message を持たない応答（null 等）は通信エラー扱いにする（TypeError で complete が走らずローディングが残るのを防ぐ）
+          if (!data || !data["message"]) {
+            $H.log("Transaction ajax : invalid response " + JSON.stringify(data));
+            self.connectError(null, "invalidresponse", "response has no message");
+            return;
+          }
           let status = data["message"]["status"];
           if (status == "OK") {
             tranSelf.setResponseValue(data, tranSelf);
@@ -898,6 +913,12 @@
         , data: "data=" + encodeURIComponent(requestData)
         , dataType: "json"
         , success: function (data) {
+          // 2026-09-15 Issue #14 message を持たない応答（null 等）は通信エラー扱いにする（TypeError で complete が走らずローディングが残るのを防ぐ）
+          if (!data || !data["message"]) {
+            $H.log("Transaction ajax : invalid response " + JSON.stringify(data));
+            self.connectError(null, "invalidresponse", "response has no message");
+            return;
+          }
           let status = data["message"]["status"];
           if (status == "OK") {
             tranSelf.setResponseValue(data, tranSelf);

@@ -1,0 +1,104 @@
+{
+  "request": {
+    "comment": "商品選択ダイアログ 照会処理  リクエストデータ",
+    "html" : "Sample/Json/Apps/ProductSelectionDialog",
+    "mode": "select",
+    "prog": "no",
+    "model": "yes",
+    "message": {
+      "status": "OK",
+      "msg": ""
+    },
+    "records": [
+    {
+      "id": "header",
+      "before": "",
+      "after": "",
+      "multiline": "no",
+      "record": {
+        "ページライン数": {
+          "value": [""]
+        },
+        "カレントページ": {
+          "value": [""]
+        },
+        "検索商品コード": {
+          "value": [""]
+        },
+        "検索商品名称": {
+          "value": [""]
+        }
+      }
+    }
+    ]
+  },
+  "response": {
+    "comment": "商品選択ダイアログ 照会処理  レスポンスデータ",
+    "html" : "Sample/Json/Apps/ProductSelectionDialog",
+    "mode": "select",
+    "prog": "yes",
+    "message": {
+      "status": "OK",
+      "msg": "照会処理は正常に終了しました。"
+    },
+    "records": [
+    {
+      "comment": "テーブルページング情報（行数・カレント行・総ページ数・総件数）getMaxPageCount：総ページ数を計算する。",
+      "id": "header",
+      "before": "",
+      "after": "getMaxPageCountOfProductSelection('header')",
+      "multiline": "no",
+      "record": {
+        "ページライン数": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "ページライン数"
+        },
+        "カレントページ": {
+          "value": ["1"],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "カレントページ"
+        },
+        "最大ページ": {
+          "value": [""]
+        },
+        "トータル件数": {
+          "value": [""],
+          "fromtype": "sqls",
+          "fromid": "total_count",
+          "fromio": "output",
+          "fromname": "トータル件数"
+        }
+      }
+    },
+    {
+      "comment": "商品一覧（表示用3項目＋呼び出し元への返却用3項目）",
+      "id": "detail",
+      "before": "",
+      "after": "",
+      "multiline": "yes",
+      "record": {
+        "商品コード": {
+          "value": [""]
+        },
+        "商品名称": {
+          "value": [""]
+        },
+        "標準単価": {
+          "value": [""]
+        },
+        "商品ＩＤ": {
+          "value": [""]
+        },
+        "受注単価": {
+          "value": [""]
+        }
+      }
+    }
+    ]
+  }
+}

@@ -38,14 +38,17 @@
       $H.log("View set項目制御 : start");
 
       // モードに応じて項目の活性・非活性をセット
+      // C-044: 明細行の商品選択ボタンはbutton要素のため $("input") では非活性化されない。個別に指定する
       if (mode == "select" || mode == "delete") {
         $("input").prop('disabled', true);
         $("select").prop('disabled', true);
+        $("#mainTable button").prop('disabled', true);
       }
       if (mode == "insert") {
         $("#実行").hide();
         $("input").prop('disabled', true);
         $("select").prop('disabled', true);
+        $("#mainTable button").prop('disabled', true);
       }
 
       $H.log("View set項目制御 : end");
@@ -58,7 +61,7 @@
 
       var row = arg1["row"];
       var w_金額 = this.formatExecute["money"]["format"](arg1["受注金額"]);
-      $($(".受注金額")[row]).val(w_金額);
+      $($("[halu-ds-id='detail'][halu-ds-field='受注金額']")[row]).val(w_金額);
 
       $H.log("View set受注金額 : end");
     }
@@ -66,7 +69,7 @@
       $H.log("View set合計金額 : start");
 
       var w_合計金額 = this.formatExecute["money"]["format"](arg1["合計金額"]);
-      $("#合計金額").val(w_合計金額);
+      $("[halu-ds-id='header'][halu-ds-field='合計金額']").val(w_合計金額);
 
       $H.log("View set合計金額 : end");
     }

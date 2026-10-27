@@ -63,4 +63,3 @@ class BatchDivisionList_model():
 
         self.mvclog.debug(self.mvclogname, 'BatchDivisionList_model getOffsetLine end')
         return status
-

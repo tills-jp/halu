@@ -37,9 +37,12 @@
     on顧客検索: function (event, arg) {
       $H.log("Controller on顧客検索 : start");
 
-      // 顧客選択画面へ遷移する
-      let row = 0;
-      this.model.on選択画面遷移(this.appspec.selectStorageRequestData[0], this.appspec.selectStorageResponseData[0], row);
+      // 顧客選択ダイアログを表示する
+      this.on選択ダイアログ表示(
+        this.appspec.selectStorageRequestData[0],
+        this.appspec.selectStorageResponseData[0],
+        0
+      );
 
       $H.log("Controller on顧客検索 : end");
     },

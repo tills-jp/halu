@@ -1,0 +1,174 @@
+{
+  "comment": "商品一覧登録 更新処理",
+  "html": "Sample/Json/Apps/ProductListMainte",
+  "dbname": "sample",
+  "mode": "execute",
+  "prog": "yes",
+  "message": {
+    "status": "OK",
+    "msg": "更新処理は正常に終了しました。"
+  },
+  "sqls": [
+  {
+    "comment": "商品マスタ 訂正処理（削除チェック行の論理削除もここで行う）",
+    "id": "update",
+    "before": "setData('detail', 'update', '商品ＩＤ')",
+    "after":  "",
+    "sql": {
+      "type": "update",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "商品",
+        "where": "商品ＩＤ = ?",
+        "order": ""
+      }
+    },
+    "input": {
+      "multiline": "yes",
+      "record": {
+        "商品コード": {
+          "value": [""],
+          "field": "商品コード"
+        },
+        "商品名称": {
+          "value": [""],
+          "field": "商品名称"
+        },
+        "標準単価": {
+          "value": [""],
+          "field": "標準単価"
+        },
+        "備考": {
+          "value": [""],
+          "field": "備考"
+        },
+        "削除": {
+          "value": [""],
+          "field": "削除フラグ"
+        },
+        "更新日時": {
+          "value": [""],
+          "funct": "CURRENT_TIMESTAMP"
+        },
+        "更新ユーザ": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "login",
+          "fromio": "",
+          "fromname": "ユーザ名称"
+        },
+        "商品ＩＤ": {
+          "value": [""],
+          "field": "商品ＩＤ"
+        }
+      }
+    }
+  },
+  {
+    "comment": "商品マスタ 登録処理（商品ＩＤはSERIALに委ねるためinputに含めない）",
+    "id": "insert",
+    "before": "setData('detail', 'insert', '商品ＩＤ')",
+    "after":  "",
+    "sql": {
+      "type": "insert",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "商品",
+        "where": "",
+        "order": ""
+      }
+    },
+    "input": {
+      "multiline": "yes",
+      "record": {
+        "商品コード": {
+          "value": [""],
+          "field": "商品コード"
+        },
+        "商品名称": {
+          "value": [""],
+          "field": "商品名称"
+        },
+        "標準単価": {
+          "value": [""],
+          "field": "標準単価"
+        },
+        "備考": {
+          "value": [""],
+          "field": "備考"
+        },
+        "登録日時": {
+          "value": [""],
+          "funct": "CURRENT_TIMESTAMP"
+        },
+        "登録ユーザ": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "login",
+          "fromio": "",
+          "fromname": "ユーザ名称"
+        },
+        "更新日時": {
+          "value": [""],
+          "funct": "CURRENT_TIMESTAMP"
+        },
+        "更新ユーザ": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "login",
+          "fromio": "",
+          "fromname": "ユーザ名称"
+        },
+        "削除": {
+          "value": [""],
+          "field": "削除フラグ",
+          "funct": "'0'"
+        }
+      }
+    }
+  },
+  {
+    "comment": "商品マスタ 照会処理（更新後の再照会）",
+    "id": "detail",
+    "before": "",
+    "after":  "",
+    "sql": {
+      "type": "select",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "商品",
+        "where": "削除フラグ='0'",
+        "order": "商品コード"
+      }
+    },
+    "output": {
+      "multiline": "yes",
+      "record": {
+        "商品ＩＤ": {
+          "value": [""]
+        },
+        "商品コード": {
+          "value": [""]
+        },
+        "商品名称": {
+          "value": [""]
+        },
+        "標準単価": {
+          "value": [""],
+          "funct": "TO_CHAR(標準単価, 'FM999999999')"
+        },
+        "備考": {
+          "value": [""]
+        },
+        "削除": {
+          "value": [""],
+          "field": "削除フラグ"
+        }
+      }
+    }
+  }
+  ]
+}

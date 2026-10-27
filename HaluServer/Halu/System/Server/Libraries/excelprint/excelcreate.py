@@ -49,6 +49,8 @@ class ExcelCreate():
 
         except Exception as e:
             self.excellog.error(self.excellogname, f'ExcelCreate init exception message : {e}')
+            # 2026-09-15 Issue #14 握り潰すと後続で別の例外になり真因が隠れるため再送出する
+            raise
 
         finally:
             self.excellog.debug(self.excellogname, 'ExcelCreate init end')
@@ -57,9 +59,11 @@ class ExcelCreate():
     def excelstart(self, detaiRecord):
         self.excellog.debug(self.excellogname, 'ExcelCreate excelstart start')
 
-        self.pageMaxLines  = detaiRecord["excelinfo"]["pagelines"]     # １ページの最大行数
-        self.rowPosion     = detaiRecord["excelinfo"]["rowposition"]   # 明細の最初の行数
-        self.moveDown      = detaiRecord["excelinfo"]["movedown"]      # ２行目以降の相対行
+        # 2026-09-14 Issue #59 tran.jsonの値は文字列で届くため、発生源でintに変換して保持する
+        #   （改ページ時の rowPosion - moveDown が "8" - "1" となりTypeErrorになっていた）
+        self.pageMaxLines  = int(detaiRecord["excelinfo"]["pagelines"])     # １ページの最大行数
+        self.rowPosion     = int(detaiRecord["excelinfo"]["rowposition"])   # 明細の最初の行数
+        self.moveDown      = int(detaiRecord["excelinfo"]["movedown"])      # ２行目以降の相対行
 
         self.excellog.debug(self.excellogname, 'ExcelCreate excelstart end')
 
@@ -228,7 +232,8 @@ class ExcelCreate():
 
         # セル位置を設定する
         if pagecontroll == "detail":
-            colrow = excelinfo["cell"]["column"] + self.currRowPosion
+            # 2026-09-14 Issue #59 行位置はintのため文字列化して連結する（valueOutputと同じ）
+            colrow = excelinfo["cell"]["column"] + str(self.currRowPosion)
         else:
             colrow = excelinfo["cell"]["column"] + excelinfo["cell"]["row"]
 

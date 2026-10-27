@@ -43,6 +43,8 @@ class AppServer():
 
 
     def call(self, requestdict):
+        # 2026-09-15 Issue #14 例外時に finally が未定義変数を参照しないよう先に初期化する
+        responsedict = None
         try:
             self.alog.debug(self.alogname, f'app server start requestdict : {requestdict}')
 
@@ -53,6 +55,8 @@ class AppServer():
 
         except Exception as e:
             self.alog.error(self.alogname, f'app server abnormal  message : {e}')
+            # 2026-09-15 Issue #14 None を明示的に返す（halumain が status=ERROR の応答に置き換える）
+            return None
 
         finally:
             self.alog.debug(self.alogname, f'app server end  responsedict : {responsedict}\n')

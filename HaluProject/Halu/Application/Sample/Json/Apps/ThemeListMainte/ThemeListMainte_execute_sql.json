@@ -16,6 +16,7 @@
     "sql": {
       "type": "delete",
       "freesql": "DELETE FROM テーマ",
+      "crud": { "テーマ": "D" },
       "genesql": ""
     },
     "input": {
@@ -72,10 +73,26 @@
           "field": "登録日時",
           "funct": "CURRENT_TIMESTAMP"
         },
+        "登録ユーザ": {
+          "value": [""],
+          "field": "登録ユーザ",
+          "fromtype": "request",
+          "fromid": "login",
+          "fromio": "",
+          "fromname": "ユーザＩＤ"
+        },
         "更新日時": {
           "value": [""],
           "field": "更新日時",
           "funct": "CURRENT_TIMESTAMP"
+        },
+        "更新ユーザ": {
+          "value": [""],
+          "field": "更新ユーザ",
+          "fromtype": "request",
+          "fromid": "login",
+          "fromio": "",
+          "fromname": "ユーザＩＤ"
         }
       }
     }

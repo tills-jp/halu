@@ -84,6 +84,73 @@
       $H.log("Controller onChange削除 : end");
     }
     // ------------------------------------------------------
+    // 実行（C-044: 商品未選択チェックを追加）
+    // ------------------------------------------------------
+    /**
+     * 商品が選択されていない入力行があれば警告して送信しない。
+     * 問題なければパターンの実行処理へ委譲する
+     */
+    , on実行: function (event) {
+      $H.log("Controller on実行(OrderDetailListMainte) : start");
+
+      var row = this.model.get商品未選択行();
+      if (row > 0) {
+        var arg = {
+          title: "入力エラー", status: "WARNING"
+          , message: [row + "行目の商品が選択されていません。"]
+        };
+        this.pubsub.publish("alertDialog", arg);
+        $H.log("Controller on実行(OrderDetailListMainte) : end (商品未選択)");
+        return;
+      }
+
+      $H.Library.SingleRecordFormControllerMixin.on実行.call(this, event);
+
+      $H.log("Controller on実行(OrderDetailListMainte) : end");
+    }
+    // ------------------------------------------------------
+    // 商品選択（C-044）
+    // ------------------------------------------------------
+    /**
+     * 明細行の「選択」ボタン押下で商品選択ダイアログを開く
+     * 押した行のindexを渡すことで、選択結果がその行へ転記される
+     */
+    , on商品選択: function (event, arg) {
+      $H.log("Controller on商品選択 : start");
+
+      // button → td → tr
+      var row = event.currentTarget.parentNode.parentNode.rowIndex;
+      this.on選択ダイアログ表示(
+        this.appspec.selectStorageRequestData[0],
+        this.appspec.selectStorageResponseData[0],
+        row
+      );
+
+      $H.log("Controller on商品選択 : end");
+    }
+    /**
+     * 商品選択ダイアログから戻った後の後処理
+     * 標準単価が受注単価へ転記されるため、受注金額・合計金額を再計算する
+     * （数量が未入力の行は金額を確定できないため計算しない。数量入力時にonDerive数量単価で計算される）
+     */
+    , on商品選択後: function (arg) {
+      $H.log("Controller on商品選択後 : start");
+
+      var row = arg["clickRow"];
+      var dataSet = this.model.dataset.getData();
+      var detailRecord = this.appspec.getJSONChunkByIdAtRecords(dataSet, "detail")["record"];
+      if (detailRecord["受注数量"]["value"][row] != "") {
+        var arg1 = this.model.calc受注金額({ row: row });
+        if (arg1["status"] == "OK") {
+          this.view.set受注金額(arg1);
+        }
+        var arg2 = this.model.calc合計金額();
+        this.view.set合計金額(arg2);
+      }
+
+      $H.log("Controller on商品選択後 : end");
+    }
+    // ------------------------------------------------------
     // 導出項目編集用カスタムイベント処理
     // ------------------------------------------------------
     , onDerive数量単価: function (arg) {

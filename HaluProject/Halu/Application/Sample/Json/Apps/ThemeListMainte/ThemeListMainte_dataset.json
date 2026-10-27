@@ -6,6 +6,19 @@
     "msg": "データを入力して、実行ボタンを押下して下さい。"
   },
   "records": [{
+    "id": "login",
+    "multiline": "no",
+    "defaultline": "0",
+    "record": {
+      "ユーザＩＤ": {
+        "value": [""]
+      },
+      "ユーザ名称": {
+        "value": [""]
+      }
+    }
+  },
+  {
     "id": "detail",
     "multiline": "yes",
     "defaultline": "0",

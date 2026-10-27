@@ -6,6 +6,8 @@
 
 from commons.jsonchunk import getjsonchunkbyid
 from PaginationModel import Pagination_model
+from commons.sqlescape import escapeSqlLiteral
+
 
 class UserList_model():
     """
@@ -26,12 +28,12 @@ class UserList_model():
     """
     def __init__(self, mvclog, mvclogname, database, sqldict, requestdict):
         try:
-            self.mvclog     = mvclog
+            self.mvclog = mvclog
             self.mvclogname = mvclogname
             self.mvclog.debug(self.mvclogname, 'UserList_model init start')
 
-            self.database    = database
-            self.sqldict     = sqldict
+            self.database = database
+            self.sqldict = sqldict
             self.requestdict = requestdict
 
         except Exception as e:
@@ -60,12 +62,12 @@ class UserList_model():
         self.mvclog.debug(self.mvclogname, 'UserList_model getOffsetLine start')
 
         tempObj = Pagination_model(self.requestdict, self.sqldict, self.mvclog, self.mvclogname)
-        status  = tempObj.getOffsetLine(idName1, idName2)
+        status = tempObj.getOffsetLine(idName1, idName2)
 
         self.mvclog.debug(self.mvclogname, 'UserList_model getOffsetLine end')
         return status
 
-    def setSql_UserList(self, idname1, idname2 ,genesql_freesql):
+    def setSql_UserList(self, idname1, idname2, genesql_freesql):
         """
         リクエストデータからSQL文の検索条件を作成し、SQL文字列を編集する
         (where 句の'&&'を置換)
@@ -77,25 +79,26 @@ class UserList_model():
         idname2 : str
             処理対象のSQLデータセットID(sql.json > sqls)
         genesql_freesql : str
-            'genesql' or 'freesql' (sql.json)
+            'genesql' 固定（sql.json）。本画面のSQLは全て genesql のため freesql は非対応
 
         Returns
         -------
-        fixed string : str（不要かも）
+        status : str
+            'OK' / 'ERROR'（genesql 以外を指定された場合）
 
         """
         self.mvclog.debug(self.mvclogname, 'setSql_UserList start')
 
         requestdict = getjsonchunkbyid(self.requestdict, 'records', idname1, 'record')
-        sqlInfo     = getjsonchunkbyid(self.sqldict, 'sqls', idname2)
-        rep         = ''
+        sqlInfo = getjsonchunkbyid(self.sqldict, 'sqls', idname2)
+        rep = ''
 
-        w_検索ユーザコード = requestdict['検索ユーザコード']['value'][0]
-        w_検索ユーザ名 = requestdict['検索ユーザ名']['value'][0]
-        w_検索パスワード = requestdict['検索パスワード']['value'][0]
-        w_検索メニュー名 = requestdict['検索メニュー名']['value'][0]
-        w_検索テーマコード = requestdict['検索テーマコード']['value'][0]
-        w_検索備考 = requestdict['検索備考']['value'][0]
+        # 文字列リテラルへ埋め込むため、値は必ず escapeSqlLiteral を通す（commons/sqlescape.py の説明を参照）
+        w_検索ユーザコード = escapeSqlLiteral(requestdict['検索ユーザコード']['value'][0])
+        w_検索ユーザ名 = escapeSqlLiteral(requestdict['検索ユーザ名']['value'][0])
+        w_検索メニュー名 = escapeSqlLiteral(requestdict['検索メニュー名']['value'][0])
+        w_検索テーマコード = escapeSqlLiteral(requestdict['検索テーマコード']['value'][0])
+        w_検索備考 = escapeSqlLiteral(requestdict['検索備考']['value'][0])
 
         # 検索社員番号
         if w_検索ユーザコード != '':
@@ -104,10 +107,6 @@ class UserList_model():
         # 検索氏名
         if w_検索ユーザ名 != '':
             rep = rep + f" AND ユーザ名 LIKE '%%{w_検索ユーザ名}%%'"
-
-        # 検索拠点コード
-        if w_検索パスワード != '':
-            rep = rep + f" AND パスワード = '{w_検索パスワード}'"
 
         # 検索部門コード
         if w_検索メニュー名 != '':
@@ -122,15 +121,13 @@ class UserList_model():
             rep = rep + f" AND 備考 = '{w_検索備考}'"
 
         # 検索条件の置き換え && を検索条件に置き換える
-        if genesql_freesql == 'genesql':
-            sqlInforep = sqlInfo['sql']['genesql']['where'].replace('&&', rep)
-            sqlInfo['sql']['genesql']['where'] = sqlInforep
-        elif genesql_freesql == 'freesql':
-            strJoin = sqlInfo['sql']['freesql'].join('\\t')
-            strJoinrep = strJoin.replace('&&', rep)
-            strSplit = strJoinrep.split('\\t')
-            for idx,temp in enumerate(sqlInfo['sql']['freesql']):
-                sqlInfo['sql']['freesql'][idx] = strSplit[idx]
+        if genesql_freesql != 'genesql':
+            self.mvclog.error(self.mvclogname,
+                              f'setSql_UserList: 未対応の指定です genesql_freesql={genesql_freesql}')
+            return 'ERROR'
+
+        sqlInforep = sqlInfo['sql']['genesql']['where'].replace('&&', rep)
+        sqlInfo['sql']['genesql']['where'] = sqlInforep
 
         self.mvclog.debug(self.mvclogname, 'setSql_UserList end')
         return 'OK'

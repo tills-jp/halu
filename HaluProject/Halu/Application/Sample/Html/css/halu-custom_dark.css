@@ -1,0 +1,251 @@
+/*
+ * halu-custom_dark.css
+ * ダークテーマ（2026-08-30 追加）。モックアップ2枚組のうち「ダーク版」由来の配色。
+ *
+ * 【責務】本ファイルは「色」のみを持つ（テーマ変数・コンポーネント変数の上書き）。
+ * サイズ・レイアウト・appearance復帰などテーマ切替で変わってはいけないものは
+ * project.css に置く。判定基準は「テーマを切り替えたときに変わるべきか」の一点。
+ *
+ * 【全テーマ同一プロパティ規約】halu-custom_default.css と同一のプロパティ一式
+ * （:root の --bs-* / --halu-* 27個、body、.table-dark、.nav-tabs、
+ * .table .tbody-light、.btn-info）を過不足なく定義している。
+ * 詳細は docs/01_Halu構造/theme_structure.md 参照。
+ *
+ * 【値の出典】モックアップに明示された値と、明示が無く既定色から補完した値が
+ * 混在する。補完値には各行に「※補完」と注記した（モックアップは主要色のみの
+ * 指定で、ログイン画面・D&Dゾーン等の専用トークンを含まないため）。
+ */
+
+/* ---------------------------------------------------------
+ * Halu カラー定義（役割はdefaultと同じ）
+ *   ヘッダー・フッター（header/footer） = primary  (.bg-primary)
+ *   背景色（body）                     = secondary (.bg-secondary)
+ *   ボタン（btn）                      = info      (.btn-info)
+ *   表タイトル（thead）                = dark      (.table-dark)
+ *   表背景（tbody）                    = light     (.tbody-light) ※Bootstrap標準ではない独自クラス
+ * --------------------------------------------------------- */
+:root {
+  /* メイン背景色（ヘッダー・フッター）(＝primary)：ダークグレー
+     2026-08-30 依頼者指示により、モックアップ「header #757575」（default同値）から
+     #444444 へ変更。本テーマ単独の値になった（default/navyは #757575 のまま）。
+     ★.bg-primary はヘッダー（Header.svelte）とフッター（Footer.svelte）が共用する
+       ため、フッターの色も同時に変わる（テーマ設計上、両者は同色が前提） */
+  --bs-primary: #444444;
+  --bs-primary-rgb: 68, 68, 68;
+
+  /* ボディ背景色(＝secondary)：ダークグレー
+     モックアップ「Background_1 #2D2D2D」 */
+  --bs-secondary: #2D2D2D;
+  --bs-secondary-rgb: 45, 45, 45;
+
+  /* 文字色(＝body-color)：モックアップ「font#E2E2E2」 */
+  --bs-body-color: #E2E2E2;
+
+  /* 入力欄等の地色(＝body-bg)：モックアップ「欄 #696969」。
+   * BS5が .form-control / .modal-content / .dropdown-menu 等の地色に使う変数で、
+   * 上書きしないとBS5既定の白地のまま残り、--bs-body-color(#E2E2E2)の明るい文字と
+   * 重なって入力値が判読不能になる（2026-08-30 ブラウザ実測で確認）。
+   * カード地(--halu-surface #545454)より一段明るくして入力欄を浮かせる。 */
+  --bs-body-bg: #696969;
+  --bs-body-bg-rgb: 105, 105, 105;
+
+  /* 補助文字(＝secondary-color)：プレースホルダ等にBS5が使う変数。
+   * 既定は rgba(33,37,41,.75) の暗色で、暗背景では沈んで見えないため明色へ反転 */
+  --bs-secondary-color: rgba(226, 226, 226, 0.65);
+
+  /* 無効（disabled）入力欄の地色・補助面の地色・既定の枠線色。
+   * BS5既定は #e9ecef 等の明色で、暗色テーマでは無効欄が明るいグレー地のまま
+   * 残り、明色の本文色と重なって読めなくなる（2026-08-30 個人用テーマ設定画面の
+   * UAT指摘）。カード地(#545454)より一段暗くして無効であることを示す */
+  --bs-secondary-bg: #3C3C3C;
+  --bs-tertiary-bg: #454545;
+  --bs-border-color: #757575;
+
+  /* ボタン色(＝info)：くすんだ緑。モックアップ「Primary #69887E」。defaultと同値 */
+  --bs-info: #69887E;
+  --bs-info-rgb: 105, 136, 126;
+
+  /* 表タイトル背景(＝dark)：モックアップ「PrimaryContainer #696969」 */
+  --bs-dark: #696969;
+  --bs-dark-rgb: 105, 105, 105;
+
+  /* 表テーブル背景(＝light)：モックアップ「Table #545454」 */
+  --bs-light: #545454;
+  --bs-light-rgb: 84, 84, 84;
+
+  /* 危険アクセント（ログアウト・削除ボタン）(＝danger)：赤
+     モックアップ「Delete #D55F5A」。defaultと同値 */
+  --bs-danger: #D55F5A;
+  --bs-danger-rgb: 213, 95, 90;
+
+  /* -------------------------------------------------------
+   * Halu 拡張カラートークン（--halu-*）
+   * defaultと同じ顔ぶれを過不足なく定義する（未定義があると、その箇所だけ
+   * 前のテーマの色が残る）。
+   * ------------------------------------------------------- */
+
+  /* サーフェス：カード・白地ボタンの地色と hover/active
+     モックアップ「Table #545454」「欄 #696969」由来。
+     ★注意: defaultでは #FFFFFF（白カード）だが、ダークではカード地を暗色にする。
+       このトークンは白抜きボタン（.halu-btn-outline）・危険ボタン
+       （.halu-btn-danger）・ページングボタン・ログアウトボタンの地色にも
+       共用されるため、モックアップで白地に見えるDeleteボタンも #545454 になる。
+       Deleteだけ白地を維持したい場合は専用トークンの新設が必要（要判断）。 */
+  --halu-surface: #545454;
+  --halu-surface-hover: #5F5F5F;   /* ※補完（--halu-surfaceの明色側） */
+  --halu-surface-active: #696969;  /* ※補完（モックアップ「欄 #696969」を流用） */
+
+  /* 彩色背景の上に置く前景色（ボタン文字・danger押下時の文字）
+     モックアップ「On primary:#FFFFFF」 */
+  --halu-on-accent: #FFFFFF;
+
+  /* ヘッダーの文字色（ログインユーザ表記）。2026-08-30 依頼者指示により
+     --halu-on-accent（#FFFFFF）から分離した専用トークン。本テーマのみ本文色と
+     同じ #E2E2E2 とし、default/navy は従来どおり白を維持する。
+     分離しないと .btn-info（緑ボタン）の文字色まで道連れで変わるため */
+  --halu-header-color: #E2E2E2;
+
+  /* 白抜きボタン系の地色（戻る・クリア・全選択・ログアウト・削除・ページング）。
+     2026-08-30 依頼者指示により白（#FFFFFF）に変更。default/navyと同値にし、
+     「白抜き」の名のとおり明色地に統一する（枠・文字はボタン種別ごとの色の
+     ままのため、地色を白くしてもコントラストは保たれる）。
+     hover/activeはdefault/navyと同じ淡グレー階調を流用（※補完） */
+  --halu-btn-base-bg: #FFFFFF;
+  --halu-btn-base-hover-bg: #f1f1f1;
+  --halu-btn-base-active-bg: #e9e9e9;
+
+  /* 白抜きボタン（クリア・戻る・全選択）の文字色。2026-08-30 依頼者指示により
+   * 枠色（--bs-info＝Primary #69887E）と同色にする（従来は本文色 #E2E2E2 で
+   * 枠と文字の色が食い違っていた）。ログアウト（--bs-danger）・削除
+   * （--bs-danger）は対象外・変更なし（D-011承認済みのため維持） */
+  --halu-btn-outline-color: var(--bs-info);
+
+  /* 補助文字（ページング）※補完（本文 #E2E2E2 より一段落とした値） */
+  --halu-text-muted: #B0B0B0;
+
+  /* 枠線：強（メニューカード）／弱（ページング）／入力欄
+     ※いずれも補完。暗背景で視認できるよう、defaultの暗い枠色から明色へ反転 */
+  --halu-border-strong: #B0B0B0;
+  --halu-border-muted: #696969;
+  --halu-border-input: #757575;
+
+  /* ボタン色(info)の hover/active。.btn-info と白抜きボタンの枠で共用
+     hoverはモックアップ「Primary hover #526B63」。activeは※補完（hoverの暗色側） */
+  --halu-info-hover: #526B63;
+  --halu-info-active: #455A52;
+
+  /* メニュー画面のタブ（非選択／選択）
+     ※補完（defaultの明暗関係を保ちつつ、Table/欄の色域へ寄せた） */
+  --halu-tab-inactive-bg: #454545;
+  --halu-tab-active-bg: #545454;
+
+  /* 一覧テーブルのデータ行罫線 ※補完（モックアップ「欄 #696969」を流用） */
+  --halu-table-row-border: #696969;
+
+  /* 一覧の選択行ハイライト背景。モックアップ「選択行ハイライト #3C3C3C」。
+   * ★2026-08-30時点、project.css / program.css に参照箇所は無く未使用。
+   *   実際に画面へ効かせるには project.css 側の参照実装が別途必要。 */
+  --halu-row-selected-bg: #3C3C3C;
+
+  /* 入力欄のフォーカス表示（枠色／背景色／文字色）。枠はモックアップ「Focus(枠) #535353」。
+   * ★背景は2026-08-31の依頼者指示で #838E8A へ変更した。モックアップの
+   *   「Focus(背景) #DCE5E2」はライトテーマと同値の明色で、暗色テーマの中では
+   *   明るすぎるというUAT指摘によるもの（C-057）。
+   * 文字色は #838E8A に対して黒が 6.20:1、白が 3.38:1 のため黒を維持している
+   * （本文色 #E2E2E2 を流用してはいけないのは変更前と同じ理由）。 */
+  --halu-focus-border: #535353;
+  --halu-focus-bg: #838E8A;
+  --halu-focus-color: #000000;
+
+  /* カードの影・ローディングオーバーレイの幕
+     ※補完（暗背景では影・幕とも default より濃くしないと効果が見えない） */
+  --halu-shadow-color: rgba(0, 0, 0, 0.4);
+  --halu-overlay-bg: rgba(0, 0, 0, 0.5);
+
+  /* ログイン画面。他画面と配色が独立しているため専用トークンを持つ。
+     ※モックアップにログイン画面の指定が無いため全て補完（本テーマの
+       サーフェス／PrimaryContainer／文字色の関係に合わせた） */
+  --halu-login-card-bg: #545454;
+  --halu-login-title-color: #E2E2E2;
+  /* アイコンはカード地(#545454)より明るくしないと沈む（分離前 #757575 では
+     ほぼ見えなかった。2026-08-30 UAT指摘） */
+  --halu-login-icon-color: #B0B0B0;
+  /* 入力欄はカード地より一段暗くし、枠を付けて輪郭を出す（UAT指摘対応） */
+  --halu-login-field-bg: #3C3C3C;
+  --halu-login-field-border: #757575;
+  /* LOGINボタンは本テーマのアクセント緑＋白文字にする。分離前は #696969 に
+     明色文字（--bs-body-color #E2E2E2）でコントラストが低く、カード地とも
+     近くCTAとして目立たなかった（UAT指摘）。他画面の .btn-info と同じ
+     「緑地×白文字」に揃えることで画面間の一貫性も取れる */
+  --halu-login-btn-bg: #69887E;
+  --halu-login-btn-hover-bg: #5b776e;
+  --halu-login-btn-active-bg: #4e675f;
+  /* 枠色。2026-08-31 に地色トークンの流用から分離（navyで「白地＋オレンジ枠」を
+     表現するために必要になった）。darkは地色と同値＝分離前と同じ見た目 */
+  --halu-login-btn-border: #69887E;
+  --halu-login-btn-hover-border: #5b776e;
+  --halu-login-btn-active-border: #4e675f;
+  --halu-login-btn-color: #FFFFFF;
+
+  /* 必須項目マーク（ラベル後ろのアスタリスク）
+     ※補完。defaultの純赤 #E00 は暗背景で沈むため明度を上げた */
+  --halu-required-mark: #FF6B6B;
+
+  /* ドラッグ＆ドロップゾーン（OrderUpload等のdm-uploader画面）の破線枠。
+     通常時／ドラッグ中（active）。※補完（defaultと同値のまま維持） */
+  --halu-dnd-border: #A5A5C7;
+  --halu-dnd-active-border: red;
+
+  /* OrderUploadの FileList（#files）／Debug Messages（#debug）のログ文字色。
+     BS5既定では .text-info が --bs-info（Haluがテーマのボタン色へ上書きしている）、
+     .text-success が --bs-success（#198754 の濃緑）になり、暗色カード上で読めない
+     というUAT指摘への対応。2026-08-31 依頼者指示で**種別ごとに個別指定**する。
+     エラーの .text-danger（赤）と既定の .text-muted（薄グレー）は対象外・変更なし */
+  --halu-upload-log-info-color: #E2E2E2;
+  --halu-upload-log-success-color: #C5DBD5;
+}
+
+/* body背景色（モックアップ「Background_1 #2D2D2D」「font#E2E2E2」）
+   ※defaultは --bs-secondary(#D9D9D9) と body背景(#F5F5F5) が別値だが、
+     ダークはモックアップ上どちらも #2D2D2D のため同値にしている */
+body {
+  background-color: #2D2D2D;
+  color: #E2E2E2;
+}
+
+/* 表タイトル（モックアップ「PrimaryContainer #696969 / On PC #E2E2E2」） */
+.table-dark {
+  --bs-table-bg: #696969;
+  --bs-table-color: #E2E2E2;
+  --bs-table-border-color: #696969;
+}
+
+/* タブ選択文字色 */
+.nav-tabs {
+  --bs-nav-tabs-link-active-color: #E2E2E2;
+}
+
+/* tbodyの色指定（独自クラス）：モックアップ「Table #545454」＋本文色 */
+.table .tbody-light {
+  background-color: #545454;
+  color: #E2E2E2;
+}
+
+/* ボタン色（緑 #69887E。hover/activeは暗色化、disabledは同系淡色）
+   hover/activeの暗色は --halu-info-hover / --halu-info-active を参照する
+   （白抜きボタン .halu-btn-outline の枠色と共用するため定義元を一本化）。
+   disabledはモックアップ「disabled(無効) #526B63 / 文字 #767676」 */
+.btn-info {
+  --bs-btn-color: var(--halu-on-accent);
+  --bs-btn-bg: var(--bs-info);
+  --bs-btn-border-color: var(--bs-info);
+  --bs-btn-hover-color: var(--halu-on-accent);
+  --bs-btn-hover-bg: var(--halu-info-hover);
+  --bs-btn-hover-border-color: var(--halu-info-hover);
+  --bs-btn-active-color: var(--halu-on-accent);
+  --bs-btn-active-bg: var(--halu-info-active);
+  --bs-btn-active-border-color: var(--halu-info-active);
+  --bs-btn-disabled-color: #767676;
+  --bs-btn-disabled-bg: #526B63;
+  --bs-btn-disabled-border-color: #526B63;
+}

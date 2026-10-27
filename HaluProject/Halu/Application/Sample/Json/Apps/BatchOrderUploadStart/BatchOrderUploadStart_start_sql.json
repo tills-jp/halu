@@ -70,7 +70,7 @@
     }
   },
   {
-    "comment": "バッチ　起動情報",
+    "comment": "バッチ管理情報（バッチサーバーがバッチ管理テーブル登録に使用）",
     "id": "batchControll",
     "dbname": "sample",
     "before": "",
@@ -129,6 +129,26 @@
         },
         "終了日時": {
           "value": [""]
+        }
+      }
+    }
+  },
+  {
+    "comment": "バッチ処理の起動情報",
+    "id": "batchStartup",
+    "before": "",
+    "after": "",
+    "sql": {
+      "type": "nosql"
+    },
+    "input": {
+      "multiline": "no",
+      "record": {
+        "バッチ処理名": {
+          "value": ["受注ヘッダ・受注明細データ更新"]
+        },
+        "バッチロードパス名": {
+          "value": ["Sample/Server/BatchLoad/BatchOrderUploadStart.py"]
         }
       }
     }

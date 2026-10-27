@@ -39,6 +39,14 @@
           "field": "更新日時",
           "funct": "CURRENT_TIMESTAMP"
         },
+        "更新ユーザ": {
+          "value": [""],
+          "field": "更新ユーザ",
+          "fromtype": "request",
+          "fromid": "login",
+          "fromio": "",
+          "fromname": "ユーザＩＤ"
+        },
         "ユーザＩＤ": {
           "value": [""],
           "field": "ユーザＩＤ",

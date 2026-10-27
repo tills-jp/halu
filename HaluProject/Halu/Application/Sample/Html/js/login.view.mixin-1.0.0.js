@@ -44,7 +44,10 @@
       $H.log("View onクリア : start");
 
       // 画面の最初の項目にフォーカスを当てる
-      $("#ログインＩＤ").focus();
+      // 2026-06-12 後方互換: halu-ds-field で要素を特定（なければ #id で検索）
+      let $loginId = $("[halu-ds-field='ログインＩＤ']");
+      if (!$loginId.length) $loginId = $("#ログインＩＤ");
+      $loginId.focus();
 
       $H.log("View onクリア : end");
     },
@@ -65,9 +68,11 @@
         let targetArg = { cssName: cssName };
         this.appendCSS(targetArg);
       }
-      $('body').fadeIn("normal");
       // 画面の最初の項目にフォーカスを当てる
-      $("#ログインＩＤ").focus();
+      // 2026-06-12 後方互換: halu-ds-field で要素を特定（なければ #id で検索）
+      let $loginIdInit = $("[halu-ds-field='ログインＩＤ']");
+      if (!$loginIdInit.length) $loginIdInit = $("#ログインＩＤ");
+      $loginIdInit.focus();
 
       $H.log("View on初期処理OfEditResponseData : end");
     }

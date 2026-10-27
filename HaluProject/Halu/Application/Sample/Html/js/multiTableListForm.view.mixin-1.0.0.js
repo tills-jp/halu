@@ -52,8 +52,6 @@
         this.appendCSS(arg);
       }
 
-      $('body').fadeIn("normal");
-
       $H.log("View initテンプレートロード : end");
     },
 
@@ -66,12 +64,18 @@
     setログイン情報: function (arg) {
       $H.log("View setログイン情報 : start");
 
-      $("#ログイン和暦").html(arg["ログイン和暦"]);
-      $("#ユーザ氏名").html(arg["ユーザ名称"]);
+      // 後方互換: halu-ds-id="login"+halu-ds-field で要素を特定（なければ #id で検索）
+      let $和暦 = $("[halu-ds-id='login'][halu-ds-field='ログイン和暦']");
+      if (!$和暦.length) $和暦 = $("#ログイン和暦");
+      $和暦.html(arg["ログイン和暦"]);
 
-      if ($("#ログイン日時").length) {
-        $("#ログイン日時").html(arg["ログイン時刻"]);
-      }
+      let $氏名 = $("[halu-ds-id='login'][halu-ds-field='ユーザ氏名']");
+      if (!$氏名.length) $氏名 = $("#ユーザ氏名");
+      $氏名.html(arg["ユーザ名称"]);
+
+      let $日時 = $("[halu-ds-id='login'][halu-ds-field='ログイン日時']");
+      if (!$日時.length) $日時 = $("#ログイン日時");
+      if ($日時.length) $日時.html(arg["ログイン時刻"]);
 
       $H.log("View setログイン情報 : end");
     },
@@ -210,6 +214,11 @@
 
       // テーブル以外の項目（ヘッダー・フッター）にデータを表示する
       this.fromJsonDataToView(dataSet);
+
+      // 行選択状態をクリアする
+      // resetJsonDataToTable はテンプレート行をコピーするため、
+      // table-success が残っていると全行に引き継がれてしまう
+      $("#mainTable td").removeClass("table-success");
 
       // テーブルにデータを表示する
       this.resetJsonDataToTable("#mainTable", dataSet, "detail");

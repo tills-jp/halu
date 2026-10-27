@@ -1,0 +1,47 @@
+{
+  "comment": "商品選択ダイアログ validation",
+  "html": "Sample/Json/Apps/ProductSelectionDialog",
+  "records": [
+  {
+    "id": "header",
+    "multiline": "no",
+    "record": {
+      "ページライン数": {
+        "validation": ["required",
+        "integerP"],
+        "min": "1",
+        "max": "11"
+      },
+      "カレントページ": {
+        "validation": ["required",
+        "integerP"],
+        "min": "1",
+        "max": "11"
+      },
+      "検索商品コード": {
+        "validation": ["nonrequired",
+        "free"],
+        "max": "20"
+      },
+      "検索商品名称": {
+        "validation": ["nonrequired",
+        "free"],
+        "max": "100"
+      }
+    }
+  },
+  {
+    "id": "detail",
+    "multiline": "yes",
+    "record": {
+      "標準単価": {
+        "validation": ["nonrequired",
+        "integerP"],
+        "min": "1",
+        "max": "11",
+        "format": "money"
+      }
+    }
+  }
+  ]
+}

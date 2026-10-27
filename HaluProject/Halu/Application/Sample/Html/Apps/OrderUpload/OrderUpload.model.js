@@ -85,6 +85,33 @@
     }
 
     // ---------------------------------------
+    // 取込チェック結果 判定処理（C-041）
+    // エラー明細が1件以上あれば取込中止のメッセージを表示し、バッチ起動へ進ませない
+    // ---------------------------------------
+    ,on取込チェック結果判定: function(responseData) {
+      $H.log("Model on取込チェック結果判定 : start");
+
+      var headerRecord = this.appspec.getJSONChunkByIdAtRecords(responseData, "header")["record"];
+      var errorCount = parseInt(headerRecord["エラー件数"]["value"][0], 10);
+      if (isNaN(errorCount)) {
+        errorCount = 0;
+      }
+
+      if (errorCount == 0) {
+        $H.log("Model on取込チェック結果判定 : end");
+        return "OK";
+      }
+
+      var arg = {title: "取込エラー",
+                 message: "ＣＳＶの内容にエラーが" + errorCount + "件あるため、取込を中止しました。<br />"
+                        + "メニューの「取込エラー一覧」で内容を確認し、ＣＳＶまたは商品・顧客マスタを修正してから再実行してください。"};
+      this.pubsub.publish("alertDialog", arg);
+
+      $H.log("Model on取込チェック結果判定 : end");
+      return "ERROR";
+    }
+
+    // ---------------------------------------
     // データアップロード処理
     // ---------------------------------------
     ,onデータアップロード処理: function(self) {

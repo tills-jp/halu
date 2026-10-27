@@ -42,6 +42,8 @@ class ExcelController():
 
         except Exception as e:
             self.excellog.error(self.excellogname, f'ExcelController init exception message : {e}')
+            # 2026-09-15 Issue #14 握り潰すと後続で別の例外になり真因が隠れるため再送出する
+            raise
 
         finally:
             self.excellog.debug(self.excellogname, 'ExcelController init end')
@@ -127,6 +129,7 @@ class ExcelController():
 
             # カレント行数・印字行の初期化
             self.excelcreate.currLineCount = 0
+            # 2026-09-14 Issue #59 rowPosion/moveDown は excelstart() でintに変換済み（従来は文字列同士の減算でTypeError）
             self.excelcreate.currRowPosion = self.excelcreate.rowPosion - self.excelcreate.moveDown
 
         self.excellog.debug(self.excellogname, 'ExcelController pagedetail end\n')

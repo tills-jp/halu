@@ -1,0 +1,163 @@
+<!-- ***********************************************
+ * Framework Name  :  Halu
+ * (c) 2025 TILLS & Co.
+ *********************************************** -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>取込エラー一覧</title>
+<link href="../../../../../Application/Sample/Html/css/bootstrap-5.3.0/bootstrap.min.css?var=202607031000" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/halu-custom_default.css?var=202608311200" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/project.css?var=202608311400" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/Apps/OrderUploadErrorList/css/program.css?var=202608301500" rel="stylesheet"/>
+<script type="text/javascript" src="../../../../../System/Html/js/halutheme-preload-1.0.0.js?var=202609081100"></script>
+
+<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.7.1.min.js?var=202607111000"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/jquery-ui-1.12.1/jquery-ui.min.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-5.3.0/bootstrap.bundle.min.js?var=202607031000"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/template/jquery.loadTemplate-1.4.5.min.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/bignumberjs/bignumber.min.js?var=202408171800"></script>
+
+<script type="text/javascript" src="../../../../../System/Html/js/halumvc-1.0.0.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/halumodel.mixin-1.0.0.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/haluview.mixin-1.0.0.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/halucontroller.mixin-1.0.0.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/haluentertabpfkey.mixin-1.0.0.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/haluvalidation.mixin-1.0.0.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/haluappspec.mixin-1.0.0.js?var=202408171800"></script>
+<script type="text/JavaScript" src="../../../../../System/Html/js/webstorage-1.0.0.js?var=202408171800"></script>
+
+<script type="text/javascript" src="../../../../../Application/Sample/Html/js/multiTableListForm.view.mixin-1.0.0.js?var=202609251000"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/js/multiTableListForm.model.mixin-1.0.0.js?var=202609251000"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/js/multiTableListForm.controller.mixin-1.0.0.js?var=202609251000"></script>
+
+<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/OrderUploadErrorList/OrderUploadErrorList.appspec.js?var=202608051200"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/OrderUploadErrorList/OrderUploadErrorList.model.js?var=202608051200"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/OrderUploadErrorList/OrderUploadErrorList.view.js?var=202608051200"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/OrderUploadErrorList/OrderUploadErrorList.controller.js?var=202608051200"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/OrderUploadErrorList/OrderUploadErrorList.main.js?var=202608051200"></script>
+
+<!-- コンポーネント -->
+<script type="module" src="../../../../../Application/Sample/Html/SvelteComponent/build/AppComponents.js?var=202609151300"></script>
+<script type="module" src="../../../../../System/Html/SvelteComponent/build/HaluComponents.js?var=202605261144"></script>
+</head>
+
+<!-- ================================================================================================================= -->
+<body>                                                                                          <!-- ▼body部 スタート -->
+<div class="container-fluid bg-secondary">                                             <!-- ▼container-fluid スタート -->
+<form id="mainForm">                                                                              <!-- ▼form スタート -->
+<div class="d-flex flex-column">                                                    <!-- ▼d-flex flex-column スタート -->
+<!-- ================================================================================================================= -->
+
+
+<!-- ================================================================================================================= -->
+<!-- ★▼halu-page-header -->
+<div componentID="Header" props-Title="取込エラー一覧"></div>
+<!-- ================================================================================================================= -->
+
+
+<!-- ================================================================================================================= -->
+<!-- 本文左上の大見出し＋戻るボタン（BatchListと同型） -->
+<div class="halu-header-btn">
+<!-- ================================================================================================================= -->
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="halu-page-title">取込エラー一覧</div>
+    <div class="me-2">
+      <button type="button" class="btn btn-info btn-sm halu-btn-outline" id="戻る" name="戻る" style="width:84px;">戻る：Esc</button>
+    </div>
+  </div>
+<!-- ================================================================================================================= -->
+</div>                                                                                  <!-- ▲halu-header-btn エンド -->
+<!-- ================================================================================================================= -->
+
+
+<!-- ================================================================================================================= -->
+<div class="halu-detail-readonly mt-3">                                         <!-- ▼halu-detail-readonly スタート -->
+<!-- ================================================================================================================= -->
+  <div class="d-flex justify-content-center">
+
+    <div id="scrollable-Table" style="width:1397px;">   <!-- 1380px + 17px -->
+      <div class="d-flex gap-2 mb-2">
+        <button type="button" class="btn btn-info btn-sm" id="再表示" name="再表示" style="width:110px;">再表示：F1</button>
+      </div>
+      <div id="scrollable-HTable" style="width:1380px;">
+        <table id="mainTableH" class="table table-sm table-bordered my-0" style="width:1380px;table-layout:fixed;">
+          <thead class="table-dark">
+            <tr>
+              <th class="text-center" style="width:60px;">行</th>
+              <th class="text-center" style="width:140px;">受注番号</th>
+              <th class="text-center" style="width:80px;">明細番号</th>
+              <th class="text-center" style="width:160px;">項目名</th>
+              <th class="text-center" style="width:260px;">項目値</th>
+              <th class="text-center" style="width:520px;">エラー内容</th>
+              <th class="text-center" style="width:160px;">取込日時</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+
+      <div id="scrollable-DTable" style="width:1397px;overflow-x:auto;overflow-y:auto;">   <!-- 1380px + 17px。スクロール高さはprogram.css -->
+        <table id="mainTable" class="table table-striped table-sm table-bordered my-0" style="width:1380px;table-layout:fixed;">
+          <tbody class="tbody-light">
+            <tr style="height: 26px;">
+              <td halu-ds-id="detail" halu-ds-field="行番号" class="text-center" style="width:60px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="受注番号" class="text-start" style="width:140px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="明細番号" class="text-center" style="width:80px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="項目名" class="text-start" style="width:160px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="項目値" class="text-start" style="width:260px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="エラー内容" class="text-start" style="width:520px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="取込日時" class="text-center" style="width:160px;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+<!-- ================================================================================================================= -->
+</div>                                                                             <!-- ▲halu-detail-readonly エンド -->
+<!-- ================================================================================================================= -->
+
+
+<!-- ================================================================================================================= -->
+<div class="halu-footer mt-3">                                                            <!-- ▼halu-footer スタート -->
+  <!-- ================================================================================================================= -->
+    <div class="d-flex justify-content-center">
+      <div class="mx-1">
+        <button type="button" class="btn btn-info btn-sm" id="最初のページ" name="最初のページ" style="width:84px;">最初：F9</button>
+      </div>
+      <div class="mx-1">
+        <button type="button" class="btn btn-info btn-sm" id="前のページ" name="前のページ" style="width:84px;">前へ：F10</button>
+      </div>
+      <div class="mx-1">
+        <input type="text" class="form-control form-control-sm text-center" id="ページ情報" name="ページ情報" readonly tabIndex=-1 style="width:160px;">
+      </div>
+      <div class="mx-1">
+        <button type="button" class="btn btn-info btn-sm" id="次のページ" name="次のページ" style="width:84px;">次へ：F11</button>
+      </div>
+      <div class="mx-1">
+        <button type="button" class="btn btn-info btn-sm" id="最後のページ" name="最後のページ" style="width:84px;">最後：F12</button>
+      </div>
+    </div>
+  <!-- ================================================================================================================= -->
+  </div>                                                                                      <!-- ▲halu-footer エンド -->
+  <!-- ================================================================================================================= -->
+
+
+  <!-- ================================================================================================================= -->
+  <!-- ★▼halu-page-footer -->
+  <div componentID="Footer"></div>
+  <!-- ================================================================================================================= -->
+
+
+  <!-- ================================================================================================================= -->
+  </div>                                                                                <!-- ▲d-flex flex-column エンド -->
+  </form>                                                                                             <!-- ▲form エンド -->
+  </div>                                                                                   <!-- ▲container-fluid エンド -->
+  </body>                                                                                           <!-- ▲body部 エンド -->
+  <!-- ================================================================================================================= -->
+
+  </html>

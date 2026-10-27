@@ -1,113 +1,63 @@
 @charset "UTF-8";
 
-/* #mainForm高さ調整 */
+/* ===================================================================
+ * OrderDetailListMainte フェーズ2 UIデザイン適用
+ * ヘッダ部＝UserDetailMainte（白カードフォーム）様式、
+ * 明細一覧＝CustomerListMainte（一覧カード）様式のハイブリッド。
+ * カード・ボタン・入力欄・ラベル・一覧テーブルの共通様式は
+ * project.css（モダンUI共通ルール）を使用し、ここは画面固有分のみ。
+ * =================================================================== */
+
+/* #mainForm高さ調整（UserDetailMainteの方式を踏襲。固定高さだと実行ボタン表示時に
+   カードがフォーム高を超えグレー背景からはみ出すため、min-height化して内容に追従させる） */
 #mainForm {
-  height: calc(100vh - 120px);
-  min-height: 350px
+  min-height: calc(100vh - 120px);
 }
 
-
-/* ヘッダテーブルの表示窓 */
-#header-Table1  {
-  max-width: calc(100vw - 80px);
-  width: 600px;
-  margin: auto;
+/* ヘッダー中央タイトルの非表示（本文側の大見出し .halu-page-title で代替。
+   モード付きタイトル（照会/新規/訂正等）は singleRecordForm.view.mixin が
+   .halu-page-title へ反映する） */
+#ヘッダータイトル {
+  display: none;
 }
 
-
-
-/* コピー　開始 */
-@media screen and (max-width: 1919px) {
-/* ▼表示領域が1919px以下の場合ここから */
-
-/* スクロールテーブルの表示窓 */
-#scrollable-Table  {
-  width: calc(899px + 0px);
-  margin: 10px auto;
-  overflow-x: auto;
-}
-
-/* スクロールテーブルのヘッダ */
-#scrollable-HTable  {
-  width: 899px;
-  height: 34px;
-  overflow: hidden;
-}
-
-/* スクロールテーブルの明細 */
-#scrollable-DTable  {
-  overflow-x: auto;      /* 水平スクロールバー auto:自動表示 hidden:非表示 */
-  overflow-y: auto;      /* 垂直スクロールバー auto:自動表示 hidden:非表示 */
-  width: calc(899px + 0px);
-  height: calc(100vh - 340px);
-}
-
-
-/* ▲表示領域が1919px以下の場合ここまで */
-}
-
-
-
-@media screen and (min-width: 1920px) {
-/* ▼表示領域が1920px以上の場合ここから */
-
-/* スクロールテーブルの表示窓 */
-#scrollable-Table  {
-  width: calc(899px + 0px);
-  margin: 10px auto;
-  overflow-x: auto;
-}
-
-/* スクロールテーブルのヘッダ */
-#scrollable-HTable  {
-  width: 899px;
-  height: 34px;
-  overflow: hidden;
-}
-
-/* スクロールテーブルの明細 */
-#scrollable-DTable  {
-  overflow-x: auto;        /* 水平スクロールバー auto:自動表示 hidden:非表示 */
-  overflow-y: auto;        /* 垂直スクロールバー auto:自動表示 hidden:非表示 */
-  width: calc(899px + 0px);
-  height: calc(100vh - 340px);
-}
-
-
-/* ▲表示領域が1920pxpx以上の場合ここまで */
-}
-/* コピー　終了 */
-
-
-
-
-#mainTableH {
-  table-layout: fixed;
+/* 受注ヘッダ情報のフォームカード（維持。幅は下の明細一覧の実幅1017pxと揃える。
+   【2026-07-30 UAT指摘により訂正】明細一覧側はカード化しないためmax-widthを
+   1057px→1017pxへ変更） */
+.halu-form-card {
   width: 100%;
+  max-width: 1017px;
+  padding: 20px 24px 16px;
 }
 
-/* 幅のオーバ部分を折り返す指示 */
-#mainTableH {
-  word-break: break-all;
-  white-space: normal;
+/* セクション見出し・2カラムグリッド・項目レイアウト（.halu-form-section-title/
+   .halu-form-grid/.halu-form-item）はUserDetailMainteと完全一致していたため
+   project.cssの共通ルールへ格上げ済み（D-032） */
+
+/* 【2026-07-30 UAT指摘により訂正】明細一覧はカード化しない（モックアップ
+   準拠。グレー背景に直置き。ヘッダ部の.halu-form-cardは維持） */
+
+/* スクロールテーブルのヘッダ（横スクロールバーは明細側のみに出す） */
+#scrollable-HTable {
+  overflow: hidden;
 }
+
+/* 【2026-07-30 BatchListのUAT指摘②と同型対処】横スクロールラッパー対処
+   （#scrollable-Table）はproject.cssの共通ルールへ格上げ済み（D-033） */
+
+/* スクロールテーブルの明細（高さは画面高に追従。HTML側の直書きを廃止。
+   横スクロールは親ラッパー#scrollable-Tableが担う） */
+#scrollable-DTable {
+  height: calc(100vh - 540px);
+  min-height: 200px;
+}
+
+/* 幅のオーバ部分の折り返しはproject.cssの共通設定へ格上げ済み（D-025） */
 
 #mainTableH tr {
   height: 32px;
 }
 
-#mainTable {
-  table-layout: fixed;
-  width: 100%;
-}
-
-/* 幅のオーバ部分を折り返す指示 */
-#mainTable {
-  word-break: break-all;
-  white-space: normal;
-}
-
 #mainTable tr {
   height: 28px;
 }
-

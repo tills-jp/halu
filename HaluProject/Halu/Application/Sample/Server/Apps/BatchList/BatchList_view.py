@@ -34,7 +34,7 @@ class BatchList_view():
             self.requestdict  = requestdict
 
         except Exception as e:
-            self.mvclog.debug(self.mvclogname, 'BatchList_view init exception message : {e}')
+            self.mvclog.debug(self.mvclogname, f'BatchList_view init exception message : {e}')
 
         finally:
             self.mvclog.debug(self.mvclogname, 'BatchList_view init end')

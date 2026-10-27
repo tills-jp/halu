@@ -41,6 +41,7 @@
    ,requestInfo: [
       ["execute",   "on実行OfCheckRequestData",        "on実行OfEditResponseData",      "onErrorResponseData"]
     // ここから追加処理
+     ,["check",     "on取込チェックOfCheckRequestData", "on取込チェックOfEditResponseData", "onErrorResponseData"]
     ]
     // ----------------------------------------------------------------------------------------
     // 外部トランザクション定義する
@@ -155,6 +156,9 @@
     // datasetid   : datasetのidを指定する
     // dataname    : datasetの項目名を指定する
     // value       : 空白（項目名の値がセットされ選択画面へ渡される）
+    // ----- svelte用項目 -----
+    // dialogid    : 画面に挿入する選択ダイアログのDOM要素idを指定する
+    // dialogstyle : 選択ダイアログのstyle情報を指定する
     // ----------------------------------------------------------------------------------
    ,selectStorageRequestData: [
     ]
@@ -165,6 +169,7 @@
     // dataname      : datasetの項目名を指定する
     // value         : 空白（選択画面からの引き渡しデータの値がセットされる）
     // afterfunction : 後処理関数を指定する（同時に、pubsubOtherEventにも設定する）
+    // cancelfunction : キャンセル時の後処理関数名を指定する（pubsubOtherEventへの登録も必要）
     // ----------------------------------------------------------------------------------
    ,selectStorageResponseData: [
     ]

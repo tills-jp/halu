@@ -126,8 +126,8 @@
    ,sessionStorageDetailKey: [
       {
          datasetid: "detail"
-        ,dataname:  ["バッチ管理ＩＤ", "バッチ管理ＩＤ"]
-        ,typename:  ["dataset",       "dataset"]
+        ,dataname:  ["明細バッチ管理ＩＤ", "明細バッチ分割管理ＩＤ"]
+        ,typename:  ["dataset",            "dataset"]
       }
     ]
     // ----------------------------------------------------------------------------------
@@ -175,6 +175,9 @@
     // datasetid   : datasetのidを指定する
     // dataname    : datasetの項目名を指定する
     // value       : 空白（項目名の値がセットされ選択画面へ渡される）
+    // ----- svelte用項目 -----
+    // dialogid    : 画面に挿入する選択ダイアログのDOM要素idを指定する
+    // dialogstyle : 選択ダイアログのstyle情報を指定する
     // ----------------------------------------------------------------------------------
    ,selectStorageRequestData: [
     ]
@@ -185,6 +188,7 @@
     // dataname      : datasetの項目名を指定する
     // value         : 空白（選択画面からの引き渡しデータの値がセットされる）
     // afterfunction : 後処理関数を指定する（同時に、pubsubOtherEventにも設定する）
+    // cancelfunction : キャンセル時の後処理関数名を指定する（pubsubOtherEventへの登録も必要）
     // ----------------------------------------------------------------------------------
    ,selectStorageResponseData: [
     ]

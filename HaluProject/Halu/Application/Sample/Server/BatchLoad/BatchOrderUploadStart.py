@@ -12,7 +12,7 @@ from batchstartup.batchstartup import BatchStartup
 
 def main(args):
     # 受注ヘッダ・受注明細 更新
-    
+
     # バッチ起動用トランザクションのファイルパスを設定する
     conf        = HaluConf()
     file_path   = conf.apppath + "/Sample/Json/Apps/BatchOrderUploadStart/BatchOrderUploadStart_start_tran.json"

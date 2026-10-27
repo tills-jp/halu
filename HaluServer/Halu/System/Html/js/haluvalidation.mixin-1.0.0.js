@@ -557,13 +557,15 @@
 
       let message = {};
       let okmessage = { target: target, status: "OK", message: "", multiline: "no", noDisplayMessage: "no", row: index };
-      let targetRule = this.validation.getTargetRule(target.name);
+      // 2026-06-12 後方互換: halu-ds-fieldで項目名を特定（なければname属性で特定）
+      let fieldName = target.getAttribute("halu-ds-field") || target.name;
+      let targetRule = this.validation.getTargetRule(fieldName);
       if (!targetRule) {
         return okmessage;
       }
 
-      let multiline = this.validation.getTargetMultline(target.name);
-      let noDisplayMessage = this.validation.getTargetNoDisplayMessage(target.name);
+      let multiline = this.validation.getTargetMultline(fieldName);
+      let noDisplayMessage = this.validation.getTargetNoDisplayMessage(fieldName);
       let errorMessage = [];
       this.checkData(value, targetRule, errorMessage, type, index);
       this.checkSize(value, targetRule, errorMessage, type, index);
@@ -574,7 +576,7 @@
       }
 
       // チェック用カスタムイベント名設定（check + 項目名 を設定する）
-      let eventname = "check" + target.name;
+      let eventname = "check" + fieldName;
       if (this.pubsub.isEvent(eventname)) {
         let arg = { target: target, value: value, multiline: multiline, noDisplayMessage: noDisplayMessage, row: index, type: type };
         message = this.pubsub.publish(eventname, arg);
@@ -602,10 +604,12 @@
         let records = requestdata["records"];
         let maxlength = records.length;
         let record, name, value, valuelength, elementvalue, target, i, j;
-        let multiline, defaultline;
+        let multiline, defaultline, recId, dsElements;
         for (i = 0; i < maxlength; i++) {
           multiline = records[i]["multiline"]
           record = records[i]["record"];
+          // 2026-06-12 後方互換: halu-ds-id/halu-ds-field で要素を特定（なければid/class属性で検索）
+          recId = records[i]["id"];
           for (name in record) {
             value = record[name]["value"];
             valuelength = value.length;
@@ -613,10 +617,19 @@
               elementvalue = value[j];
 
               if (multiline == "no") {
-                target = $("#" + name)[0];
+                target = $("[halu-ds-id='" + recId + "'][halu-ds-field='" + name + "']")[0];
+                if (target === undefined) {
+                  target = $("#" + name)[0];
+                }
               }
               else {
-                target = $("." + name)[j];
+                dsElements = $("[halu-ds-id='" + recId + "'][halu-ds-field='" + name + "']");
+                if (dsElements.length > 0) {
+                  target = dsElements[j];
+                }
+                else {
+                  target = $("." + name)[j];
+                }
               }
 
               if (target) {
@@ -655,7 +668,9 @@
      * @returns ガイドメッセージ
      */
     getButtonMessage: function (target) {
-      return target.name + " ボタンをクリックして下さい。";;
+      // 2026-06-12 後方互換: halu-ds-fieldで項目名を特定（なければname属性で特定）
+      let fieldName = target.getAttribute("halu-ds-field") || target.name;
+      return fieldName + " ボタンをクリックして下さい。";;
     },
     /**
      * ラジオボックス用のガイドメッセージを作成する
@@ -664,8 +679,10 @@
      * @returns ガイドメッセージ
      */
     getRadioMessage: function (target) {
-      return target.name + " を選択して下さい。";;
-    }, 
+      // 2026-06-12 後方互換: halu-ds-fieldで項目名を特定（なければname属性で特定）
+      let fieldName = target.getAttribute("halu-ds-field") || target.name;
+      return fieldName + " を選択して下さい。";;
+    },
     /**
      * チェックボックス用のガイドメッセージを作成する
      * @memberof ValidationMixin
@@ -673,7 +690,9 @@
      * @returns ガイドメッセージ
      */
     getCheckboxMessage: function (target) {
-      return target.name + " をチェックして下さい。";;
+      // 2026-06-12 後方互換: halu-ds-fieldで項目名を特定（なければname属性で特定）
+      let fieldName = target.getAttribute("halu-ds-field") || target.name;
+      return fieldName + " をチェックして下さい。";;
     },
     /**
      * セレクトボックス用のガイドメッセージを作成する
@@ -682,7 +701,9 @@
      * @returns ガイドメッセージ
      */
     getSelectMessage: function (target) {
-      return target.name + " を選択して下さい。";;
+      // 2026-06-12 後方互換: halu-ds-fieldで項目名を特定（なければname属性で特定）
+      let fieldName = target.getAttribute("halu-ds-field") || target.name;
+      return fieldName + " を選択して下さい。";;
     },
     /**
      * テキストボックス用のガイドメッセージを作成する
@@ -691,7 +712,9 @@
      * @returns ガイドメッセージ
      */
     getNonValidMessage: function (target) {
-      return target.name + " を入力して下さい。";;
+      // 2026-06-12 後方互換: halu-ds-fieldで項目名を特定（なければname属性で特定）
+      let fieldName = target.getAttribute("halu-ds-field") || target.name;
+      return fieldName + " を入力して下さい。";;
     },
     /**
      * 入力ガイドメッセージ作成処理
@@ -721,7 +744,9 @@
       }
 
       let sizemsg, requiredmsg, rulemsg, guidemsg;
-      let targetRule = this.validation.getTargetRule(target.name);
+      // 2026-06-12 後方互換: halu-ds-fieldで項目名を特定（なければname属性で特定）
+      let fieldName = target.getAttribute("halu-ds-field") || target.name;
+      let targetRule = this.validation.getTargetRule(fieldName);
       // ルール設定無し
       if (!targetRule) {
         guidemsg = this.getNonValidMessage(target);
@@ -767,9 +792,11 @@
       $H.log("ValidationMixin onBlurDerive : start");
 
       // 導出項目編集用カスタムイベント名設定（derive + 項目名 を設定する）
-      let eventname = "derive" + target.name;
+      // 2026-06-12 後方互換: halu-ds-fieldで項目名を特定（なければname属性で特定）
+      let fieldName = target.getAttribute("halu-ds-field") || target.name;
+      let eventname = "derive" + fieldName;
       if (this.pubsub.isEvent(eventname)) {
-        let multiline = this.validation.getTargetMultline(target.name);
+        let multiline = this.validation.getTargetMultline(fieldName);
         let arg = { target: target, value: value, row: index };
         this.pubsub.publish(eventname, arg);
       }

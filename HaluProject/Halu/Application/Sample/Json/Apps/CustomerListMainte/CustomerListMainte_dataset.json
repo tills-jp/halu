@@ -22,7 +22,7 @@
   {
     "id": "detail",
     "multiline": "yes",
-    "defaultline": "10",
+    "defaultline": "1",
     "record": {
       "顧客ＩＤ": {
         "value": [""]

@@ -59,7 +59,7 @@
     ]
   },
   "response": {
-    "comment": "単票登録（単一テーブル） 訂正処理 レスポンスデータ",
+    "comment": "単票登録（単一テーブル） 訂正処理 レスポンスデータ（パスワードはハッシュ値のため画面へ返さない）",
     "html" : "Sample/Json/Apps/UserDetailMainte",
     "mode": "update",
     "prog": "no",
@@ -81,9 +81,6 @@
             "value": [""]
           },
           "ユーザ名" : {
-            "value" : [""]
-          },
-          "パスワード" : {
             "value" : [""]
           },
           "メニュー名" : {

@@ -34,7 +34,8 @@
         case "select-multiple":
           break;
         default:
-          value = this.dataset.getElementData(target.name, row);
+          // 2026-03-13 halu-ds-field属性を後方互換フォールバックとして対応
+          value = this.dataset.getElementData(target.name || target.getAttribute("halu-ds-field") || "", row);
           break;
       }
 
@@ -67,7 +68,8 @@
         case "select-multiple":
           break;
         default:
-          this.dataset.setElementData(target.value, target.name, row);
+          // 2026-03-13 halu-ds-field属性を後方互換フォールバックとして対応
+          this.dataset.setElementData(target.value, target.name || target.getAttribute("halu-ds-field") || "", row);
           break;
       }
 
@@ -85,9 +87,11 @@
       $H.log("ModelMixin onChangeSelectBox : start");
 
       //イベント関連情報
-      let targetID = event.target.id;
-      let targetValue = $("#" + targetID).val();
-      let targetHtml = $("#" + targetID + " option:selected").text();
+      // 2026-03-16 後方互換: halu-ds-field で要素を特定（なければ id を使用）
+      let targetID = event.target.id || event.target.getAttribute("halu-ds-field") || "";
+      let $target = $(event.target);
+      let targetValue = $target.val();
+      let targetHtml = $target.find("option:selected").text();
 
       let max = defSelectBox.length;
       let datasetRecord = null;
@@ -157,8 +161,23 @@
       $H.log("ModelMixin onChangeTableSelectBox : start");
 
       //イベント情報用変数
-      let targetName = event.target.name;
-      let targetObject = $("." + targetName);
+      // 2026-06-12 後方互換: halu-ds-field 属性があればそれをフィールド名として使用（なければ name 属性）
+      let targetName = event.target.getAttribute("halu-ds-field") || event.target.name;
+      // 2026-06-12 後方互換: target に halu-ds 属性があれば属性セレクタで要素特定（なければ従来の class 検索）
+      let targetDsId = event.target.getAttribute("halu-ds-id");
+      let targetDsField = event.target.getAttribute("halu-ds-field");
+      let targetObject = null;
+      if (targetDsField) {
+        if (targetDsId !== null) {
+          targetObject = $("[halu-ds-id='" + targetDsId + "'][halu-ds-field='" + targetDsField + "']");
+        }
+        else {
+          targetObject = $("[halu-ds-field='" + targetDsField + "']");
+        }
+      }
+      else {
+        targetObject = $("." + targetName);
+      }
       let targetValue = $(targetObject[index]).val();
 
       //ループ用変数
@@ -172,7 +191,8 @@
         datasetRecord = null;
         valueName = null;
 
-        if (targetName != defSelectBox[i]["selectorname"]) {
+        // 2026-06-12 後方互換: selectorname 一致を優先し、なければ datasetname での一致も許容（新方式HTMLは name 属性を持たないため）
+        if (targetName != defSelectBox[i]["selectorname"] && targetName != defSelectBox[i]["datasetname"]) {
           continue;
         }
         //データ取得
@@ -199,7 +219,8 @@
     onChangeCheckBox: function (event, defCheckBox) {
       $H.log("ModelMixin onChangeCheckBox : start");
       //イベント情報用変数
-      let targetID = event.target.id;
+      // 2026-06-12 後方互換: halu-ds-field 属性があればそれをキーとして使用（なければ id 属性）
+      let targetID = event.target.getAttribute("halu-ds-field") || event.target.id;
 
       //ループ用変数
       let max = defCheckBox.length;
@@ -217,7 +238,8 @@
         datasetRecord = null;
 
         //IDチェック
-        if (targetID != defCheckBox[i]["selectorid"]) {
+        // 2026-06-12 後方互換: selectorid 一致を優先し、なければ datasetname での一致も許容（新方式HTMLは id 属性を持たないため）
+        if (targetID != defCheckBox[i]["selectorid"] && targetID != defCheckBox[i]["datasetname"]) {
           continue;
         }
 
@@ -225,7 +247,8 @@
         datasetID = defCheckBox[i]["datasetid"];
         datasetName = defCheckBox[i]["datasetname"];
 
-        if ($("#" + targetID).is(":checked")) {
+        // 2026-06-12 後方互換: change発火元の event.target 自身の状態を参照（id 依存の $("#id") を排除し新旧両方式に対応）
+        if ($(event.target).is(":checked")) {
           checkValue = defCheckBox[i]["value"]["on"];
         }
         else {
@@ -253,7 +276,11 @@
     onChangeTableCheckBox: function (event, index, defCheckBox) {
       $H.log("ModelMixin onChangeTableCheckBox : start");
       //変数宣言
-      let targetName = event.currentTarget.name;
+      // 2026-06-12 後方互換: halu-ds-field 属性があればそれをフィールド名として使用（なければ name 属性）
+      let targetName = event.currentTarget.getAttribute("halu-ds-field") || event.currentTarget.name;
+      // 2026-06-12 後方互換: target に halu-ds 属性があれば属性セレクタで要素特定（なければ従来の class 検索）
+      let targetDsId = event.currentTarget.getAttribute("halu-ds-id");
+      let targetDsField = event.currentTarget.getAttribute("halu-ds-field");
       let checkValue; //戻り値
 
       //ループ用変数
@@ -272,14 +299,26 @@
         datasetRecord = null;
 
         //チェックボックス名前チェック
-        if (targetName != defCheckBox[i]["selectorname"]) {
+        // 2026-06-12 後方互換: selectorname 一致を優先し、なければ datasetname での一致も許容（新方式HTMLは name 属性を持たないため）
+        if (targetName != defCheckBox[i]["selectorname"] && targetName != defCheckBox[i]["datasetname"]) {
           continue;
         }
 
         //データ取得
         datasetID = defCheckBox[i]["datasetid"];
         datasetName = defCheckBox[i]["datasetname"];
-        targetObject = $("." + targetName);
+        // 2026-06-12 後方互換: halu-ds 属性があれば属性セレクタで要素特定（なければ従来の class 検索）
+        if (targetDsField) {
+          if (targetDsId !== null) {
+            targetObject = $("[halu-ds-id='" + targetDsId + "'][halu-ds-field='" + targetDsField + "']");
+          }
+          else {
+            targetObject = $("[halu-ds-field='" + targetDsField + "']");
+          }
+        }
+        else {
+          targetObject = $("." + targetName);
+        }
         if ($(targetObject[index]).prop("checked")) {
           checkValue = defCheckBox[i]["value"]["on"];
         }
@@ -571,6 +610,23 @@
      * @memberof HtmlTransitionMixin
      */
     previousTransition: function () {
+      //★add start 20260724 選択ダイアログiframe分離方式：iframe内で動作中なら親のクローズ経路へ委譲する
+      // 自画面がHaluの選択ダイアログiframe内で動いている場合はフルページPOST遷移を行わず、
+      // 親documentのクローズハンドラ（遷移スタック復元・アンマウント・選択結果反映）に委譲する。
+      // 同一オリジンのため window.frameElement / window.parent にアクセスできる。
+      try {
+        if (window.frameElement &&
+          window.frameElement.getAttribute("data-halu-select-dialog") === "true" &&
+          window.parent &&
+          typeof window.parent.__haluDialogCloseHandler === "function") {
+          window.parent.__haluDialogCloseHandler();
+          return;
+        }
+      } catch (e) {
+        //クロスオリジン等で frameElement にアクセスできない場合は従来動作へフォールバックする
+        $H.log("previousTransition frameElement check error : " + e);
+      }
+      //★add end 20260724
       let htmlName = this.getTransitionData();
       this.postHtmlTransition(htmlName);
     },
@@ -1258,7 +1314,8 @@
         }
 
         if (name in datasetRecord["record"]) {
-          this.setJsonValueToDatasetValue(responseRecord["record"][name]["value"], datasetRecord["record"][name]["value"], multiline, defaultline, name, pubsub);
+          // 2026-06-12 後方互換: derive で halu-ds-id 要素特定に使うため record id を引き渡す（末尾オプション引数）
+          this.setJsonValueToDatasetValue(responseRecord["record"][name]["value"], datasetRecord["record"][name]["value"], multiline, defaultline, name, pubsub, datasetRecord["id"]);
         }
       }
 
@@ -1290,15 +1347,17 @@
      * @param {object} defaultline - 1ページあたりの表示行数
      * @param {string} name - 項目名
      * @param {object} pubsub - pubsubクラス
+     * @param {string} [id] - レコードid（halu-ds-id 要素特定用。省略可、未指定でも従来動作）
      * @returns なし
      */
-    setJsonValueToDatasetValue: function (responseValue, datasetValue, multiline, defaultline, name, pubsub) {
+    setJsonValueToDatasetValue: function (responseValue, datasetValue, multiline, defaultline, name, pubsub, id) {
       // 変数宣言
       let responseSize = null;
 
       if (multiline == "no") {
         datasetValue[0] = responseValue[0];
-        this.deriveJsonValueToDatasetValue(pubsub, name, datasetValue[0], 0);
+        // 2026-06-12 後方互換: halu-ds-id 要素特定用に record id を引き渡す（末尾オプション引数、未指定でも従来動作）
+        this.deriveJsonValueToDatasetValue(pubsub, name, datasetValue[0], 0, id);
         return;
       }
 
@@ -1307,7 +1366,8 @@
 
       for (let i = 0; i < responseSize; i++) {
         datasetValue[i] = responseValue[i];
-        this.deriveJsonValueToDatasetValue(pubsub, name, datasetValue[i], i);
+        // 2026-06-12 後方互換: halu-ds-id 要素特定用に record id を引き渡す（末尾オプション引数、未指定でも従来動作）
+        this.deriveJsonValueToDatasetValue(pubsub, name, datasetValue[i], i, id);
       }
 
       if (defaultline > responseSize) {
@@ -1324,9 +1384,10 @@
      * @param {string} name - 項目名
      * @param {object} value - 値
      * @param {number} index - datasetのindex
+     * @param {string} [id] - レコードid（halu-ds-id 要素特定用。省略可、未指定でも従来動作）
      * @returns なし
      */
-    deriveJsonValueToDatasetValue: function (pubsub, name, value, index) {
+    deriveJsonValueToDatasetValue: function (pubsub, name, value, index, id) {
       //変数宣言
       let objArray = null;
       let eventname = null;
@@ -1335,7 +1396,16 @@
         return;
       }
 
-      objArray = $("." + name);
+      // 2026-06-12 後方互換: record id があれば halu-ds 属性セレクタで要素特定→0件なら halu-ds-field→それも0件なら従来の class 検索
+      if (id !== undefined && id !== null) {
+        objArray = $("[halu-ds-id='" + id + "'][halu-ds-field='" + name + "']");
+      }
+      if (objArray === null || objArray.length === 0) {
+        objArray = $("[halu-ds-field='" + name + "']");
+      }
+      if (objArray.length === 0) {
+        objArray = $("." + name);
+      }
       eventname = "derive" + name;
 
       if (pubsub.isEvent(eventname)) {
@@ -1449,7 +1519,7 @@
 
       $H.log("ModelMixin replaceHashtoDetailRecord : end");
       return detailRecord;
-    }, 
+    },
     // -------------------------------------------------------
     // 画面遷移・選択画面 処理
     // -------------------------------------------------------
@@ -2097,6 +2167,386 @@
       }
       return arg;
     },
+    // ★add start 20250714
+    /**
+     * 選択画面ダイアログ呼び出し元処理：表示処理(Dialog)
+     * @memberof HtmlTransitionMixin
+     * @param {object} selectStorageRequestData - 選択リクエストデータ
+     * @param {object} selectStorageResponseData - 選択レスポンスデータ
+     * @param {number} index - クリック行のindex
+     */
+    on選択画面ダイアログ表示: function (selectStorageRequestData, selectStorageResponseData, index, closeHandler) {
+      $H.log("Model on選択画面ダイアログ表示 : start");
+      //変数宣言
+      let dataSet = null;
+      let maxSize = 0;
+      let datasetID = null;
+      let datasetRecord = null;
+      let name = null;
+      let value = null;
+      let currName = null;
+      let nextArray = null;
+      let nextName = null;
+      let argDialog = {};
+
+      //ダイアログ情報を取得する
+      argDialog["dialogid"] = selectStorageRequestData["dialogid"];
+      argDialog["dialogstyle"] = selectStorageRequestData["dialogstyle"];
+
+      //データ取得
+      dataSet = this.dataset.getData();
+
+      // 表示前にデータセットを退避する
+      sessionStorage.setIdName(this.appspec.sysname + "." + this.appspec.name);
+      sessionStorage.saveItem("選択画面名", selectStorageRequestData["requestname"]);
+      sessionStorage.saveItem("クリック行退避", index);
+      sessionStorage.saveObject("データセット退避", dataSet);
+
+      // ダイアログ画面のリクエストデータをセットする
+      maxSize = selectStorageRequestData["dataname"].length;
+      if (maxSize > 0) {
+        datasetID = selectStorageRequestData["datasetid"];
+        datasetRecord = this.appspec.getJSONChunkByIdAtRecords(dataSet, datasetID)["record"];
+        for (let i = 0; i < maxSize; i++) {
+          //初期化
+          name = null;
+          value = null;
+          //データ取得
+          name = selectStorageRequestData["dataname"][i];
+          if (datasetRecord[name] == undefined) {
+            continue;
+          }
+          value = datasetRecord[name]["value"][0];
+          selectStorageRequestData["value"][i] = value;
+        }
+      }
+
+      // ダイアログ画面のセッションストレージにリクエストデータを退避する
+      sessionStorage.setIdName(this.appspec.sysname + "." + selectStorageRequestData["requestname"]);
+      sessionStorage.saveObject("リクエストデータ", selectStorageRequestData);
+
+      // ダイアログ画面のセッションストレージにレスポンスデータを退避する
+      sessionStorage.saveObject("レスポンスデータ", selectStorageResponseData);
+
+      // ダイアログ画面を表示する
+      currName = this.appspec.urlInfo[0]["app"];
+      nextArray = currName.split("/");
+      nextArray[3] = selectStorageRequestData["requestname"];
+      nextName = nextArray.join("/");
+
+      this.setTransitionData(currName.slice(0, -1));
+
+      //★add start 20260526
+      //ダイアログ表示前に親画面のキーイベントを解除する
+      this.pubsub.publish("keydownUnbind");
+      //★add end 20260526
+
+      //★add start 20260724 選択ダイアログのiframe分離方式（dialogtype:"iframe"）
+      // dialogtype未指定は従来方式（同一documentへHTML移植）を完全温存する
+      if (selectStorageRequestData["dialogtype"] === "iframe") {
+        //iframe分離方式：ダイアログを別documentのiframe内にHalu画面として表示する
+        this.showSelectDialogIframe(nextName.slice(0, -1), argDialog["dialogid"], argDialog["dialogstyle"]);
+        $H.log("Model on選択画面ダイアログ表示 : end (iframe)");
+        return;
+      }
+      //★add end 20260724
+
+      //選択ダイアログ(Svelte)をマウントする
+      window.mountSelectDialog(argDialog["dialogid"], argDialog["dialogstyle"]);
+      //選択ダイアログのHTMLを挿入してモーダル表示する
+      this.showSelectDialog(nextName.slice(0, -1), argDialog["dialogid"], $H.HtmlASGIURL, closeHandler);
+
+      $H.log("Model on選択画面ダイアログ表示 : end");
+    },
+    //★add end 20250714
+    //★add start 20260724 選択ダイアログiframe分離方式
+    /**
+     * 選択ダイアログをiframe内にHalu画面として表示する（iframe分離方式）<br>
+     * ダイアログのDOMは親documentと分離されるため、halu-ds属性のdocument全域検索と衝突しない。<br>
+     * 従来のshowSelectDialog(fetch＋DOM移植方式)は変更せず、本メソッドは並存する。
+     * @memberof HtmlTransitionMixin
+     * @param {string} url - ダイアログ画面のgamen(screen path)
+     * @param {string} dialogId - ダイアログのDOM ID
+     * @param {string} dialogStyle - ダイアログのstyle情報
+     */
+    showSelectDialogIframe: function (url, dialogId, dialogStyle) {
+      $H.log("Model showSelectDialogIframe : start");
+      //変数宣言
+      let self = this;
+      let iframeName = "haluSelectDialogFrame";
+
+      //クローズ経路を配線する（ダイアログiframe内のpreviousTransitionから window.parent 経由で呼ばれる）
+      window.__haluDialogCloseHandler = function () {
+        $H.log("Model __haluDialogCloseHandler : start");
+        //多重呼び出しを防止するため即時に無効化する
+        delete window.__haluDialogCloseHandler;
+
+        //呼び出し元(iframe)の実行スタックを巻き戻してからDOM破棄・反映を行う
+        //（呼び出し中のiframeを同期的に破棄しないため setTimeout で遅延する）
+        setTimeout(function () {
+          //①遷移スタックを1段戻す（親画面名をpop。親画面は再ロードしない）
+          try {
+            self.getTransitionData();
+          } catch (e) {
+            $H.log("__haluDialogCloseHandler getTransitionData error : " + e);
+          }
+
+          //②iframe入りダイアログシェル(Svelte)をアンマウントする
+          if (typeof window.unmountSelectDialog === "function") {
+            window.unmountSelectDialog();
+          }
+
+          //③親画面のキーバインドを復元する
+          //   従来方式は親画面がフルページ再ロードされ初期処理でキーが再設定されたが、
+          //   iframe方式は親画面が再ロードされないため、keydownUnbindで解除したキーをここで再設定する。
+          if (self.appspec.enterTabPFKey) {
+            self.pubsub.publish("keydownBind", self.appspec.enterTabPFKey);
+          }
+
+          //④選択結果を親画面へ反映する
+          //   フルページ再ロード時に on初期処理 の選択画面戻り分岐が担っていた
+          //   「on選択画面戻り→データセット反映→view反映→後処理関数呼出」を controller 側で実行する。
+          self.pubsub.publish("selectDialogReturn");
+
+          $H.log("Model __haluDialogCloseHandler : end");
+        }, 0);
+      };
+
+      //iframe入りダイアログシェルをマウントする
+      window.mountSelectDialog(dialogId, dialogStyle, "iframe");
+
+      //SvelteのDOM生成後にiframeへPOST送信する（activateSelectDialogと同様に setTimeout で遅延する）
+      setTimeout(function () {
+        //ダイアログ要素を取得する(取得できなければ処理終了)
+        let dialogEl = document.getElementById(dialogId);
+        if (!dialogEl) {
+          $H.log("Model showSelectDialogIframe : dialog element not found");
+          return;
+        }
+        //モーダル表示する
+        dialogEl.classList.add("show");
+        dialogEl.style.display = "block";
+        dialogEl.removeAttribute("aria-hidden");
+
+        //★add start 20260727 ダイアログ表示直後からEsc/F1等のキーが届くよう、読み込み完了時にiframeへフォーカスを移す
+        //（キーイベントはフォーカスのあるdocumentに配送される。親側キーはkeydownUnbindで解除済みのため、
+        //  フォーカスを移さないとダイアログをクリックするまでキー操作が効かない）
+        let iframeEl = dialogEl.querySelector("iframe[name='" + iframeName + "']");
+        if (iframeEl) {
+          iframeEl.addEventListener("load", function () {
+            try {
+              iframeEl.contentWindow.focus();
+            } catch (e) {
+              $H.log("Model showSelectDialogIframe : iframe focus error : " + e);
+            }
+          });
+        }
+        //★add end 20260727
+
+        //親documentに動的formを生成し、iframeをtargetにダイアログ画面をPOST表示する
+        let form = document.createElement("form");
+        form.method = "post";
+        form.action = $H.HtmlASGIURL;
+        form.target = iframeName;
+
+        //表示する画面名(gamen)
+        let inputGamen = document.createElement("input");
+        inputGamen.setAttribute("type", "hidden");
+        inputGamen.setAttribute("name", "gamen");
+        inputGamen.setAttribute("value", url);
+        form.appendChild(inputGamen);
+
+        //モーダルフラグ（従来のfetch方式と同一パラメータ）
+        let inputModal = document.createElement("input");
+        inputModal.setAttribute("type", "hidden");
+        inputModal.setAttribute("name", "modal");
+        inputModal.setAttribute("value", "true");
+        form.appendChild(inputModal);
+
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+      }, 0);
+
+      $H.log("Model showSelectDialogIframe : end");
+    },
+    //★add end 20260724
+    //★add start 20260518
+    /**
+     * 選択ダイアログ画面のHTMLを取得してモーダル表示する
+     * @memberof HtmlTransitionMixin
+     * @param {string} url - 画面URL
+     * @param {string} dialogId - ダイアログのDOM ID
+     * @param {string} fetchUrl - HTML取得先URL
+     * @param {function} closeHandler - クローズ時コールバック
+     */
+    showSelectDialog: function (url, dialogId, fetchUrl, closeHandler) {
+      $H.log("Model showSelectDialog : start");
+      //変数宣言
+      let gamen = null;
+      let self = this;
+
+      //URLをエンコードする
+      gamen = encodeURIComponent(url);
+
+      //サーバーからダイアログ表示する画面のHTMLを取得する
+      fetch(fetchUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `gamen=${gamen}&modal=true`,
+      })
+        .then(function (res) { return res.text(); })
+        .then(function (content) {
+          // SvelteのDOM更新後にスクリプトを実行するためsetTimeoutで遅延する
+          setTimeout(function () {
+            self.activateSelectDialog(content, dialogId, closeHandler);
+          }, 0);
+        })
+        .catch(function (error) {
+          $H.log("Model showSelectDialog : fetch error : " + error);
+          self.closeDialog(dialogId);
+          self.pubsub.publish("alertDialog", {
+            title: "通信エラー",
+            status: "ERROR",
+            message: error
+          });
+        });
+      $H.log("Model showSelectDialog : end");
+    },
+    /**
+     * 選択ダイアログのHTMLを挿入してスクリプトを順次実行しモーダルを表示する
+     * @memberof HtmlTransitionMixin
+     * @param {string} html - サーバーから取得したHTML文字列
+     * @param {string} dialogId - ダイアログのDOM ID
+     * @param {function} closeHandler - クローズ時コールバック
+     */
+    activateSelectDialog: function (html, dialogId, closeHandler) {
+      $H.log("Model activateSelectDialog : start");
+      //変数宣言
+      let dialogEl = null;
+      let temp = null;
+      let scripts = null;
+
+      //ダイアログ要素を取得する(取得できなければ処理終了)
+      dialogEl = document.getElementById(dialogId);
+      if (!dialogEl) return;
+
+      //★mod start 20260616 ダイアログcloseHandlerをグローバルに保存する（自己クリーン型・遷移スタック復元付き）
+      let self = this;
+      window.__haluDialogCloseHandler = function () {
+        delete window.__haluDialogCloseHandler;
+        try {
+          self.getTransitionData();
+        } catch (e) {
+          $H.log("activateSelectDialog: getTransitionData error: " + e);
+        }
+        if (typeof window.unmountSelectDialog === "function") {
+          window.unmountSelectDialog();
+        }
+        if (typeof closeHandler === "function") {
+          closeHandler();
+        }
+      };
+      //★mod end 20260616
+
+      //ダイアログの中身をクリアする
+      dialogEl.innerHTML = "";
+
+      //★mod start 20260703 DOMParserでhead/bodyを確実に分離してbody挿入→script実行の順を保証する
+      // temp.innerHTML=html(フルページ)方式ではブラウザ実装によりhead要素がdialogElに移動された時点で
+      // head内scriptが即時実行され、body(#dialogTable等)未挿入のままon初期処理が走るタイミング問題が発生する
+      let parsedDoc = (new DOMParser()).parseFromString(html, "text/html");
+
+      //bodyのscriptタグ以外の要素をダイアログに追加する（head内コンテンツは除外し、scriptより先にDOMを確定する）
+      Array.from(parsedDoc.body.children).forEach(function (el) {
+        if (el.tagName !== "SCRIPT") dialogEl.appendChild(el);
+      });
+
+      //scriptタグを取得する（headのscript→bodyのscriptの順で結合）
+      scripts = Array.from(parsedDoc.head.querySelectorAll("script")).concat(
+        Array.from(parsedDoc.body.querySelectorAll("script"))
+      );
+      //★mod end 20260703
+
+      //scriptを順次実行する（外部スクリプトはonloadを待ち、インラインは即時実行）
+      (async function () {
+        for (const script of scripts) {
+          const newScript = document.createElement("script");
+          //★mod start 20260527 type="module"属性を引き継ぐ
+          if (script.type) newScript.type = script.type;
+          //★mod end 20260527
+          if (script.src) {
+            //外部スクリプト：ロード完了を待ってから次を実行する
+            newScript.src = script.src;
+            newScript.async = false;
+            await new Promise(function (resolve) {
+              newScript.onload = resolve;
+              dialogEl.appendChild(newScript);
+            });
+          } else {
+            //インラインスクリプト：そのまま追加して実行する
+            newScript.textContent = script.textContent;
+            dialogEl.appendChild(newScript);
+          }
+        }
+        //モーダル表示する
+        dialogEl.classList.add("show");
+        dialogEl.style.display = "block";
+        dialogEl.removeAttribute("aria-hidden");
+      })();
+      $H.log("Model activateSelectDialog : end");
+    },
+    /**
+     * ダイアログ画面を閉じる(HTMLから削除する)
+     * @memberof HtmlTransitionMixin
+     * @param {string} dialogID - ダイアログのDOM ID
+     */
+    closeDialog: function (dialogID) {
+      $H.log("model closeDialog : start");
+      let dialog = null;
+      let loadingElements = null;
+      let lastElement = null;
+      // id="loading" を持つ要素をすべて取得（ダイアログ表示により複数存在してしまうため)
+      //★mod start 20260619 getElementById→querySelectorAllに修正（NodeListで複数取得）
+      loadingElements = document.querySelectorAll('#loading');
+      //★mod end 20260619
+      // 複数ある場合、末尾（最後）の要素を削除
+      if (loadingElements.length > 1) {
+        lastElement = loadingElements[loadingElements.length - 1];
+        lastElement.remove();
+      }
+
+      dialog = document.getElementById(dialogID);
+      //存在すれば閉じる
+      if (dialog) {
+        if (dialog.tagName === "DIALOG") {
+          // dialog要素の場合
+          dialog.close();
+        } else if (dialog.classList.contains("modal")) {
+          // div.modal の場合（Bootstrap風）
+          // aria-hidden設定前にダイアログ内フォーカスを外す（aria-hidden警告対策）
+          if (dialog.contains(document.activeElement)) {
+            document.activeElement.blur();
+          }
+          dialog.classList.remove("show");
+          dialog.style.display = "none";
+          dialog.setAttribute("aria-hidden", "true");
+
+          // Svelteコンポーネントのアンマウント（backdropsより先に実行しないとnodes_start辿りが失敗する）
+          if (typeof window.unmountSelectDialog === "function") {
+            window.unmountSelectDialog();
+          }
+          // 背景（.modal-backdrop）も削除（非Svelteダイアログまたはアンマウント失敗時の保険）
+          const backdrop = document.querySelector(".modal-backdrop");
+          if (backdrop) backdrop.remove();
+        }
+      }
+
+      $H.log("model closeDialog : end");
+    },
+    //★add end 20260518
     /**
      * 選択画面呼び出し元処理：遷移処理
      * @memberof HtmlTransitionMixin
@@ -2351,6 +2801,6 @@
       sessionStorage.saveObject("レスポンスデータ", selectStorageResponseData);
 
       $H.log("Model set戻るレスポンスデータOf選択画面 : end");
-    }
+    },
   };
 }(jQuery, Halu));

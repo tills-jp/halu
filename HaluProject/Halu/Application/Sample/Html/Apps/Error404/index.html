@@ -7,13 +7,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>エラー（４０４）</title> 
-<link href="../../../../../Application/Sample/Html/css/bootstrap.min_default.css?var=201710041453" rel="stylesheet"/>
+<title>エラー(404)</title> 
+<link href="../../../../../Application/Sample/Html/css/bootstrap-5.3.0/bootstrap.min.css?var=202607031000" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/halu-custom_default.css?var=202608311200" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/project.css?var=202608311400" rel="stylesheet"/>
+<script type="text/javascript" src="../../../../../System/Html/js/halutheme-preload-1.0.0.js?var=202609081100"></script>
 
-<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.4.1.min.js?var=201710041453"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.7.1.min.js?var=202607111000"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/jquery-ui-1.12.1/jquery-ui.min.js?var=201710041453"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js?var=201710041453"></script>
-<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-4.4.1/bootstrap.bundle.min.js?var=201710041453"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-5.3.0/bootstrap.bundle.min.js?var=202607031000"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/template/jquery.loadTemplate-1.4.5.min.js?var=201710041453"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/bignumberjs/bignumber.min.js?var=201710041453"></script>
 
@@ -31,10 +34,14 @@
 <script type="text/javascript" src="../../../../../Application/Sample/Html/js/singleTableListForm.controller.mixin-1.0.0.js?var=201710041453"></script>
 
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/Error404/Error404.appspec.js?var=201806261721"></script>
-<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/Error404/Error404.model.js?var=201806261721"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/Error404/Error404.model.js?var=202609211400"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/Error404/Error404.view.js?var=201806261721"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/Error404/Error404.controller.js?var=201806261721"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/Error404/Error404.main.js?var=201806261721"></script>
+
+<!-- コンポーネント -->
+<script type="module" src="../../../../../Application/Sample/Html/SvelteComponent/build/AppComponents.js?var=202609151300"></script>
+<script type="module" src="../../../../../System/Html/SvelteComponent/build/HaluComponents.js?var=202605261144"></script>
 </head>
 
 <!-- ================================================================================================================= -->
@@ -46,31 +53,21 @@
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-page-header sticky-top bg-primary" style="height:60px;">           <!-- ▼halu-page-header スタート -->
+<!-- ★▼halu-page-header -->
+<div componentID="Header" props-Title="エラー(404)" props-LoginInfo-visible="false"></div>
 <!-- ================================================================================================================= -->
-<div class="d-flex justify-content-between align-items-center">
-  <div class="d-flex">
-    <div class="mx-1 mt-1 halu-page-header-icon" style="width:140px; height:100%;">
-      <img src="../../../../../Application/Sample/Html/images/Halulogo_238-85_02business.png" class="img-fluid">
-    </div>
 
-    <div class="mx-1 mt-3">
+
+<!-- ================================================================================================================= -->
+<div class="halu-header-btn mt-4" style="height:30px;">                              <!-- ▼halu-header-btn スタート -->
+<!-- ================================================================================================================= -->
+  <div class="d-flex justify-content-center">
+    <div class="mx-1" style="position: absolute; left: 0;">
       <button type="button" class="btn btn-info btn-sm mx-1" id="戻る" name="戻る" style="width:84px;">戻る：Esc</button>
     </div>
   </div>
-
-  <div>
-    <div class="mx-1 mt-3">
-      <h5 id="ヘッダータイトル">エラー（４０４）</h5>
-    </div>
-  </div>
-
-  <div class="d-flex">
-  </div>
-
-</div>
 <!-- ================================================================================================================= -->
-</div>                                                                                   <!-- ▲halu-page-header エンド -->
+</div>                                                                                  <!-- ▲halu-header-btn エンド -->
 <!-- ================================================================================================================= -->
 
 
@@ -102,11 +99,8 @@
 <!-- =================================================================== -->
 
 <!-- ================================================================================================================= -->
-<div class="halu-page-footer bg-primary mt-3" style="height:20px;">                 <!-- ▼halu-page-footer スタート -->
-<!-- ================================================================================================================= -->
-
-<!-- ================================================================================================================= -->
-</div>                                                                                 <!-- ▲halu-page-footer エンド -->
+<!-- ★▼halu-page-footer -->
+<div componentID="Footer"></div>
 <!-- ================================================================================================================= -->
 
 <!-- ================================================================================================================= -->

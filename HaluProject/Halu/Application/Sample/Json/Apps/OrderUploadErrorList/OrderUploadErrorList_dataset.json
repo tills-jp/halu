@@ -1,0 +1,72 @@
+{
+  "comment": "取込エラー一覧 dataset",
+  "html": "Sample/Json/Apps/OrderUploadErrorList",
+  "message": {
+    "status": "OK",
+    "msg": ""
+  },
+  "records": [
+  {
+      "id": "login",
+      "multiline": "no",
+      "defaultline": "0",
+      "record": {
+        "ユーザＩＤ": {
+          "value": [""]
+        },
+        "ユーザ名称": {
+          "value": [""]
+        }
+      }
+  },
+  {
+    "comment": "テーブルページング情報（ページ行数・カレントページ・総ページ数・総件数）",
+    "id": "header",
+    "multiline": "no",
+    "defaultline": "1",
+    "record": {
+      "ページライン数": {
+        "value": [""]
+      },
+      "カレントページ": {
+        "value": [""]
+      },
+      "最大ページ": {
+        "value": [""]
+      },
+      "トータル件数": {
+        "value": [""]
+      }
+    }
+  },
+  {
+    "comment": "テーブルの明細データ",
+    "id": "detail",
+    "multiline": "yes",
+    "defaultline": "20",
+    "record": {
+      "行番号": {
+        "value": [""]
+      },
+      "受注番号": {
+        "value": [""]
+      },
+      "明細番号": {
+        "value": [""]
+      },
+      "項目名": {
+        "value": [""]
+      },
+      "項目値": {
+        "value": [""]
+      },
+      "エラー内容": {
+        "value": [""]
+      },
+      "取込日時": {
+        "value": [""]
+      }
+    }
+  }
+  ]
+}

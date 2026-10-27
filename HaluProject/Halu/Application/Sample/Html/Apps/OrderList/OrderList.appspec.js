@@ -35,16 +35,16 @@
     // -----------------------------------------------------------------------------------------------
     , jsonInfo: [
       { dataset: "yes" }
-     ,{ validation: "yes" }
+      , { validation: "yes" }
     ]
     // -----------------------------------------------------------------------------------------------
     // トランザクション・リクエストチェック・レスポンス編集・エラーのコールバック関数を定義する
     // -----------------------------------------------------------------------------------------------
     , requestInfo: [
-       ["select",  "on照会OfCheckRequestData",        "on照会OfEditResponseData",         "onErrorResponseData"]
+      ["select", "on照会OfCheckRequestData", "on照会OfEditResponseData", "onErrorResponseData"]
       // ここから追加処理
-      ,["printH",  "on受注一覧HOfCheckRequestData",   "on受注一覧HOfEditResponseData",     "onErrorResponseData"]
-      ,["printHM", "on受注一覧HMOfCheckRequestData",  "on受注一覧HMOfEditResponseData",    "onErrorResponseData"]
+      , ["printH", "on受注一覧HOfCheckRequestData", "on受注一覧HOfEditResponseData", "onErrorResponseData"]
+      , ["printHM", "on受注一覧HMOfCheckRequestData", "on受注一覧HMOfEditResponseData", "onErrorResponseData"]
     ]
     // -----------------------------------------------------------------------------------------------
     // 外部トランザクション定義する
@@ -210,13 +210,20 @@
     // datasetid   : datasetのidを指定する
     // dataname    : datasetの項目名を指定する
     // value       : 空白（項目名の値がセットされ選択画面へ渡される）
+    // ----- svelte用項目 -----
+    // dialogid    : 画面に挿入する選択ダイアログのDOM要素idを指定する
+    // dialogstyle : 選択ダイアログのstyle情報を指定する
     // -----------------------------------------------------------------------------------------------
     , selectStorageRequestData: [
       {
-        requestname: "CustomerSelection"
+        requestname: "CustomerSelectionDialog"
         , datasetid: "header"
         , dataname: ["検索顧客ＩＤ"]
         , value: []
+        , dialogid: "CustomerSelectionDialog"
+        , dialogstyle: "width:700px; position:fixed; inset:0; margin: auto; max-height: 80vh;"
+        // dialogtype : "iframe"指定で選択ダイアログをiframe分離方式で表示する（未指定は従来方式）
+        , dialogtype: "iframe"
       }
     ]
     // -----------------------------------------------------------------------------------------------
@@ -226,13 +233,14 @@
     // dataname      : datasetの項目名を指定する
     // value         : 空白（選択画面からの引き渡しデータの値がセットされる）
     // afterfunction : 後処理関数を指定する（同時に、pubsubOtherEventにも設定する）
+    // cancelfunction : キャンセル時の後処理関数名を指定する（pubsubOtherEventへの登録も必要）
     // -----------------------------------------------------------------------------------------------
     , selectStorageResponseData: [
       {
         responsename: "OrderList"
         , datasetid: "header"
         , dataname: ["検索顧客ＩＤ", "検索顧客氏名"]
-        , value: [""]
+        , value: []
         , afterfunction: ""
         , cancelfunction: ""
       }

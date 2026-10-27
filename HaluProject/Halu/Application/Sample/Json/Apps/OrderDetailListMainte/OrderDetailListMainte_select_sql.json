@@ -94,6 +94,9 @@
         "明細番号": {
           "value": [""]
         },
+        "商品ＩＤ": {
+          "value": [""]
+        },
         "商品名称": {
           "value": [""]
         },
@@ -111,7 +114,7 @@
         },
         "納期日": {
           "value": [""],
-          "funct": "TO_CHAR(dtl.納期日, 'YYYYMMDD')"
+          "funct": "TO_CHAR(dtl.納期日, 'YYYY-MM-DD')"
         },
         "備考": {
           "value": [""]

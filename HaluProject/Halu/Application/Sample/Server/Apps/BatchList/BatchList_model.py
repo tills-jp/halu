@@ -27,17 +27,17 @@ class BatchList_model():
         try:
             self.mvclog     = mvclog
             self.mvclogname = mvclogname
-            self.mvclog.debug(self.mvclogname, 'OrderList_model init start')
+            self.mvclog.debug(self.mvclogname, 'BatchList_model init start')
 
             self.database    = database
             self.sqldict     = sqldict
             self.requestdict = requestdict
 
         except Exception as e:
-            self.mvclog.error(self.mvclogname, f'OrderList_model init exception message : {e}')
+            self.mvclog.error(self.mvclogname, f'BatchList_model init exception message : {e}')
 
         finally:
-            self.mvclog.debug(self.mvclogname, 'OrderList_model init end')
+            self.mvclog.debug(self.mvclogname, 'BatchList_model init end')
 
 
     def getOffsetLineOfBatchList(self, idName1, idName2):
@@ -63,4 +63,3 @@ class BatchList_model():
 
         self.mvclog.debug(self.mvclogname, 'BatchList_model getOffsetLine end')
         return status
-

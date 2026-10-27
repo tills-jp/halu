@@ -33,6 +33,8 @@ class ExcelMainController():
 
         except Exception as e:
             self.excellog.error(self.excellogname, f'ExcelMainController init exception message : {e}')
+            # 2026-09-15 Issue #14 握り潰すと後続で別の例外になり真因が隠れるため再送出する
+            raise
 
         finally:
             self.excellog.debug(self.excellogname, 'ExcelMainController init end\n')
@@ -92,8 +94,10 @@ class ExcelMainController():
         except Exception as e:
             self.excellog.error(self.excellogname, f'ExcelMainController exception message type    : {str(type(e))}')
             self.excellog.error(self.excellogname, f'ExcelMainController exception message arg     : {str(e.args)}')
-            self.excellog.error(self.excellogname, f'ExcelMainController exception message message : {e.message}')
+            # 2026-09-15 Issue #14 e.message は存在せず AttributeError で真因のログが上書きされていたため削除。
+            # 握り潰して処理を続けると部分生成の帳票が status=OK で返るため再送出する（PrintMainController がエラー応答にする）
             self.excellog.error(self.excellogname, f'ExcelMainController exception message         : {e}')
+            raise
 
 
 

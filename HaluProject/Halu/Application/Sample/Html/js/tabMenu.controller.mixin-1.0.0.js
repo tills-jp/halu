@@ -54,7 +54,10 @@
       $H.log("Controller onメニュータブ : start");
 
       let tabName = event.currentTarget.id;
-      $("#" + tabName).tab('show');
+      let tabEl = document.getElementById(tabName);
+      if (tabEl) {
+        window.bootstrap.Tab.getOrCreateInstance(tabEl).show();
+      }
       $("#" + tabName).focus();
 
       // セッションストレージに識別名を保存する

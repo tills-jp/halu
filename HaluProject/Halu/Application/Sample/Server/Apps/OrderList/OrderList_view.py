@@ -34,7 +34,7 @@ class OrderList_view():
             self.requestdict  = requestdict
 
         except Exception as e:
-            self.mvclog.debug(self.mvclogname, 'OrderList_view init exception message : {e}')
+            self.mvclog.debug(self.mvclogname, f'OrderList_view init exception message : {e}')
 
         finally:
             self.mvclog.debug(self.mvclogname, 'OrderList_view init end')
@@ -60,4 +60,3 @@ class OrderList_view():
 
         self.mvclog.debug(self.mvclogname, 'OrderList_view getMaxPageCountOfOrderList end')
         return status
-

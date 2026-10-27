@@ -7,6 +7,19 @@
   },
   "records": [
   {
+    "id": "login",
+    "multiline": "no",
+    "defaultline": "0",
+    "record": {
+      "ユーザＩＤ": {
+        "value": [""]
+      },
+      "ユーザ名称": {
+        "value": [""]
+      }
+    }
+  },
+  {
     "id": "header",
     "multiline": "no",
     "defaultline": "0",

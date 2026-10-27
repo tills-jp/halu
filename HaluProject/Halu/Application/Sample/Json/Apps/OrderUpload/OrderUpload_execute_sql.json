@@ -1,27 +1,36 @@
 {
-  "comment": "受注データ アップロード 実行処理",
+  "comment": "受注データ アップロード 実行処理（バッチ起動のみ。受注ＣＳＶへの取込とチェックは check モードで完了している。C-041）",
   "html": "Sample/Json/Apps/OrderUpload",
   "dbname": "sample",
   "mode": "execute",
   "prog": "yes",
   "message": {
     "status": "OK",
-    "msg": "受注データ アップロード 実行処理は正常に終了されました。"
+    "msg": "受注データ アップロード 実行処理は正常に起動されました。"
   },
   "sqls": [
   {
-    "comment": "受注データ 削除処理 受注ＣＳＶへ登録する",
-    "id": "delete受注ＣＳＶ",
+    "comment": "取込データ 件数確認 受注ＣＳＶが空のままバッチを起動しないための防御（checkモードを経ずにexecuteが呼ばれた場合・取込が中止された場合）",
+    "id": "count受注ＣＳＶ",
     "before": "",
-    "after": "insertJyutyuCsv('header')",
+    "after": "checkCsvNotEmpty('header')",
     "sql": {
-      "type": "delete",
+      "type": "select",
       "freesql": "",
       "genesql": {
         "dist": "",
         "from": "受注ＣＳＶ",
-        "where": "true",
+        "where": "",
         "order": ""
+      }
+    },
+    "output": {
+      "multiline": "no",
+      "record": {
+        "取込件数": {
+          "value": [""],
+          "funct": "COUNT(*)"
+        }
       }
     }
   },
@@ -54,10 +63,10 @@
     }
   },
   {
-    "comment": "バッチ処理の起動情報",
+    "comment": "バッチ処理の起動情報（afterフックでアップロードファイルを削除する。取込が中止された場合は本モードが呼ばれないためファイルが残り、再アップロード無しで再実行できる）",
     "id": "batchStartup",
     "before": "",
-    "after": "",
+    "after": "deleteUploadFile('header')",
     "sql": {
       "type": "nosql"
     },

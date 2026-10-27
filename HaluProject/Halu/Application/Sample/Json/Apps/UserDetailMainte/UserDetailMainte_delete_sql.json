@@ -10,12 +10,12 @@
   },
   "sqls": [
   {
-    "comment": "ユーザマスタ 削除処理",
+    "comment": "ユーザマスタ 削除処理（論理削除）",
     "id": "header_delete",
     "before": "",
     "after":  "",
     "sql": {
-      "type": "delete",
+      "type": "update",
       "freesql": "",
       "genesql": {
         "dist": "",
@@ -26,6 +26,21 @@
     "input": {
       "multiline": "no",
       "record": {
+        "削除フラグ": {
+          "value": [""],
+          "funct": "'9'"
+        },
+        "更新日時": {
+          "value": [""],
+          "funct": "CURRENT_TIMESTAMP"
+        },
+        "更新ユーザ": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "login",
+          "fromio": "",
+          "fromname": "ユーザＩＤ"
+        },
         "ユーザＩＤ": {
           "value": [""],
           "fromtype": "request",

@@ -3,7 +3,7 @@
   "html": "Sample/Json/Apps/UserDetailMainte",
   "dbname": "sample",
   "mode": "update",
-  "prog": "no",
+  "prog": "yes",
   "model": "yes",
   "message": {
     "status": "OK",
@@ -11,9 +11,9 @@
   },
   "sqls": [
   {
-    "comment": "ユーザマスタ 訂正処理",
+    "comment": "ユーザマスタ 訂正処理（パスワード変更あり。パスワードはＳＨＡ２５６ハッシュ化して更新する）",
     "id": "update",
-    "before": "",
+    "before": "hashPasswordOfUpdate('update')",
     "after":  "",
     "sql": {
       "type": "update",
@@ -28,13 +28,6 @@
     "input": {
       "multiline": "no",
       "record": {
-        "ユーザコード": {
-          "value": [""],
-          "fromtype": "request",
-          "fromid": "header",
-          "fromio": "",
-          "fromname": "ユーザコード"
-        },
         "ユーザ名": {
           "value": [""],
           "fromtype": "request",
@@ -99,7 +92,81 @@
     }
   },
   {
-    "comment": "ユーザマスタ 照会処理",
+    "comment": "ユーザマスタ 訂正処理（パスワード変更なし。画面のパスワード欄が空欄＝変更なしのため既存のハッシュ値を保持する）",
+    "id": "update_nopw",
+    "before": "skipIfNoPasswordInput('update_nopw')",
+    "after":  "",
+    "sql": {
+      "type": "update",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "ユーザ",
+        "where": "ユーザＩＤ = ?",
+        "order": ""
+      }
+    },
+    "input": {
+      "multiline": "no",
+      "record": {
+        "ユーザ名": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "ユーザ名"
+        },
+        "メニュー名": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "メニュー名"
+        },
+        "テーマコード": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "テーマコード"
+        },
+        "備考": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "備考"
+        },
+        "メールアドレス": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "メールアドレス"
+        },
+        "更新日時": {
+          "value": [""],
+          "funct": "CURRENT_TIMESTAMP"
+        },
+        "更新ユーザ": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "login",
+          "fromio": "",
+          "fromname": "ユーザＩＤ"
+        },
+        "ユーザＩＤ": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "ユーザＩＤ"
+        }
+      }
+    }
+  },
+  {
+    "comment": "ユーザマスタ 照会処理（パスワードはハッシュ値のため画面へ返さない）",
     "id": "header",
     "before": "",
     "after":  "",
@@ -134,9 +201,6 @@
           "value": [""]
         },
         "ユーザ名": {
-          "value": [""]
-        },
-        "パスワード": {
           "value": [""]
         },
         "メニュー名": {

@@ -1,0 +1,108 @@
+{
+  "comment": "商品選択ダイアログ 照会処理",
+  "html": "Sample/Json/Apps/ProductSelectionDialog",
+  "dbname": "sample",
+  "mode": "select",
+  "prog": "yes",
+  "message": {
+    "status": "OK",
+    "msg": "照会処理は正常に終了しました。"
+  },
+  "sqls": [
+  {
+    "comment": "総件数を取得する（検索条件は && をフックで置換する。UserListと同方式）",
+    "id": "total_count",
+    "before": "setSql_ProductSelectionDialog('header', 'total_count', 'genesql')",
+    "after":  "",
+    "sql": {
+      "type": "select",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "商品 AS prd",
+        "where": "prd.削除フラグ = '0' &&",
+        "order": ""
+      }
+    },
+    "input": {
+      "multiline": "no",
+      "record": {
+      }
+    },
+    "output": {
+      "multiline": "no",
+      "record": {
+        "トータル件数": {
+          "value": [""],
+          "funct": "COUNT(*)"
+        }
+      }
+    }
+  },
+  {
+    "comment": "商品一覧を取得する。検索条件の置換のあとオフセット行数を計算する",
+    "id": "detail",
+    "before":
+    [
+      "setSql_ProductSelectionDialog('header', 'detail', 'genesql')"
+      ,"getOffsetLineOfProductSelection('header', 'detail')"
+    ],
+    "after":  "",
+    "sql": {
+      "type": "select",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "商品 AS prd",
+        "where": "prd.削除フラグ = '0' &&",
+        "order": "prd.商品コード",
+        "limit": "? OFFSET ?"
+      }
+    },
+    "input": {
+      "multiline": "no",
+      "record": {
+        "ページライン数": {
+          "value": [""],
+          "field": "フィールド名",
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "ページライン数"
+        },
+        "オフセットライン数": {
+          "value": [""]
+        }
+      }
+    },
+    "output": {
+      "multiline": "yes",
+      "record": {
+        "商品コード": {
+          "value": [""],
+          "field": "商品コード",
+          "table": "prd"
+        },
+        "商品名称": {
+          "value": [""],
+          "field": "商品名称",
+          "table": "prd"
+        },
+        "標準単価": {
+          "value": [""],
+          "funct": "TO_CHAR(prd.標準単価, 'FM999999999')"
+        },
+        "商品ＩＤ": {
+          "value": [""],
+          "field": "商品ＩＤ",
+          "table": "prd"
+        },
+        "受注単価": {
+          "value": [""],
+          "funct": "TO_CHAR(prd.標準単価, 'FM999999999')"
+        }
+      }
+    }
+  }
+  ]
+}

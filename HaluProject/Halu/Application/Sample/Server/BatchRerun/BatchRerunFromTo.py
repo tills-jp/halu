@@ -21,7 +21,7 @@ def main(args):
     from_division   = int(args[3])
     to_division     = int(args[4])
     division_number = int(args[5])
-    
+
     # BatchClientMainServerをインスタンスする
     main_server = BatchClientMainServer()
 

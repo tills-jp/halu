@@ -1,20 +1,68 @@
 @charset "UTF-8";
 
-/* #mainForm高さ調整 */
+/* ===================================================================
+ * UserDetailMainte フェーズ2 UIデザイン適用（D-007）
+ * 指示書: HaluProject/Halu/Application/Sample/docs/90_UI適用/design_apply_UserDetailMainte.md
+ *         （共通分は design_apply_common.md。カード・ボタン・入力欄・
+ *          ラベルの様式は project.css の共通ルールを使用）
+ * =================================================================== */
+
+/* #mainForm高さ調整（UAT指摘 2026-07-27: 固定高さだと実行ボタン表示時（登録/訂正）に
+   カードがフォーム高を超えグレー背景からはみ出すため、min-height化して内容に追従させる） */
 #mainForm {
-  height: calc(100vh - 120px);
-  min-height: 350px
+  min-height: calc(100vh - 120px);
 }
 
-/* ヘッダテーブルの表示窓 */
-#header-Table1  {
-  max-width: calc(100vw - 80px);
-  width: 600px;
-  margin: auto;
+/* ヘッダー中央タイトルの非表示（本文側の大見出し .halu-page-title で代替。
+   モード付きタイトル（新規/訂正等）は singleRecordForm.view.mixin が
+   .halu-page-title へ反映する） */
+#ヘッダータイトル {
+  display: none;
 }
 
-/* 必須項目の後ろにアスタリスクをつける */
+/* フォームカード（Figma「ベース(検索欄)」1020px・角丸12px。カード様式は共通 .halu-card） */
+.halu-form-card {
+  width: 100%;
+  max-width: 1020px;
+  padding: 28px 24px 24px;
+}
+
+/* セクション（＜ユーザ基本情報＞／＜ログイン情報＞／＜権限情報＞） */
+.halu-form-section {
+  margin-bottom: 28px;
+}
+
+/* セクション見出し・2カラムグリッド・項目レイアウト（.halu-form-section-title/
+   .halu-form-grid/.halu-form-item）はOrderDetailListMainteと完全一致していたため
+   project.cssの共通ルールへ格上げ済み（D-032） */
+
+/* 備考は縦長ボックス（Figma: 高さ91px。項目型は変えずCSSの高さのみ） */
+.halu-form-item-biko {
+  grid-row: span 2;
+  align-items: start;
+}
+
+.halu-form-item-biko .halu-form-label {
+  margin-top: 8px;
+}
+
+/* C-009: 備考はtextarea化（複数行入力）。高さはFigma値91px固定・リサイズ不可 */
+.halu-form-item-biko .form-control {
+  height: 91px;
+  resize: none;
+}
+
+/* 実行ボタンをカード右下に配置 */
+.halu-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* 必須項目の後ろにアスタリスクをつける（フェーズ1からの既存指定を踏襲。
+   色はテーマ側の --halu-required-mark。default=#E00で従来同値） */
 .required:after {
-  color: #E00;
+  color: var(--halu-required-mark);
   content: " *";
 }

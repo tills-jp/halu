@@ -43,8 +43,8 @@
       // セッションデータに識別名を設定する
       sessionStorage.setIdName(this.appspec.sysname + "." + this.appspec.name);
       var row = sessionStorage.loadItem("クリック行");
-      requestRecord["再処理バッチ管理ＩＤ"]["value"][0] = detailRecord["バッチ管理ＩＤ"]["value"][row];
-      requestRecord["再処理バッチ管理ＩＤ"]["value"][0] = detailRecord["バッチ管理ＩＤ"]["value"][row];
+      requestRecord["再処理バッチ管理ＩＤ"]["value"][0]     = detailRecord["明細バッチ管理ＩＤ"]["value"][row];
+      requestRecord["再処理バッチ分割管理ＩＤ"]["value"][0] = detailRecord["明細バッチ分割管理ＩＤ"]["value"][row];
 
       $H.log("Model on再処理OfCheckRequestData : end");
       return true;

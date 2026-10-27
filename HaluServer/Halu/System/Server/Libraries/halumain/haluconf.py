@@ -17,9 +17,9 @@ class HaluConf():
             self.__soffice    = 'C:/LibreOffice/program/soffice'
         elif os.name == 'posix':
             self.__sysos      = 'Linux'
-            self.__serverpath = '/app/halu/HaluServer'
-            self.__syspath    = '/app/halu/HaluServer/Halu/System'
-            self.__apppath    = '/app/halu/HaluProject/Halu/Application'
+            self.__serverpath = '/home/halu_user/HaluServer'
+            self.__syspath    = '/home/halu_user/HaluServer/Halu/System'
+            self.__apppath    = '/home/halu_user/HaluProject/Halu/Application'
             self.__soffice    = '/usr/bin/soffice'
 
 
@@ -61,39 +61,36 @@ class HaluConf():
         self.__rmenu_appserver_address = 'localhost'
         self.__rmenu_appserver_port    = 12345
 
-
-        # -------------------------------------------------------------
-        # プロジェクト別 IPアドレスの制限有無
-        # -------------------------------------------------------------
-        self.__ipaddress_check = {}
-        self.__ipaddress_check['Sample']       = 'no'
-        self.__ipaddress_check['HaluAssistant']     = 'no'
+        # 2026-08-05 B-003 ipaddress_check（未結線・許可IPリスト設定が存在せず結線不能）を廃止
 
 
         # -------------------------------------------------------------
         #   プロジェクト別 データベース定義 開始
         # -------------------------------------------------------------
+        # 2026-07-22 Docker対応
+        # 接続先は環境変数 DATABASE_HOST / DATABASE_PORT / DATABASE_USER / DATABASE_PASSWORD を優先し、
+        # 未設定時は従来値にフォールバックする（ホスト直接起動＝従来通り、Dockerコンテナ＝docker-compose.ymlが注入）。
         self.__def_database = {}
 
         # Sample DB
         database0             = {}
         database0['dbdriver'] = 'postgresql'
-        database0['hostname'] = '127.0.0.1'
-        database0['portno']   = '55432'
+        database0['hostname'] = os.environ.get('DATABASE_HOST', '127.0.0.1')
+        database0['portno']   = os.environ.get('DATABASE_PORT', '55432')
         database0['database'] = 'sample'
-        database0['username'] = 'postgres'
-        database0['password'] = 'postgres'
+        database0['username'] = os.environ.get('DATABASE_USER', 'postgres')
+        database0['password'] = os.environ.get('DATABASE_PASSWORD', 'postgres')
         self.__def_database['sample'] = database0
 
-        # template DB
+        # 追加アプリ用 DB の雛形（コピーしてコメントを外し、DB名と辞書キーを sql.json の "dbname" と一致させる）
         # database1             = {}
         # database1['dbdriver'] = 'postgresql'
-        # database1['hostname'] = '127.0.0.1'
-        # database1['portno']   = '55432'
-        # database1['database'] = 'haluassistant'
-        # database1['username'] = 'postgres'
-        # database1['password'] = 'postgres'
-        # self.__def_database['template'] = database1
+        # database1['hostname'] = os.environ.get('DATABASE_HOST', '127.0.0.1')
+        # database1['portno']   = os.environ.get('DATABASE_PORT', '55432')
+        # database1['database'] = 'myapp'
+        # database1['username'] = os.environ.get('DATABASE_USER', 'postgres')
+        # database1['password'] = os.environ.get('DATABASE_PASSWORD', 'postgres')
+        # self.__def_database['myapp'] = database1
 
         # -------------------------------------------------------------
         #   プロジェクト別 データベース定義 終了
@@ -171,10 +168,7 @@ class HaluConf():
     def loglebel(self):
         return self.__loglebel
 
-    # プロジェクト別 IPアドレスの制限有無
-    @property
-    def ipaddress_check(self):
-        return self.__ipaddress_check
+    # 2026-08-05 B-003 ipaddress_check（未結線・許可IPリスト設定が存在せず結線不能）を廃止
 
     # プロジェクト別 データベース定義
     @property
@@ -202,9 +196,7 @@ def main():
     print(f'Rmenu ＡＰＰサーバアドレス：{conf.rmenu_appserver_address}')
     print(f'Rmenu ＡＰＰサーバポート：{conf.rmenu_appserver_port}')
 
-    projectname = conf.ipaddress_check['Sample']
-    print(f'ＩＰアドレスチェック：{projectname}')
-
+    # 2026-08-05 B-003 ipaddress_check（未結線・許可IPリスト設定が存在せず結線不能）を廃止
 
     print('\n***  main end  ***')
 

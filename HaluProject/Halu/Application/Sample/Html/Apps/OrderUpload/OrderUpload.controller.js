@@ -51,17 +51,8 @@
         //ui_add_log('Penguin initialized :)', 'info');
         ui_add_log('アップローダの初期処理が終了しました。', 'info');
       },
-      onComplete: function(){
-        // All files in the queue are processed (success or error)
-        // キュー内の全てのファイルの処理が完了したときに発生する（成功またはエラー)
-
-        // 全てのファイルをアップロードした後に、後処理用トランザクションを起動する
-        // self ・・・ Controller を代入している
-        self.onデータアップロード後処理();
-
-        //ui_add_log('All pending tranfers finished');
-        ui_add_log('全ファイルのアップロードが完了しました。');
-      },
+      // onCompleteは定義しない: widget単位のonCompleteはqueue:true専用のため本画面（queue:false）では発火しない。
+      // 取込処理は実行ボタン起点のcheck/execute方式（C-041）であり、アップロード完了時には起動しない。
       onNewFile: function(id, file){
         // When a new file is added using the file selector or the DnD area
         // ファイルセレクターやDnDエリアで新規ファイルを追加した時に発生する
@@ -131,6 +122,17 @@
         // ファイルサイズの検証に失敗したに発生する
         //ui_add_log('File \'' + file.name + '\' cannot be added: size excess limit', 'danger');
         ui_add_log('File \'' + file.name + '\' ファイルサイズが最大値を超えています。', 'danger');
+      },
+      // 2026-09-25 修正者：AI（C-074）
+      // 拡張子の検証に失敗した時に発生する。dmUploader本体は extFilter 不一致のファイルを
+      // onNewFile を呼ばずに onFileExtError へ振り分けるため、未定義のままだと無音で弾かれ
+      // モデルのファイル名チェック（ダイアログ表示）に到達しない。onNewFile と同じ経路で
+      // onファイル選択チェック処理 を呼び、既存のダイアログ表示処理を発火させる
+      onFileExtError: function(file){
+        // ファイル名チェック
+        // self ・・・ Controller を代入している
+        ui_add_log('File \'' + file.name + '\' 拡張子が .csv ではありません。', 'danger');
+        self.onファイル選択チェック処理(file.name);
       }
     });
   
@@ -162,7 +164,7 @@
     $('#files').on('click', 'button.cancel', function(evt){
       evt.preventDefault();
       var id = $(this).closest('li.media').data('file-id');
-      ui_add_log('ファイルがキュンセルされました。#' + id);
+      ui_add_log('ファイルがキャンセルされました。#' + id);
       
       $('#drag-and-drop-zone').dmUploader('cancel', id);
       $('#uploaderFile' + id).fadeOut(); // remove the 'no files yet'
@@ -260,7 +262,9 @@
       }
       
       // ファイル アップロード後処理
-      this.ajaxExecute("execute");
+      // 2026-08-05 C-041: 先に取込チェック（check）を要求し、エラー0件のときだけ
+      //   バッチ起動（execute）へ進む。checkが受注ＣＳＶへの取込とエラー明細の記録を行う。
+      this.ajaxExecute("check");
 
       $H.log("Controller onExecuteDialogAfter : end");
     }
@@ -315,7 +319,40 @@
 
       $H.log("Controller on実行OfEditResponseData : end");
     }
-    
+
+    // -----------------------------------
+    //  リクエストデータ  チェック処理（取込チェック。C-041）
+    // -----------------------------------
+    ,on取込チェックOfCheckRequestData: function(requestData, mode) {
+      $H.log("Controller on取込チェックOfCheckRequestData : start");
+
+      var status = this.model.on実行OfCheckRequestData(requestData, mode);
+      if (status) {
+        status = this.checkRequestData(requestData);
+      }
+
+      $H.log("Controller on取込チェックOfCheckRequestData : end");
+      return status;
+    }
+
+    // -------------------------------
+    //  レスポンスデータ  編集処理（取込チェック。C-041）
+    //  エラー0件のときだけバッチ起動（execute）へ進む
+    // -------------------------------
+    ,on取込チェックOfEditResponseData: function(responseData, mode) {
+      $H.log("Controller on取込チェックOfEditResponseData : start");
+
+      var status = this.model.on取込チェック結果判定(responseData);
+      if (status != "OK") {
+        $H.log("Controller on取込チェックOfEditResponseData : end");
+        return;
+      }
+
+      this.ajaxExecute("execute");
+
+      $H.log("Controller on取込チェックOfEditResponseData : end");
+    }
+
   });
   App.Controller = Controller;
 

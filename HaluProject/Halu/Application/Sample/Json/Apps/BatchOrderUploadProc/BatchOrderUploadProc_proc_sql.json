@@ -32,7 +32,7 @@
       "record": {
         "受注番号": {
           "value": [""],
-          "fieldtype": "char",
+          "fieldtype": "doublequote",
           "fromtype": "request",
           "fromid": "batchKey",
           "fromio": "",
@@ -70,9 +70,9 @@
           "value": [""],
           "field": "A.受注金額合計"
         },
-        "商品名称": {
+        "商品コード": {
           "value": [""],
-          "field": "A.商品名称"
+          "field": "A.商品コード"
         },
         "納期日": {
           "value": [""],
@@ -118,7 +118,7 @@
       "record": {
         "受注番号": {
           "value": [""],
-          "fieldtype": "char",
+          "fieldtype": "doublequote",
           "fromtype": "request",
           "fromid": "batchKey",
           "fromio": "",
@@ -155,7 +155,7 @@
       "record": {
         "受注番号": {
           "value": [""],
-          "fieldtype": "char",
+          "fieldtype": "doublequote",
           "fromtype": "sqls",
           "fromid": "TranSelect",
           "fromio": "output",
@@ -170,7 +170,7 @@
         },
         "受注日": {
           "value": [""],
-          "fieldtype": "char",
+          "fieldtype": "doublequote",
           "fromtype": "sqls",
           "fromid": "TranSelect",
           "fromio": "output",
@@ -207,7 +207,7 @@
       "record": {
         "受注番号": {
           "value": [""],
-          "fieldtype": "char",
+          "fieldtype": "doublequote",
           "fromtype": "request",
           "fromid": "batchKey",
           "fromio": "",
@@ -233,9 +233,50 @@
     }
   },
   {
+    "comment": "商品 検索処理 商品コードから商品ＩＤ・商品名称を解決する（有効な商品のみ）",
+    "id": "Pselect",
+    "before": "",
+    "after": "",
+    "sql": {
+      "type": "select",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "商品",
+        "where": "商品コード = ? AND 削除フラグ = '0'",
+        "order": "",
+        "limit": ""
+      }
+    },
+    "input": {
+      "multiline": "no",
+      "record": {
+        "商品コード": {
+          "value": [""],
+          "fieldtype": "doublequote",
+          "fromtype": "sqls",
+          "fromid": "TranSelect",
+          "fromio": "output",
+          "fromname": "商品コード"
+        }
+      }
+    },
+    "output": {
+      "multiline": "no",
+      "record": {
+        "商品ＩＤ": {
+          "value": [""]
+        },
+        "商品名称": {
+          "value": [""]
+        }
+      }
+    }
+  },
+  {
     "comment": "受注明細を登録する",
     "id": "Minsert",
-    "before": "notEmptyPassForSqlsDataOfBatchProc('Mselect', '受注番号')",
+    "before": ["notEmptyPassForSqlsDataOfBatchProc('Mselect', '受注番号')", "checkProductResolvedOfBatchProc('Pselect')"],
     "after": "",
     "sql": {
       "type": "insert",
@@ -252,7 +293,7 @@
       "record": {
         "受注番号": {
           "value": [""],
-          "fieldtype": "char",
+          "fieldtype": "doublequote",
           "fromtype": "sqls",
           "fromid": "TranSelect",
           "fromio": "output",
@@ -265,16 +306,24 @@
           "fromio": "output",
           "fromname": "明細番号"
         },
-        "商品名称": {
+        "商品ＩＤ": {
           "value": [""],
           "fromtype": "sqls",
-          "fromid": "TranSelect",
+          "fromid": "Pselect",
+          "fromio": "output",
+          "fromname": "商品ＩＤ"
+        },
+        "商品名称": {
+          "value": [""],
+          "fieldtype": "doublequote",
+          "fromtype": "sqls",
+          "fromid": "Pselect",
           "fromio": "output",
           "fromname": "商品名称"
         },
         "納期日": {
           "value": [""],
-          "fieldtype": "char",
+          "fieldtype": "doublequote",
           "fromtype": "sqls",
           "fromid": "TranSelect",
           "fromio": "output",
@@ -303,6 +352,7 @@
         },
         "備考": {
           "value": [""],
+          "fieldtype": "doublequote",
           "fromtype": "sqls",
           "fromid": "TranSelect",
           "fromio": "output",

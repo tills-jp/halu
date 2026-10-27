@@ -1,0 +1,265 @@
+{
+  "comment": "受注データ アップロード 取込チェック処理（受注ＣＳＶへの取込とエラー明細の記録。C-041）",
+  "html": "Sample/Json/Apps/OrderUpload",
+  "dbname": "sample",
+  "mode": "check",
+  "prog": "yes",
+  "message": {
+    "status": "OK",
+    "msg": ""
+  },
+  "sqls": [
+  {
+    "comment": "エラー明細 削除処理 前回取込のエラー明細を全件削除する（最新の取込1回分のみ保持する。アップロードファイルが存在しない場合は中断する）",
+    "id": "deleteエラー明細",
+    "before": "checkUploadFile('header')",
+    "after": "",
+    "sql": {
+      "type": "delete",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "受注ＣＳＶエラー",
+        "where": "true",
+        "order": ""
+      }
+    }
+  },
+  {
+    "comment": "受注データ 削除処理 受注ＣＳＶを全件削除する",
+    "id": "delete受注ＣＳＶ",
+    "before": "",
+    "after": "",
+    "sql": {
+      "type": "delete",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "受注ＣＳＶ",
+        "where": "true",
+        "order": ""
+      }
+    }
+  },
+  {
+    "comment": "受注データ 登録処理 ＣＳＶファイルの内容を受注ＣＳＶへ登録する（値はbeforeフックが設定する。形式エラーの行は登録せずエラー明細へ回す）",
+    "id": "insert受注ＣＳＶ",
+    "before": "insertJyutyuCsv('header')",
+    "after": "",
+    "sql": {
+      "type": "insert",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "受注ＣＳＶ",
+        "where": "",
+        "order": ""
+      }
+    },
+    "input": {
+      "multiline": "yes",
+      "record": {
+        "受注番号": {
+          "value": [""],
+          "fieldtype": "doublequote"
+        },
+        "明細番号": {
+          "value": [""],
+          "fieldtype": "num"
+        },
+        "顧客ＩＤ": {
+          "value": [""],
+          "fieldtype": "num"
+        },
+        "受注日": {
+          "value": [""],
+          "fieldtype": "doublequote"
+        },
+        "受注金額合計": {
+          "value": [""],
+          "fieldtype": "num"
+        },
+        "商品コード": {
+          "value": [""],
+          "fieldtype": "doublequote"
+        },
+        "納期日": {
+          "value": [""],
+          "fieldtype": "doublequote"
+        },
+        "受注数量": {
+          "value": [""],
+          "fieldtype": "num"
+        },
+        "受注単価": {
+          "value": [""],
+          "fieldtype": "num"
+        },
+        "受注金額": {
+          "value": [""],
+          "fieldtype": "num"
+        },
+        "備考": {
+          "value": [""],
+          "fieldtype": "doublequote"
+        }
+      }
+    }
+  },
+  {
+    "comment": "形式エラー 登録処理 ＣＳＶ読込時に検出したエラー（レイアウト・必須・型・ＣＳＶ内のキー重複）をエラー明細へ登録する（値はbeforeフックが設定する。0件の場合はPASSする）",
+    "id": "insert形式エラー",
+    "before": "setFormatErrorData('header')",
+    "after": "",
+    "sql": {
+      "type": "insert",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "受注ＣＳＶエラー",
+        "where": "",
+        "order": ""
+      }
+    },
+    "input": {
+      "multiline": "yes",
+      "record": {
+        "行番号": {
+          "value": [""],
+          "fieldtype": "num"
+        },
+        "受注番号": {
+          "value": [""],
+          "fieldtype": "doublequote"
+        },
+        "明細番号": {
+          "value": [""],
+          "fieldtype": "doublequote"
+        },
+        "項目名": {
+          "value": [""],
+          "fieldtype": "doublequote"
+        },
+        "項目値": {
+          "value": [""],
+          "fieldtype": "doublequote"
+        },
+        "エラー内容": {
+          "value": [""],
+          "fieldtype": "doublequote"
+        },
+        "取込日時": {
+          "value": [""],
+          "funct": "CURRENT_TIMESTAMP"
+        }
+      }
+    }
+  },
+  {
+    "comment": "顧客ＩＤ チェック処理 受注ＣＳＶのうち有効な顧客マスタに存在しない顧客ＩＤの行をエラー明細へ登録する（受注ヘッダ_顧客_FK違反をバッチで起こさないため）",
+    "id": "insert顧客エラー",
+    "before": "",
+    "after": "",
+    "sql": {
+      "type": "insert",
+      "freesql":
+       [
+         "INSERT INTO 受注ＣＳＶエラー (受注番号, 明細番号, 項目名, 項目値, エラー内容, 取込日時)",
+         "SELECT csv.受注番号",
+         "     , CAST(csv.明細番号 AS character varying)",
+         "     , '顧客ＩＤ'",
+         "     , CAST(csv.顧客ＩＤ AS character varying)",
+         "     , '顧客マスタに登録されていない顧客ＩＤです。'",
+         "     , CURRENT_TIMESTAMP",
+         "  FROM 受注ＣＳＶ AS csv",
+         "  LEFT OUTER JOIN 顧客 AS cst ON (cst.顧客ＩＤ = csv.顧客ＩＤ AND cst.削除フラグ = '0')",
+         " WHERE cst.顧客ＩＤ IS NULL"
+       ],
+      "crud": {
+        "受注ＣＳＶエラー": "C",
+        "受注ＣＳＶ": "R",
+        "顧客": "R"
+      },
+      "genesql": {
+        "dist": "",
+        "from": "",
+        "where": "",
+        "order": ""
+      }
+    }
+  },
+  {
+    "comment": "商品コード チェック処理 受注ＣＳＶのうち有効な商品マスタに存在しない商品コードの行をエラー明細へ登録する（受注明細_商品_FK違反をバッチで起こさないため。C-045のチェックをエラー明細方式へ移行）",
+    "id": "insert商品エラー",
+    "before": "",
+    "after": "",
+    "sql": {
+      "type": "insert",
+      "freesql":
+       [
+         "INSERT INTO 受注ＣＳＶエラー (受注番号, 明細番号, 項目名, 項目値, エラー内容, 取込日時)",
+         "SELECT csv.受注番号",
+         "     , CAST(csv.明細番号 AS character varying)",
+         "     , '商品コード'",
+         "     , csv.商品コード",
+         "     , '商品マスタに登録されていない商品コードです。（論理削除済みの商品も対象外です）'",
+         "     , CURRENT_TIMESTAMP",
+         "  FROM 受注ＣＳＶ AS csv",
+         "  LEFT OUTER JOIN 商品 AS prd ON (prd.商品コード = csv.商品コード AND prd.削除フラグ = '0')",
+         " WHERE prd.商品ＩＤ IS NULL"
+       ],
+      "crud": {
+        "受注ＣＳＶエラー": "C",
+        "受注ＣＳＶ": "R",
+        "商品": "R"
+      },
+      "genesql": {
+        "dist": "",
+        "from": "",
+        "where": "",
+        "order": ""
+      }
+    }
+  },
+  {
+    "comment": "エラー件数 取得処理 エラー明細の件数を取得する（レスポンスへ返し、クライアントが0件のときだけexecuteモードを要求する）",
+    "id": "countエラー",
+    "before": "",
+    "after": "",
+    "sql": {
+      "type": "select",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "受注ＣＳＶエラー",
+        "where": "",
+        "order": ""
+      }
+    },
+    "output": {
+      "multiline": "no",
+      "record": {
+        "エラー件数": {
+          "value": [""],
+          "funct": "COUNT(*)"
+        }
+      }
+    }
+  },
+  {
+    "comment": "取込中止処理 エラーが1件以上あるとき受注ＣＳＶを全件削除する（エラー明細はコミットして残すため、ロールバックではなくＳＱＬで打ち消す。エラー0件の場合はPASSする）",
+    "id": "delete受注ＣＳＶ中止",
+    "before": "passIfNoImportError('header')",
+    "after": "",
+    "sql": {
+      "type": "delete",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "受注ＣＳＶ",
+        "where": "true",
+        "order": ""
+      }
+    }
+  }]
+}

@@ -3,16 +3,16 @@
   "html": "Sample/Json/Apps/BatchDivisionList",
   "dbname": "sample",
   "mode": "restart",
-  "prog": "yes",
+  "prog": "no",
   "message": {
     "status": "OK",
-    "msg": "再処理は正常に終了しました。"
+    "msg": "再処理を起動しました。"
   },
   "sqls": [{
-    "comment": "並列分散テーブルのＤＢ名を取得する",
+    "comment": "再処理対象バッチのＤＢ名・分割数を取得する",
     "id": "header",
     "before": "",
-    "after": "writeTupleClientOfSample",
+    "after": "",
     "sql": {
       "type": "select",
       "freesql": "",
@@ -41,6 +41,72 @@
         "ＤＢ名": {
           "value": [""],
           "field": "ＤＢ名"
+        },
+        "分割数": {
+          "value": [""],
+          "funct": "CAST(分割数 AS varchar)"
+        }
+      }
+    }
+  },
+  {
+    "comment": "バッチ パラメータ情報（BatchRerun.py へ「キー名:値」の形式で渡される）",
+    "id": "batchParam",
+    "before": "",
+    "after": "",
+    "sql": {
+      "type": "nosql"
+    },
+    "input": {
+      "multiline": "no",
+      "record": {
+        "ＤＢ名": {
+          "value": [""],
+          "fromtype": "sqls",
+          "fromid": "header",
+          "fromio": "output",
+          "fromname": "ＤＢ名"
+        },
+        "バッチ管理ＩＤ": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "再処理バッチ管理ＩＤ"
+        },
+        "分割番号": {
+          "value": [""],
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "再処理バッチ分割管理ＩＤ"
+        },
+        "分割数": {
+          "value": [""],
+          "fromtype": "sqls",
+          "fromid": "header",
+          "fromio": "output",
+          "fromname": "分割数"
+        }
+      }
+    }
+  },
+  {
+    "comment": "バッチ処理の起動情報（指定した分割単位のバッチクライアントを再実行する）",
+    "id": "batchStartup",
+    "before": "",
+    "after": "",
+    "sql": {
+      "type": "nosql"
+    },
+    "input": {
+      "multiline": "no",
+      "record": {
+        "バッチ処理名": {
+          "value": ["バッチ分割単位の再処理"]
+        },
+        "バッチロードパス名": {
+          "value": ["Sample/Server/BatchRerun/BatchRerun.py"]
         }
       }
     }

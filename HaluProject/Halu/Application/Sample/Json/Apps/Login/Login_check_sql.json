@@ -3,16 +3,16 @@
   "html": "Sample/Json/Apps/Login",
   "dbname": "sample",
   "mode": "check",
-  "prog": "no",
+  "prog": "yes",
   "message": {
     "status": "OK",
     "msg": "ログインチェック処理は正常に終了しました。"
   },
   "sqls": [
   {
-    "comment": "ログインＩＤ・パスワード 照会処理",
+    "comment": "ログインＩＤ・パスワード 照会処理（パスワードはＳＨＡ２５６ハッシュ値で照合する。論理削除済みユーザは認証しない）",
     "id": "login_check",
-    "before": "",
+    "before": "hashPassword('login_check')",
     "after": "",
     "sql": {
       "type": "select",
@@ -22,7 +22,7 @@
       "genesql": {
         "dist": "",
         "from": "ユーザ",
-        "where": "ユーザコード = ? AND パスワード = ?",
+        "where": "ユーザコード = ? AND パスワード = ? AND 削除フラグ = '0'",
         "order": ""
       }
     },
@@ -66,9 +66,9 @@
     }
   },
   {
-    "comment": "ログインＩＤ・パスワード 照会処理",
+    "comment": "ログインＩＤ・パスワード 照会処理（パスワードはＳＨＡ２５６ハッシュ値で照合する。論理削除済みユーザは認証しない）",
     "id": "header",
-    "before": "",
+    "before": "hashPassword('header')",
     "after": "",
     "sql": {
       "type": "select",
@@ -76,7 +76,7 @@
       "genesql": {
         "dist": "",
         "from": "ユーザ",
-        "where": "ユーザコード = ? AND パスワード = ?",
+        "where": "ユーザコード = ? AND パスワード = ? AND 削除フラグ = '0'",
         "order": ""
       }
     },

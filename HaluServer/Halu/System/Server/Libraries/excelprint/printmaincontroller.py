@@ -1,10 +1,21 @@
 # coding: utf-8
 
+import traceback
+
 from logger.halulogger              import HaluLogger
 from commons.jsoncache              import JsonCache
 from commons.appcache               import AppCache
 from excelprint.printcontroller     import PrintController
 from excelprint.excelmaincontroller import ExcelMainController
+
+
+# 2026-09-15 Issue #14 帳票生成に失敗したときクライアントへ返すエラー応答
+PRINT_ERROR_MSG = '帳票の作成に失敗しました。サーバーログを確認してください。'
+
+
+def makePrintErrorResponse():
+    """帳票生成の例外時に返す応答（status=ERROR）。クライアントはこの message.msg をサーバエラーダイアログに表示する"""
+    return {'message': {'status': 'ERROR', 'msg': PRINT_ERROR_MSG}}
 
 
 class PrintMainController():
@@ -136,6 +147,9 @@ class PrintMainController():
         except Exception as e:
             self.clog.error(self.clogname, f'PrintMainController exception message type    : {str(type(e))}')
             self.clog.error(self.clogname, f'PrintMainController exception message arg     : {str(e.args)}')
+            # 2026-09-15 Issue #14 戻り値なし（None→クライアントでは null）ではなくエラー応答を返す
+            self.clog.error(self.clogname, f'PrintMainController exception traceback       : {traceback.format_exc()}')
+            return makePrintErrorResponse()
 
         finally:
             self.clog.debug(self.clogname, 'PrintMainController: call end\n')

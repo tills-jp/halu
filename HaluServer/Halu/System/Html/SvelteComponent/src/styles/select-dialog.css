@@ -1,0 +1,38 @@
+/***********************************************
+ * Framework Name  :  Halu
+ * (c) 2025 TILLS & Co.
+ * --------------------------------------------
+ * 選択ダイアログスタイル
+***********************************************/
+
+.modal {
+  overflow: auto; /*★ 複数行表示対応 */
+  z-index: 10001;
+}
+
+.modal-backdrop {
+  z-index: 10000;
+}
+
+/* ★add start 20260724 選択ダイアログiframe分離方式 */
+/* iframeモード時のモーダル枠：iframeがheight:100%で高さを確保できるよう枠側に高さを与える */
+.modal.modal-iframe {
+  height: 80vh;
+}
+/* ダイアログ画面を表示するiframe：枠内いっぱいに表示し、枠線は消す */
+.halu-select-dialog-iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+/* ★add end 20260724 */
+/* dialog {
+  z-index: 1050;
+  border: none;
+  padding: 1rem;
+  border-radius: 8px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+} */

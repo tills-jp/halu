@@ -1,0 +1,31 @@
+{
+  "comment": "商品一覧登録 validation",
+  "html": "Sample/Json/Apps/ProductListMainte",
+  "records": [
+  {
+    "id": "detail",
+    "multiline": "yes",
+    "record": {
+      "商品コード": {
+        "validation": ["required",
+        "free"],
+        "min": "1",
+        "max": "20"
+      },
+      "商品名称": {
+        "validation": ["required",
+        "free"],
+        "min": "1",
+        "max": "100"
+      },
+      "標準単価": {
+        "validation": ["required",
+        "integerP"],
+        "min": "1",
+        "max": "11",
+        "format": "money"
+      }
+    }
+  }
+  ]
+}

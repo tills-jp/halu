@@ -1,0 +1,61 @@
+{
+  "request": {
+    "comment": "商品一覧登録 照会処理 リクエストデータ",
+    "html" : "Sample/Json/Apps/ProductListMainte",
+    "mode": "select",
+    "prog": "no",
+    "model": "yes",
+    "message": {
+      "status": "OK",
+      "msg": ""
+    },
+    "records": [
+    {
+      "id": "header",
+      "before": "",
+      "after": "",
+      "multiline": "no",
+      "record": {
+      }
+    }
+    ]
+  },
+  "response": {
+    "comment": "商品一覧登録 照会処理 レスポンスデータ",
+    "html" : "Sample/Json/Apps/ProductListMainte",
+    "mode": "select",
+    "prog": "no",
+    "message": {
+      "status": "OK",
+      "msg": "照会処理は正常に終了しました。"
+    },
+    "records": [
+    {
+      "id": "detail",
+      "before": "",
+      "after": "",
+      "multiline": "yes",
+      "record": {
+        "商品ＩＤ": {
+          "value": [""]
+        },
+        "商品コード": {
+          "value": [""]
+        },
+        "商品名称": {
+          "value": [""]
+        },
+        "標準単価": {
+          "value": [""]
+        },
+        "備考": {
+          "value": [""]
+        },
+        "削除": {
+          "value": [""]
+        }
+      }
+    }
+    ]
+  }
+}

@@ -158,16 +158,33 @@
 
       let clickRow = arg["クリック行"];
 
-      // セッションストレージに識別名を保存する
-      sessionStorage.setIdName(this.appspec.sysname + "." + this.appspec.name);
-
       // データセットを取得する
       let dataSet = this.dataset.getData();
 
-      // 画面明細キー定義情報をセッションストレージに保存する
+      // C-071: 2026-09-24 修正者：AI
+      // 空行（画面明細キー定義の項目がすべて空）のクリックでは選択状態にしない
+      // （multiTableListForm.model.mixinの空行ガードを踏襲。従来は無条件で保存していた）
       let datasetID = this.appspec.sessionStorageDetailKey[0]["datasetid"];
       let datasetRecord = this.appspec.getJSONChunkByIdAtRecords(dataSet, datasetID)["record"];
       let maxSize = this.appspec.sessionStorageDetailKey[0]["dataname"].length;
+      let status = "ERROR";
+      for (let i = 0; i < maxSize; i++) {
+        let itemName = this.appspec.sessionStorageDetailKey[0]["dataname"][i]
+        if (datasetRecord[itemName]["value"][clickRow] != "") {
+          status = "OK";
+          break;
+        }
+      }
+
+      if (status != "OK") {
+        $H.log("Model onテーブル行クリック : end");
+        return status;
+      }
+
+      // セッションストレージに識別名を保存する
+      sessionStorage.setIdName(this.appspec.sysname + "." + this.appspec.name);
+
+      // 画面明細キー定義情報をセッションストレージに保存する
       for (let i = 0; i < maxSize; i++) {
         let itemName = this.appspec.sessionStorageDetailKey[0]["dataname"][i]
         sessionStorage.saveItem(itemName, datasetRecord[itemName]["value"][clickRow]);
@@ -176,6 +193,7 @@
       sessionStorage.saveItem("クリック行", clickRow);
 
       $H.log("Model onテーブル行クリック : end");
+      return status;
     },
 
     /**

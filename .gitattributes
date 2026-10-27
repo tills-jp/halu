@@ -1,1 +1,44 @@
 *.bat       text eol=crlf
+*.sh        text eol=lf
+nginx/*.conf text eol=lf
+# docgenゴールデンテストはバイト一致比較のため、autocrlf環境でもLFでチェックアウトさせる
+tests/golden/*.md text eol=lf
+# SvelteビルドはLinuxコンテナで実行しLFで出力されるため、成果物はLF固定（改行差だけの見かけ上の変更を防ぐ）
+HaluProject/Halu/Application/*/Html/SvelteComponent/build/** text eol=lf
+
+# ------------------------------------------------------------------
+# 配布物（git archive = GitHubのDownload ZIP）に含めるものの指定
+# ------------------------------------------------------------------
+# Linux用インストーラ(install_scripts/halu_install.sh)は、公開リポジトリの
+# zipをダウンロードして利用者のホームへ展開する。そのzipに開発用の
+# ファイルが混ざらないよう、ここで配布物の中身を決める。
+#
+# 「除外するものを列挙する」方式だと、リポジトリ直下にフォルダが増えるたびに
+# 書き足しが必要で、漏れると開発用ファイルがそのまま配布される。そのため
+# 「いったん直下を全部外し、配布するものだけを戻す」方式にしている。
+# 直下に何が増えても、明示的にここへ書かない限り配布物には入らない。
+#
+# 先頭の "/" はリポジトリ直下の1階層だけを指す。ディレクトリ自体を戻せば
+# その中身は対象外のまま入るため、中身を個別に書く必要はない。
+# なお export-ignore が効くのは git archive だけで、git clone には影響しない
+# （開発者が clone した場合は従来どおり全ファイルを取得する）。
+/*              export-ignore
+/HaluProject    -export-ignore
+/HaluServer     -export-ignore
+/LICENSE        -export-ignore
+/README.md      -export-ignore
+/THIRD_PARTY_NOTICES.md -export-ignore
+# 手動インストール時に pip install -r で使う（README「手動インストール」参照）
+/requirements.txt       -export-ignore
+
+# HaluProject配下のうち、今回のリリースで公開しないアプリ。
+# 本番リポジトリへは手動コピーの時点で載せない運用だが、誤って持ち込んでも
+# 配布物には入らないようここでも外しておく。
+HaluProject/Halu/Application/HaluAssistant/ export-ignore
+HaluProject/Halu/Application/HaluDocGen/    export-ignore
+
+# HaluServer直下の起動シェル（startup / no1〜no4）。
+# 本番リポジトリへは載せない運用のため配布物からも外す。
+# 起動方法はwiki・READMEにuvicornのコマンドを直接記載する。
+HaluServer/*.sh  export-ignore
+HaluServer/*.bat export-ignore

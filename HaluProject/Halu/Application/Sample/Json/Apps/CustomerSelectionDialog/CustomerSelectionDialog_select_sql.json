@@ -1,0 +1,104 @@
+{
+  "comment": "顧客選択画面 照会処理",
+  "html": "Sample/Json/Apps/CustomerSelectionDialog",
+  "dbname": "sample",
+  "mode": "select",
+  "prog": "yes",
+  "message": {
+    "status": "OK",
+    "msg": "照会処理は正常に終了しました。"
+  },
+  "sqls": [
+  {
+    "comment": "総件数を取得する",
+    "id": "total_count",
+    "before": "",
+    "after":  "",
+    "sql": {
+      "type": "select",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "顧客 AS cst",
+        "where": "cst.削除フラグ = '0'",
+        "order": ""
+      }
+    },
+    "input": {
+      "multiline": "no",
+      "record": {
+      }
+    },
+    "output": {
+      "multiline": "no",
+      "record": {
+        "トータル件数": {
+          "value": [""],
+          "funct": "COUNT(*)"
+        }
+      }
+    }
+  },
+  {
+    "comment": "オフセット行数を計算する。",
+    "id": "detail",
+    "before": 
+    [
+      "getOffsetLineOfCustomerSelection('header', 'detail')"
+    ],
+    "after":  "",
+    "sql": {
+      "type": "select",
+      "freesql": "",
+      "genesql": {
+        "dist": "",
+        "from": "顧客 AS cst",
+        "where": "cst.削除フラグ = '0'",
+        "order": "cst.顧客ＩＤ",
+        "limit": "? OFFSET ?"
+      }
+    },
+    "input": {
+      "multiline": "no",
+      "record": {
+        "ページライン数": {
+          "value": [""],
+          "field": "フィールド名",
+          "fromtype": "request",
+          "fromid": "header",
+          "fromio": "",
+          "fromname": "ページライン数"
+        },
+        "オフセットライン数": {
+          "value": [""]
+        }
+      }
+    },
+    "output": {
+      "multiline": "yes",
+      "record": {
+        "顧客ＩＤ一覧": {
+          "value": [""],
+          "field": "顧客ＩＤ",
+          "table": "cst"
+        },
+        "顧客氏名一覧": {
+          "value": [""],
+          "field": "顧客氏名",
+          "table": "cst"
+        },
+        "検索顧客ＩＤ": {
+          "value": [""],
+          "field": "顧客ＩＤ",
+          "table": "cst"
+        },
+        "検索顧客氏名": {
+          "value": [""],
+          "field": "顧客氏名",
+          "table": "cst"
+        }
+      }
+    }
+  }
+  ]
+}

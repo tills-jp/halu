@@ -10,6 +10,20 @@
       "msg": ""
     },
     "records": [{
+      "id": "login",
+      "before": "",
+      "after": "",
+      "multiline": "no",
+      "record": {
+        "ユーザＩＤ": {
+          "value": [""]
+        },
+        "ユーザ名称": {
+          "value": [""]
+        }
+      }
+    },
+    {
       "id": "detail",
       "before": "",
       "after": "",

@@ -1,0 +1,72 @@
+{
+  "comment": "商品選択ダイアログ dataset",
+  "html": "Sample/Json/Apps/ProductSelectionDialog",
+  "message": {
+    "status": "OK",
+    "msg": "商品を選択してください。"
+  },
+  "records": [
+  {
+    "id": "login",
+    "multiline": "no",
+    "defaultline": "0",
+    "record": {
+      "ユーザＩＤ": {
+        "value": [""]
+      },
+      "ユーザ名称": {
+        "value": [""]
+      }
+    }
+  },
+  {
+    "comment": "ページング情報と検索条件。ページライン数はdetailのdefaultlineから設定される（ミックスインのon最初のページ）",
+    "id":          "header",
+    "multiline":   "no",
+    "defaultline": "1",
+    "record": {
+      "ページライン数": {
+        "value": [""]
+      },
+      "カレントページ": {
+        "value": [""]
+      },
+      "最大ページ": {
+        "value": [""]
+      },
+      "トータル件数": {
+        "value": [""]
+      },
+      "検索商品コード": {
+        "value": [""]
+      },
+      "検索商品名称": {
+        "value": [""]
+      }
+    }
+  },
+  {
+    "comment": "一覧＋呼び出し元への返却値。商品ＩＤ・商品名称・受注単価は呼び出し元（受注明細一覧）のdataset項目名と一致させる必要がある（sessionStorage経由の受け渡しが項目名一致で行われるため。詳細は基本設計書ProductSelectionDialog.md）",
+    "id":          "detail",
+    "multiline":   "yes",
+    "defaultline": "25",
+    "record": {
+      "商品コード": {
+        "value": [""]
+      },
+      "商品名称": {
+        "value": [""]
+      },
+      "標準単価": {
+        "value": [""]
+      },
+      "商品ＩＤ": {
+        "value": [""]
+      },
+      "受注単価": {
+        "value": [""]
+      }
+    }
+  }
+  ]
+}

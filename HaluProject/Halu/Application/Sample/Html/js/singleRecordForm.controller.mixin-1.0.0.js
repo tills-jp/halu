@@ -215,10 +215,18 @@
     onテーブル行クリック: function (event, arg) {
       $H.log("Controller onテーブル行クリック : start");
 
-      let row = event.currentTarget.parentNode.parentNode.rowIndex;
+      // C-071: 2026-09-24 修正者：AI
+      // イベントはappspecで"#mainTable td"に束ねられ currentTarget=td になるため、
+      // td→tr→tbodyで辿るparentNode.parentNode.rowIndexは常にundefinedになっていた。
+      // closest('tr')でクリックされたtr要素を直接取得しrowIndexを取得する
+      // （multiTableListForm.controller.mixinと同じ考え方。td直下でもinput内でも壊れない）
+      let row = $(event.currentTarget).closest('tr')[0].rowIndex;
       let idName = event.currentTarget.offsetParent.id;
       let selectArg = { クリック行: row, セレクタ名: idName };
-      this.model.onテーブル行クリック(selectArg);
+      let status = this.model.onテーブル行クリック(selectArg);
+      if (status == "OK") {
+        this.view.onテーブル行クリック(selectArg);
+      }
 
       $H.log("Controller onテーブル行クリック : end");
     },

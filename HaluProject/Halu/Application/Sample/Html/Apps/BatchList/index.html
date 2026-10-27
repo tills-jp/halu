@@ -7,13 +7,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>バッチ処理　一覧表</title> 
-<link href="../../../../../Application/Sample/Html/css/bootstrap.min_default.css?var=202408171800" rel="stylesheet"/>
+<title>バッチ一覧</title> 
+<link href="../../../../../Application/Sample/Html/css/bootstrap-5.3.0/bootstrap.min.css?var=202607031000" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/halu-custom_default.css?var=202608311200" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/css/project.css?var=202608311400" rel="stylesheet"/>
+<link href="../../../../../Application/Sample/Html/Apps/BatchList/css/program.css?var=202608301500" rel="stylesheet"/>
+<script type="text/javascript" src="../../../../../System/Html/js/halutheme-preload-1.0.0.js?var=202609081100"></script>
 
-<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.4.1.min.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/jquery-3.7.1.min.js?var=202607111000"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/jquery-ui-1.12.1/jquery-ui.min.js?var=202408171800"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js?var=202408171800"></script>
-<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-4.4.1/bootstrap.bundle.min.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../System/Html/js/bootstrap-5.3.0/bootstrap.bundle.min.js?var=202607031000"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/template/jquery.loadTemplate-1.4.5.min.js?var=202408171800"></script>
 <script type="text/javascript" src="../../../../../System/Html/js/bignumberjs/bignumber.min.js?var=202408171800"></script>
 
@@ -26,15 +30,19 @@
 <script type="text/javascript" src="../../../../../System/Html/js/haluappspec.mixin-1.0.0.js?var=202408171800"></script>
 <script type="text/JavaScript" src="../../../../../System/Html/js/webstorage-1.0.0.js?var=202408171800"></script>
 
-<script type="text/javascript" src="../../../../../Application/Sample/Html/js/multiTableListForm.view.mixin-1.0.0.js?var=202408171800"></script>
-<script type="text/javascript" src="../../../../../Application/Sample/Html/js/multiTableListForm.model.mixin-1.0.0.js?var=202408171800"></script>
-<script type="text/javascript" src="../../../../../Application/Sample/Html/js/multiTableListForm.controller.mixin-1.0.0.js?var=202408171800"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/js/multiTableListForm.view.mixin-1.0.0.js?var=202609251000"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/js/multiTableListForm.model.mixin-1.0.0.js?var=202609251000"></script>
+<script type="text/javascript" src="../../../../../Application/Sample/Html/js/multiTableListForm.controller.mixin-1.0.0.js?var=202609251000"></script>
 
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/BatchList/BatchList.appspec.js?var=202502142047"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/BatchList/BatchList.model.js?var=202502142047"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/BatchList/BatchList.view.js?var=202502142047"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/BatchList/BatchList.controller.js?var=202502142047"></script>
 <script type="text/javascript" src="../../../../../Application/Sample/Html/Apps/BatchList/BatchList.main.js?var=202502142047"></script>
+
+<!-- コンポーネント -->
+<script type="module" src="../../../../../Application/Sample/Html/SvelteComponent/build/AppComponents.js?var=202609151300"></script>
+<script type="module" src="../../../../../System/Html/SvelteComponent/build/HaluComponents.js?var=202605261144"></script>
 </head>
 
 <!-- ================================================================================================================= -->
@@ -46,71 +54,21 @@
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-page-header sticky-top bg-primary" style="height:60px;">           <!-- ▼halu-page-header スタート -->
+<!-- ★▼halu-page-header -->
+<div componentID="Header" props-Title="バッチ一覧"></div>
+<!-- ================================================================================================================= -->
+
+
+
+<!-- ================================================================================================================= -->
+<!-- ★フェーズ2デザイン適用: 本文左上の大見出し＋戻るボタン（halu-header-btn領域は見出し行のラッパーとして維持。UserDetailMainte D-007と同型。操作ボタンは一覧カード上へ移動） -->
+<div class="halu-header-btn">
 <!-- ================================================================================================================= -->
   <div class="d-flex justify-content-between align-items-center">
-
-    <div class="d-flex">
-      <div class="mx-1 mt-1 halu-page-header-icon" style="width:140px; height:100%;">
-        <img src="../../../../../Application/Sample/Html/images/Halulogo_238-85_02business.png" class="img-fluid">
-      </div>
-  
-      <div class="mx-1 mt-3">
-        <button type="button" class="btn btn-info btn-sm mx-1" id="戻る" name="戻る" style="width:84px;">戻る：Esc</button>
-        <button type="button" class="btn btn-info btn-sm mx-1" id="実行" name="実行" style="width:84px;">実行：F1</button>
-      </div>
+    <div class="halu-page-title">バッチ一覧</div>
+    <div class="me-2">
+      <button type="button" class="btn btn-info btn-sm halu-btn-outline" id="戻る" name="戻る" style="width:84px;">戻る：Esc</button>
     </div>
-  
-    <div>
-      <div class="mx-1 mt-3">
-        <h5 id="ヘッダータイトル">バッチ処理　一覧表</h5>
-      </div>
-    </div>
-  
-    <div class="d-flex">
-      <div class="mx-1 mt-1">
-        <div>
-          <label class="my-0" id="ログイン和暦" name="ログイン和暦">　</label>
-        </div>
-        <div>
-          <label class="my-0">　</label>
-        </div>
-      </div>
-  
-      <div class="mx-1 mt-1">
-        <div>
-          <label class="my-0">ログイン日時：</label>
-          <label class="my-0" id="ログイン日時" name="ログイン日時">　</label>
-        </div>
-        <div>
-          <label class="my-0">　ユーザ氏名：</label>
-          <label class="my-0" id="ユーザ氏名" name="ユーザ氏名">　</label>
-        </div>
-      </div>
-    </div>
-
-  </div>
-<!-- ================================================================================================================= -->
-</div>                                                                                 <!-- ▲halu-page-header エンド -->
-<!-- ================================================================================================================= -->
-
-
-
-<!-- ================================================================================================================= -->
-<div class="halu-header-btn mt-4" style="height:30px;">                                  <!-- ▼halu-header スタート -->
-<!-- ================================================================================================================= -->
-  <div class="d-flex justify-content-center">
-
-    <div class="mx-1">
-      <button type="button" class="btn btn-info btn-sm" id="再表示" name="再表示" style="width:110px;">再表示：F1</button>
-    </div>
-    <div class="mx-1">
-      <button type="button" class="btn btn-info btn-sm" id="分割画面" name="分割画面" style="width:110px;">分割画面：F2</button>
-    </div>
-    <div class="mx-1">
-      <button type="button" class="btn btn-info btn-sm" id="処理削除" name="処理削除" style="width:110px;">処理削除：F3</button>
-    </div>
-
   </div>
 <!-- ================================================================================================================= -->
 </div>                                                                                  <!-- ▲halu-header-btn エンド -->
@@ -128,14 +86,21 @@
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-detail-readonly mt-3" style="height:720px;">                   <!-- ▼halu-detail-readonly スタート -->
+<div class="halu-detail-readonly mt-3">                                         <!-- ▼halu-detail-readonly スタート -->
 <!-- ================================================================================================================= -->
   <div class="d-flex justify-content-center">
 
     <div id="scrollable-Table" style="width:1828px;">   <!-- 1811px + 17px -->
+      <!-- ★フェーズ2デザイン適用: 操作ボタンを一覧カードの上へ移動（CustomerListMainteのボタン行と同型。id/name・キーバインドは不変） -->
+      <!-- C-014: 「実行：F1」ボタンを廃止（イベント未配線のデッドボタン。F1の実体はon再表示。2026-07-30 依頼者決定） -->
+      <div class="d-flex gap-2 mb-2">
+        <button type="button" class="btn btn-info btn-sm" id="再表示" name="再表示" style="width:110px;">再表示：F1</button>
+        <button type="button" class="btn btn-info btn-sm" id="分割画面" name="分割画面" style="width:110px;">分割画面：F2</button>
+        <button type="button" class="btn btn-info btn-sm halu-btn-danger" id="処理削除" name="処理削除" style="width:110px;">処理削除：F3</button>
+      </div>
       <div id="scrollable-HTable" style="width:1811px;">
         <table id="mainTableH" class="table table-sm table-bordered my-0" style="width:1811px;table-layout:fixed;">
-          <thead class="thead-dark">
+          <thead class="table-dark">
             <tr>
               <th class="text-center" style="width:60px;">ＩＤ</th>
               <th class="text-center" style="width:320px;">処理名</th>
@@ -152,20 +117,20 @@
         </table>
       </div>
 
-      <div id="scrollable-DTable" style="width:1828px;height:700px;overflow-x:auto;overflow-y:auto;">   <!-- 1811px + 17px -->
+      <div id="scrollable-DTable" style="width:1828px;overflow-x:auto;overflow-y:auto;">   <!-- 1811px + 17px。スクロール高さはprogram.css -->
         <table id="mainTable" class="table table-striped table-sm table-bordered my-0" style="width:1811px;table-layout:fixed;">
-          <tbody>
+          <tbody class="tbody-light">
             <tr style="height: 26px;">
-              <td class="バッチ管理ＩＤ  text-center" style="width:60px;"></td>
-              <td class="処理名          text-left"   style="width:320px;"></td>
-              <td class="ロードパス名    text-left"   style="width:320px;"></td>
-              <td class="処理モード      text-left"   style="width:240px;"></td>
-              <td class="分割数          text-center" style="width:60px;"></td>
-              <td class="分割終了数      text-center" style="width:60px;"></td>
-              <td class="ＮＥＸＴ処理名  text-left"   style="width:320px;"></td>
-              <td class="ＤＢ名          text-left"   style="width:100px;"></td>
-              <td class="開始日時        text-center" style="width:160px;"></td>
-              <td class="終了日時        text-center" style="width:160px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="バッチ管理ＩＤ" class="text-center" style="width:60px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="処理名" class="text-start" style="width:320px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="ロードパス名" class="text-start" style="width:320px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="処理モード" class="text-start" style="width:240px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="分割数" class="text-center" style="width:60px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="分割終了数" class="text-center" style="width:60px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="ＮＥＸＴ処理名" class="text-start" style="width:320px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="ＤＢ名" class="text-start" style="width:100px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="開始日時" class="text-center" style="width:160px;"></td>
+              <td halu-ds-id="detail" halu-ds-field="終了日時" class="text-center" style="width:160px;"></td>
             </tr>
           </tbody>
         </table>
@@ -179,7 +144,7 @@
 
 
 <!-- ================================================================================================================= -->
-<div class="halu-footer mt-3" style="height:30px;">                                      <!-- ▼halu-footer スタート -->
+<div class="halu-footer mt-3">                                                            <!-- ▼halu-footer スタート -->
   <!-- ================================================================================================================= -->
     <div class="d-flex justify-content-center">
       <div class="mx-1">
@@ -207,11 +172,8 @@
   
   
   <!-- ================================================================================================================= -->
-  <div class="halu-page-footer bg-primary mt-3" style="height:20px;">                 <!-- ▼halu-page-footer スタート -->
-  <!-- ================================================================================================================= -->
-  
-  <!-- ================================================================================================================= -->
-  </div>                                                                                 <!-- ▲halu-page-footer エンド -->
+  <!-- ★▼halu-page-footer -->
+  <div componentID="Footer"></div>
   <!-- ================================================================================================================= -->
   
   

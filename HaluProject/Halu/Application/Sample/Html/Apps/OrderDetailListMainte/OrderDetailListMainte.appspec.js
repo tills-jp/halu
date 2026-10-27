@@ -81,6 +81,8 @@
       , ["#実行", "click", "on実行"]
       , ["#mainTable td", "click", "onテーブル行クリック"]
       // ここから追加処理
+      // C-044: 明細行の商品選択ボタン。行が複製されるためidではなくname属性で識別する
+      , ["[name='商品選択']", "click", "on商品選択"]
     ]
     // バリデーションのイベントを定義する
     , validationEvent: [
@@ -89,7 +91,7 @@
     ]
     // その他セレクターイベントを定義する
     , selectorEvent: [
-      [".削除", "change", "onChange削除"]
+      ["[halu-ds-field='削除']", "change", "onChange削除"]
       // ここから追加処理
     ]
     // -----------------------------------------------------------------------------------------------
@@ -109,6 +111,8 @@
     , pubsubOtherEvent: [
       ["showヘッダータイトル", "view", "showヘッダータイトル"]
       // ここから追加処理
+      // C-044: 商品選択ダイアログから戻った後の後処理（selectStorageResponseDataのafterfunctionから呼ばれる）
+      , ["on商品選択後", "controller", "on商品選択後"]
     ]
     // -----------------------------------------------------------------------------------------------
     // 画面が表示された時、最初にフォーカスを設定する項目を指定する
@@ -193,8 +197,23 @@
     // datasetid   : datasetのidを指定する
     // dataname    : datasetの項目名を指定する
     // value       : 空白（項目名の値がセットされ選択画面へ渡される）
+    // ----- svelte用項目 -----
+    // dialogid    : 画面に挿入する選択ダイアログのDOM要素idを指定する
+    // dialogstyle : 選択ダイアログのstyle情報を指定する
     // -----------------------------------------------------------------------------------------------
+    // C-044: 商品選択ダイアログ（iframe分離方式）
+    // dataname は空配列とする。フレームワークの引き渡しは常にvalue[0]（先頭行）を読むため
+    // 行単位の値は渡せず、渡す意味のある値が無い（呼び出し元・ダイアログ側とも maxSize>0 で守られている）
     , selectStorageRequestData: [
+      {
+        requestname: "ProductSelectionDialog"
+        , datasetid: "detail"
+        , dataname: []
+        , value: []
+        , dialogid: "ProductSelectionDialog"
+        , dialogstyle: "width:700px; position:fixed; inset:0; margin: auto; max-height: 80vh;"
+        , dialogtype: "iframe"
+      }
     ]
     // -----------------------------------------------------------------------------------------------
     // 選択画面からの引き渡しデータ定義
@@ -203,8 +222,19 @@
     // dataname      : datasetの項目名を指定する
     // value         : 空白（選択画面からの引き渡しデータの値がセットされる）
     // afterfunction : 後処理関数を指定する（同時に、pubsubOtherEventにも設定する）
+    // cancelfunction : キャンセル時の後処理関数名を指定する（pubsubOtherEventへの登録も必要）
     // -----------------------------------------------------------------------------------------------
+    // C-044: 選択された商品を明細のクリック行へ転記する
+    // dataname はダイアログ側 sessionStorageDetailKey の項目名と一致させること（項目名でsessionStorageから読み出される）
     , selectStorageResponseData: [
+      {
+        responsename: "OrderDetailListMainte"
+        , datasetid: "detail"
+        , dataname: ["商品ＩＤ", "商品名称", "受注単価"]
+        , value: []
+        , afterfunction: "on商品選択後"
+        , cancelfunction: ""
+      }
     ]
     // -----------------------------------------------------------------------------------------------
     // セレクトボックス定義

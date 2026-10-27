@@ -21,11 +21,14 @@
 		}
 	},
 	{
-    "comment": "ファイル名",
+    "comment": "ファイル名・取込チェック結果",
     "id": "header",
     "multiline": "no",
     "record": {
       "ファイル名": {
+        "value": [""]
+      },
+      "エラー件数": {
         "value": [""]
       }
     }
